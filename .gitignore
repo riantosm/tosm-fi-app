@@ -73,3 +73,10 @@ yarn-error.log
 !.yarn/releases
 !.yarn/sdks
 !.yarn/versions
+
+# react-native-config
+.env
+
+# APK yang otomatis disalin ke documentation/ oleh assembleDebug/Release
+documentation/*.apk
+documentation/output-metadata.json

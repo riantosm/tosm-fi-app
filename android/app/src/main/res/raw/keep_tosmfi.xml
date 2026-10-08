@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Resource yang dirujuk lewat NAMA (getIdentifier), tidak terlihat oleh resource shrinker.
+  - string/build_config_package: dibaca react-native-config untuk mencari class BuildConfig.
+  Jangan menamai file ini keep.xml (ditimpa keep.xml buatan bundler RN).
+-->
+<resources xmlns:tools="http://schemas.android.com/tools"
+    tools:keep="@string/build_config_package" />

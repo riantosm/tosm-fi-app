@@ -1,6 +1,7 @@
 apply plugin: "com.android.application"
 apply plugin: "org.jetbrains.kotlin.android"
 apply plugin: "com.facebook.react"
+apply from: project(':react-native-config').projectDir.getPath() + "/dotenv.gradle"
 
 /**
  * This is the configuration block to customize your React Native Android app.
@@ -57,7 +58,7 @@ react {
 /**
  * Set this to true to Run Proguard on Release builds to minify the Java bytecode.
  */
-def enableProguardInReleaseBuilds = false
+def enableProguardInReleaseBuilds = true
 
 /**
  * The preferred build flavor of JavaScriptCore (JSC)
@@ -82,8 +83,21 @@ android {
         applicationId "com.tosm.finance"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 1
-        versionName "1.0"
+        versionCode 1          // naik +1 tiap rilis
+        versionName "1.0.0"    // semver
+        resValue "string", "build_config_package", "com.tosm.finance"
+    }
+    // Hanya terjemahan bawaan library untuk bahasa app (en, id = "in", jp = "ja"). Teks UI app
+    // lewat i18n JS, tidak memakai strings.xml terjemahan.
+    androidResources {
+        localeFilters += ["en", "in", "ja"]
+    }
+    // .so dikompres di APK (APK dibagikan sebagai file, jadi ukuran unduhan lebih penting).
+    // Isi library sama persis; Android mengekstraknya sekali saat install.
+    packaging {
+        jniLibs {
+            useLegacyPackaging true
+        }
     }
     signingConfigs {
         debug {
@@ -102,7 +116,14 @@ android {
             // see https://reactnative.dev/docs/signed-apk-android.
             signingConfig signingConfigs.debug
             minifyEnabled enableProguardInReleaseBuilds
+            shrinkResources enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
+        }
+    }
+
+    applicationVariants.all { variant ->
+        variant.outputs.all { output ->
+            outputFileName = "TosmFi-v${variant.versionName}(${variant.versionCode})-${variant.buildType.name}.apk"
         }
     }
 }
@@ -116,4 +137,24 @@ dependencies {
     } else {
         implementation jscFlavor
     }
+}
+
+/**
+ * Setiap kali assembleDebug/assembleRelease selesai, salin APK-nya ke documentation/
+ * di root repo. File .apk di-gitignore; yang di-commit hanya CHANGELOG.md/.html.
+ */
+def changelogDir = new File(rootProject.projectDir.parentFile, "documentation")
+
+["debug", "release"].each { variantName ->
+    tasks.register("copy${variantName.capitalize()}ApkToChangelog", Copy) {
+        from(layout.buildDirectory.dir("outputs/apk/${variantName}")) {
+            include "*.apk"
+        }
+        into changelogDir
+    }
+}
+
+tasks.configureEach { task ->
+    if (task.name == "assembleDebug")   task.finalizedBy("copyDebugApkToChangelog")
+    if (task.name == "assembleRelease") task.finalizedBy("copyReleaseApkToChangelog")
 }
