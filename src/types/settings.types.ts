@@ -9,3 +9,6 @@ export interface UserSettings {
   decimalPlaces: DecimalPlaces;
   language: LanguageCode;
 }
+
+/** Preferensi tema: `system` mengikuti HP. */
+export type ThemePreference = 'system' | 'light' | 'dark';

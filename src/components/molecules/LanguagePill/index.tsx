@@ -1,8 +1,8 @@
-import { StyleSheet } from 'react-native';
 import { ChevronUp, Languages } from 'lucide-react-native';
 import PressableScale from '@/components/atoms/PressableScale';
 import Typography from '@/components/atoms/Typography';
-import { colors } from '@/theme/colors';
+import { useTheme } from '@/contexts/ThemeContext';
+import { makeStyles } from '@/theme/makeStyles';
 import { radius, spacing } from '@/theme/metrics';
 
 export interface LanguagePillProps {
@@ -11,12 +11,28 @@ export interface LanguagePillProps {
   onPress: () => void;
 }
 
+const useStyles = makeStyles(({ colors }) => ({
+  pill: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.sm,
+    paddingVertical: spacing.sm,
+    paddingHorizontal: 14,
+    borderRadius: radius.pill,
+    borderWidth: 1,
+    borderColor: colors.border,
+    backgroundColor: colors.surface,
+  },
+}));
+
 /** Pemicu pemilih bahasa di dasar layar auth (pen: Login HP → "Lang"). */
 export default function LanguagePill({
   label,
   accessibilityLabel,
   onPress,
 }: LanguagePillProps) {
+  const styles = useStyles();
+  const { colors } = useTheme();
   return (
     <PressableScale
       accessibilityRole="button"
@@ -32,17 +48,3 @@ export default function LanguagePill({
     </PressableScale>
   );
 }
-
-const styles = StyleSheet.create({
-  pill: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: spacing.sm,
-    paddingVertical: spacing.sm,
-    paddingHorizontal: 14,
-    borderRadius: radius.pill,
-    borderWidth: 1,
-    borderColor: colors.border,
-    backgroundColor: colors.surface,
-  },
-});

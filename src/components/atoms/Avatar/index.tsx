@@ -1,6 +1,6 @@
-import { StyleSheet, View, type TextStyle, type ViewStyle } from 'react-native';
+import { View } from 'react-native';
 import Typography from '@/components/atoms/Typography';
-import { colors } from '@/theme/colors';
+import { makeStyles } from '@/theme/makeStyles';
 import { radius } from '@/theme/metrics';
 import { fonts } from '@/theme/typography';
 import { getInitials } from '@/utils/format';
@@ -14,39 +14,38 @@ export interface AvatarProps {
   tone?: AvatarTone;
 }
 
-const toneStyles: Record<AvatarTone, { box: ViewStyle; text: TextStyle }> = {
-  solid: {
-    box: { backgroundColor: colors.primary },
-    text: { color: colors.primaryFg },
-  },
-  soft: {
-    box: { backgroundColor: colors.primarySoft },
-    text: { color: colors.primaryText },
-  },
-};
+const useStyles = makeStyles(({ colors }) => ({
+  base: { alignItems: 'center', justifyContent: 'center' },
+  text: { fontFamily: fonts.display },
+  solidBox: { backgroundColor: colors.primary },
+  solidText: { color: colors.primaryFg },
+  softBox: { backgroundColor: colors.primarySoft },
+  softText: { color: colors.primaryText },
+}));
 
 export default function Avatar({
   name,
   size = 44,
   tone = 'soft',
 }: AvatarProps) {
-  const { box, text } = toneStyles[tone];
+  const styles = useStyles();
   return (
     <View
       style={[
         styles.base,
-        box,
+        tone === 'solid' ? styles.solidBox : styles.softBox,
         { width: size, height: size, borderRadius: radius.pill },
       ]}
     >
-      <Typography style={[styles.text, text, { fontSize: size * 0.34 }]}>
+      <Typography
+        style={[
+          styles.text,
+          tone === 'solid' ? styles.solidText : styles.softText,
+          { fontSize: size * 0.34 },
+        ]}
+      >
         {getInitials(name)}
       </Typography>
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  base: { alignItems: 'center', justifyContent: 'center' },
-  text: { fontFamily: fonts.display },
-});

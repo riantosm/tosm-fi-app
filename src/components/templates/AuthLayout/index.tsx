@@ -1,19 +1,14 @@
-import type { ReactNode } from 'react';
-import {
-  KeyboardAvoidingView,
-  Platform,
-  ScrollView,
-  StyleSheet,
-  View,
-} from 'react-native';
-import { MotiView } from 'moti';
+import { useRef, type ComponentRef, type ReactNode } from 'react';
+import { KeyboardAvoidingView, Platform, ScrollView, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Gradient from '@/components/atoms/Gradient';
 import LogoMark from '@/components/atoms/LogoMark';
 import Typography from '@/components/atoms/Typography';
-import { colors } from '@/theme/colors';
+import { makeStyles } from '@/theme/makeStyles';
 import { layout, radius, spacing } from '@/theme/metrics';
-import { fadeInUp } from '@/utils/motion';
+import { useKeyboardHeight } from '@/hooks/useKeyboardHeight';
+import { useRevealFocusedInput } from '@/hooks/useRevealFocusedInput';
+import Reveal from '@/components/atoms/Reveal';
 
 export interface AuthLayoutProps {
   appName: string;
@@ -23,66 +18,15 @@ export interface AuthLayoutProps {
   title: string;
   subtitle: string;
   children: ReactNode;
+  /** Aksi kanan header (tombol tema). */
+  headerRight?: ReactNode;
   /** Baris di bawah tombol submit, misalnya tautan ke Register/Login. */
   footer?: ReactNode;
   /** Elemen di dasar sheet, misalnya pemilih bahasa. */
   bottom?: ReactNode;
 }
 
-/** Layar Login/Register HP (DESIGN_SYSTEM.md §5.6): header gradien + sheet form sudut 32. */
-export default function AuthLayout({
-  appName,
-  headline,
-  title,
-  subtitle,
-  children,
-  footer,
-  bottom,
-}: AuthLayoutProps) {
-  return (
-    <View style={styles.root}>
-      <Gradient />
-      <SafeAreaView edges={['top', 'left', 'right']} style={styles.flex}>
-        <KeyboardAvoidingView
-          style={styles.flex}
-          behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-        >
-          <ScrollView
-            contentContainerStyle={styles.scroll}
-            keyboardShouldPersistTaps="handled"
-            showsVerticalScrollIndicator={false}
-          >
-            <View style={styles.header}>
-              <View style={styles.brand}>
-                <LogoMark />
-                <Typography variant="wordmark" tone="hero">
-                  {appName}
-                </Typography>
-              </View>
-              <Typography variant="headline" tone="hero">
-                {headline}
-              </Typography>
-            </View>
-
-            <MotiView {...fadeInUp} style={styles.sheet}>
-              <View style={styles.form}>
-                <View style={styles.head}>
-                  <Typography variant="headline">{title}</Typography>
-                  <Typography tone="muted">{subtitle}</Typography>
-                </View>
-                {children}
-                {!!footer && <View style={styles.footer}>{footer}</View>}
-              </View>
-              {!!bottom && <View style={styles.bottom}>{bottom}</View>}
-            </MotiView>
-          </ScrollView>
-        </KeyboardAvoidingView>
-      </SafeAreaView>
-    </View>
-  );
-}
-
-const styles = StyleSheet.create({
+const useStyles = makeStyles(({ colors }) => ({
   root: { flex: 1, backgroundColor: colors.heroBg },
   flex: { flex: 1 },
   scroll: { flexGrow: 1 },
@@ -91,6 +35,11 @@ const styles = StyleSheet.create({
     paddingTop: 18,
     paddingHorizontal: layout.heroGutter,
     paddingBottom: 28,
+  },
+  top: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
   },
   brand: { flexDirection: 'row', alignItems: 'center', gap: 10 },
   sheet: {
@@ -113,4 +62,80 @@ const styles = StyleSheet.create({
     gap: 6,
   },
   bottom: { alignItems: 'center' },
-});
+}));
+
+/** Layar Login/Register HP (DESIGN_SYSTEM.md §5.6): header gradien + sheet form sudut 32. */
+export default function AuthLayout({
+  appName,
+  headline,
+  title,
+  subtitle,
+  children,
+  headerRight,
+  footer,
+  bottom,
+}: AuthLayoutProps) {
+  const styles = useStyles();
+  // Android edge-to-edge tidak me-resize window: area scroll dipendekkan setinggi keyboard, lalu
+  // input yang fokus digulir ke atas keyboard (iOS: KeyboardAvoidingView).
+  const keyboardHeight = useKeyboardHeight();
+  const scrollRef = useRef<ComponentRef<typeof ScrollView>>(null);
+  const offsetRef = useRef(0);
+  useRevealFocusedInput(scrollRef, () => offsetRef.current, keyboardHeight);
+
+  return (
+    <View style={styles.root}>
+      <Gradient />
+      <SafeAreaView
+        edges={['top', 'left', 'right']}
+        style={[
+          styles.flex,
+          Platform.OS === 'android' && { paddingBottom: keyboardHeight },
+        ]}
+      >
+        <KeyboardAvoidingView
+          style={styles.flex}
+          behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+        >
+          <ScrollView
+            ref={scrollRef}
+            onScroll={event => {
+              offsetRef.current = event.nativeEvent.contentOffset.y;
+            }}
+            scrollEventThrottle={32}
+            contentContainerStyle={styles.scroll}
+            keyboardShouldPersistTaps="handled"
+            showsVerticalScrollIndicator={false}
+          >
+            <View style={styles.header}>
+              <View style={styles.top}>
+                <View style={styles.brand}>
+                  <LogoMark />
+                  <Typography variant="wordmark" tone="hero">
+                    {appName}
+                  </Typography>
+                </View>
+                {headerRight}
+              </View>
+              <Typography variant="headline" tone="hero">
+                {headline}
+              </Typography>
+            </View>
+
+            <Reveal style={styles.sheet}>
+              <View style={styles.form}>
+                <View style={styles.head}>
+                  <Typography variant="headline">{title}</Typography>
+                  <Typography tone="muted">{subtitle}</Typography>
+                </View>
+                {children}
+                {!!footer && <View style={styles.footer}>{footer}</View>}
+              </View>
+              {!!bottom && <View style={styles.bottom}>{bottom}</View>}
+            </Reveal>
+          </ScrollView>
+        </KeyboardAvoidingView>
+      </SafeAreaView>
+    </View>
+  );
+}

@@ -11,9 +11,26 @@ import {
   REHYDRATE,
 } from 'redux-persist';
 import auth from '@/store/slices/authSlice';
+import budget from '@/store/slices/budgetSlice';
+import category from '@/store/slices/categorySlice';
+import instrument from '@/store/slices/instrumentSlice';
+import schedule from '@/store/slices/scheduleSlice';
+import scheduleOccurrence from '@/store/slices/scheduleOccurrenceSlice';
 import settings from '@/store/slices/settingsSlice';
+import transaction from '@/store/slices/transactionSlice';
+import wallet from '@/store/slices/walletSlice';
 
-const rootReducer = combineReducers({ auth, settings });
+const rootReducer = combineReducers({
+  auth,
+  settings,
+  wallet,
+  category,
+  budget,
+  instrument,
+  schedule,
+  scheduleOccurrence,
+  transaction,
+});
 
 const persistedReducer = persistReducer(
   {

@@ -23,7 +23,8 @@
     "moveUp": "上へ",
     "moveDown": "下へ",
     "more": "その他",
-    "loading": "読み込み中…"
+    "loading": "読み込み中…",
+    "pressBackAgainToExit": "もう一度押すと終了します"
   },
   "errorBoundary": {
     "title": "エラーが発生しました",
@@ -223,7 +224,10 @@
     "roleLabel": "役割"
   },
   "theme": {
-    "toggle": "テーマを切り替え"
+    "toggle": "テーマを切り替え",
+    "light": "ライト",
+    "dark": "ダーク",
+    "system": "システムに合わせる"
   },
   "settingsMenu": {
     "userApproval": {
@@ -401,7 +405,7 @@
       "food": "食べ物",
       "restaurant": "レストラン",
       "cutlery": "食器",
-      "cafe": "カフェ",
+      "cafe": "コーヒー・カフェ",
       "bakery": "パン屋",
       "pizza": "ピザ",
       "dessert": "デザート",
@@ -647,6 +651,7 @@
     "profitLossNoChange": "この口座の最新の評価額を入力してください",
     "profitLossSubtitle": "最新の評価額から損益を記録",
     "recordedValue": "記録額 {{amount}}",
+    "recordedValueOn": "{{date}}時点の評価額 {{amount}}",
     "remainingAfterWithdraw": "引き出し後の残高：{{amount}}",
     "save": "保存",
     "saveValue": "評価額を保存",
@@ -761,6 +766,9 @@
     "filterType": "種類",
     "filterCategory": "カテゴリ",
     "filterSubCategory": "サブカテゴリ",
+    "filterTitle": "フィルター",
+    "filterAllDates": "今月のすべての日付",
+    "filterSubtitle": "財布・種類・カテゴリ・日付・並び順",
     "allWallets": "すべてのウォレット",
     "allTypes": "すべての種類",
     "allCategories": "すべてのカテゴリ",
@@ -853,7 +861,12 @@
     "previewDaily": "毎日、ダッシュボードと取引に支払い待ちとして表示されます。",
     "previewWeekly": "毎週 {{days}} に、ダッシュボードと取引に支払い待ちとして表示されます。",
     "previewMonthly": "毎月 {{day}} 日に、ダッシュボードと取引に支払い待ちとして表示されます。",
-    "previewYearly": "毎年 {{date}} に、ダッシュボードと取引に支払い待ちとして表示されます。"
+    "previewYearly": "毎年 {{date}} に、ダッシュボードと取引に支払い待ちとして表示されます。",
+    "listAnd": "と",
+    "reminderTitleExpense": "本日が支払期日です",
+    "reminderTitleIncome": "本日は入金予定日です",
+    "reminderBody": "{{title}} · {{amount}}。TosmFi を開いて記録しましょう。",
+    "reminderNote": "期日の 8:00 にリマインダー通知が届きます。"
   },
   "budget": {
     "genericError": "エラーが発生しました。もう一度お試しください。",
@@ -947,6 +960,12 @@
       "netCashFlow": "純キャッシュフロー",
       "transactionCount": "取引件数",
       "previousPeriod": "前期間比"
+    },
+    "summaryShort": {
+      "totalIncome": "収入",
+      "totalExpense": "支出",
+      "netCashFlow": "純収支",
+      "transactionCount": "取引"
     },
     "cashFlow": {
       "title": "キャッシュフロー",

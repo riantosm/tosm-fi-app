@@ -1,10 +1,10 @@
 /**
  * Token warna Mist, sama dengan web tosm-fi-fe (src/css/index.css) dan
- * design/tosmfi-redesign.pen (01 Design System). Komponen hanya memakai nama
- * semantik di bawah; jangan pernah menulis hex inline. Tabel lengkap: DESIGN_SYSTEM.md §2.
+ * design/tosmfi-redesign.pen (01 Design System). Tabel lengkap: DESIGN_SYSTEM.md §2.
  *
- * Saat ini app memakai `colors` (light). `darkColors` sudah disiapkan untuk
- * toggle dark mode nanti, bentuknya wajib sama persis dengan light.
+ * Komponen TIDAK mengimpor palet ini langsung: ambil lewat `useTheme().colors` atau
+ * `makeStyles(({ colors }) => …)` supaya ikut berganti light/dark. Bentuk `darkColors`
+ * wajib sama persis dengan light.
  */
 export const lightColors = {
   bg: '#F4F5FB',
@@ -55,9 +55,21 @@ export const lightColors = {
   chart4: '#F3C98B',
   chart5: '#9DB4F0',
   chart6: '#D3A6E0',
+  /** Medali peringkat 2 & 3 (Top Pengeluaran Laporan); peringkat 1 = investment. */
+  medalSilver: '#B7BACE',
+  medalBronze: '#CF8E70',
+  /** Blok kode (stack trace Log Error). */
+  codeBg: '#2E3047',
+  codeFg: '#D9DBF5',
 
   /** Teks/ikon di atas isian expenseText (Button danger). */
   onDanger: '#FFFFFF',
+  /** Latar area media (pratinjau kamera, gambar penuh). */
+  media: '#14152A',
+  /** Warna netral transfer & koreksi saldo (setara web #8A94A0). */
+  txNeutral: '#8A94A0',
+  /** Teks/ikon di atas isian warna data user yang solid (monogram solid). */
+  onData: '#FFFFFF',
   scrim: 'rgba(26, 27, 46, 0.45)',
   shadow: '#24263A',
   transparent: 'transparent',
@@ -112,11 +124,23 @@ export const darkColors: ColorTokens = {
   chart4: '#F5D29C',
   chart5: '#AFC2F5',
   chart6: '#DDB4EA',
+  medalSilver: '#8D90AC',
+  medalBronze: '#C98F72',
+  codeBg: '#1F2034',
+  codeFg: '#D9DBF5',
 
   onDanger: '#1E1F38',
+  media: '#0A0A16',
+  txNeutral: '#9AA3AE',
+  onData: '#FFFFFF',
   scrim: 'rgba(10, 10, 22, 0.6)',
   shadow: '#000000',
   transparent: 'transparent',
 };
 
-export const colors = lightColors;
+export type ColorScheme = 'light' | 'dark';
+
+export const palettes: Record<ColorScheme, ColorTokens> = {
+  light: lightColors,
+  dark: darkColors,
+};

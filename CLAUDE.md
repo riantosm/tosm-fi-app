@@ -74,6 +74,27 @@ tulis ulang dengan komponen RN di sini. Desain: Mist, lihat `DESIGN_SYSTEM.md` (
   - Setiap layar yang tampil bersama nav memakai `MainLayout withTabBar` (ruang bawah 130).
   - Halaman menu (Dompet, Kategori, Jadwal, Budget, Laporan, Pengaturan) memakai LogoMark tanpa
     tombol kembali. Sub-halaman (Profil, Mata Uang, admin) memakai `onBack`.
+- **Data lintas layar**: slice `wallet`, `category`, `budget`, `instrument`, `scheduleOccurrence`
+  (direset saat logout lewat `resetOnSignOut`) dan hook `useWallets` / `useCategories` / `useBudgets` /
+  `useInstruments` / `useScheduleOccurrences` (muat otomatis saat `idle`). Transaksi TIDAK disimpan:
+  `useTransactions()` memberi `queryTransactions` + mutasi, dan `transaction.version` jadi sinyal
+  refetch (setara array `transactions` di web). Format uang: `useMoneyFormat()` (`format`,
+  `formatNumber`, `formatCompact` buatan sendiri, `formatSigned`).
+- **Toast** (`contexts/ToastContext.tsx`): `const showToast = useToast(); showToast(msg, 'success' | 'error' | 'info')`.
+  Toast dirender oleh `ToastHost` di `App.tsx` (melayang di atas bottom nav). Modal/route sheet ada di
+  window native terpisah, jadi `SheetLayout` memasang `ToastHost` sendiri (posisi atas); hanya host yang
+  terakhir terpasang yang merender toast. Feedback singkat
+  (simpan/hapus berhasil, error jaringan) memakai toast; konfirmasi tetap memakai `ConfirmDialog`.
+- **Back Android** (`hooks/useBackToExit.ts`): selama navigasi masih bisa kembali (stack,
+  tab → Beranda, sheet/modal) back ditangani navigasi. Di layar paling awal, back pertama
+  menampilkan toast "Ketuk sekali lagi untuk keluar", dan back kedua dalam 2 detik menutup app.
+- **Sheet**: `templates/SheetLayout` = satu tampilan sheet (scrim, handle, judul/subjudul, back, aksi,
+  isi scroll, footer tetap). `organisms/BottomSheet` = SheetLayout dalam Modal (pemilih). Form besar
+  (Catat transaksi, Bayar tagihan) = route `presentation: 'transparentModal'` yang memakai SheetLayout.
+  Pemilih siap pakai: `AmountCalculatorSheet`, `SelectCategorySheet`, `SelectSubCategorySheet`,
+  `DateTimePickerSheet`, `DateRangeSheet`, `InvestmentTargetSheet`, `OptionSheet`.
+- **Mutasi transaksi** (`useTransactions`): setelah API sukses, sinkron dompet/kategori jalan di latar
+  belakang (tidak di-await) supaya form langsung tertutup.
 - **Menambah layar** = 4 tempat: `ROUTES` → `RootStackParamList` (`navigation/types.ts`) →
   `RootNavigator` → `screens/<Nama>/index.tsx`.
 - **State**: Redux Toolkit + redux-persist (AsyncStorage). Persist whitelist hanya `auth`
@@ -96,24 +117,47 @@ tulis ulang dengan komponen RN di sini. Desain: Mist, lihat `DESIGN_SYSTEM.md` (
   sama saat mem-port layar. Grup `placeholder` khusus mobile. Tambah key di **ketiga** file.
   Semua teks UI lewat `t()`, tanpa string hardcoded.
 - **Theme** (`src/theme/`): ikuti `DESIGN_SYSTEM.md`.
-  - `colors.ts`: token Mist; `colors` = light; `darkColors` disiapkan, toggle belum ada.
+  - `colors.ts`: palet `lightColors` / `darkColors` (bentuk wajib sama). **Tidak ada ekspor statis `colors`.**
+  - Dark/light: `contexts/ThemeContext.tsx` (`ThemeProvider`, `useTheme()`), preferensi
+    `settings.theme` (`system`/`light`/`dark`, persisted). Style komponen WAJIB dibuat dengan
+    `makeStyles(({ colors, shadows }) => …)` (`theme/makeStyles.ts`, cache per skema); warna
+    dinamis lewat `useTheme().colors` / `.tones`.
   - `typography.ts`: `fonts` + `textStyles` per peran, dipakai lewat `<Typography variant>`.
   - `metrics.ts`: `spacing`, `layout`, `radius`.
-  - `shadows.ts`: card / nav / pop / thumb.
-  - `tones.ts`: nada tile ikon.
+  - `shadows.ts`: `createShadows(colors)` → card / nav / pop / thumb.
+  - `tones.ts`: `createTones(colors)` → nada tile ikon.
   - Font Inter + Outfit (`src/assets/fonts`, tertaut via `react-native.config.js` +
     `npx react-native-asset`). Jangan memakai `fontWeight`, karena berat ditentukan oleh file font.
 - **Komponen** (atomic, folder + `index.tsx`):
-  - atoms: `PressableScale` (primitive tap tunggal), `Typography`, `Button`, `IconButton`,
-    `LogoMark`, `Avatar`, `Badge`, `Gradient`.
+  - atoms: `PressableScale` (primitive tap tunggal), `Typography`, `Button` (size `sm` untuk aksi
+    app bar), `IconButton`, `LogoMark`, `Avatar`, `Badge`, `Gradient`, `WalletTile`, `ColorWheel`,
+    `AiMark` (identitas AI: lingkaran `primary` + sparkles, xs/sm/md/lg), `Reveal` (animasi masuk ringan).
+  - molecules/organisms tambahan: `OptionRow` (kartu radio), `SettingsPanel` (kartu bertile ikon),
+    `InvestmentDateTimeField` (Tanggal + Jam berbagi satu `DateTimePickerSheet`). `PickerField`
+    boleh tanpa label (label kosong).
   - molecules: `TextField`, `Card`, `Banner`, `EmptyState`, `MenuRow`, `MenuGroup`, `MenuTile`,
-    `SegmentedControl`, `LanguagePill`.
+    `SegmentedControl` (teks atau ikon), `LanguagePill`, `ThemeToggleButton`.
   - organisms: `BottomSheet`, `ConfirmDialog`, `StatusModal` (pengganti `Alert.alert`),
-    `LanguageSheet`, `TabBar`.
+    `LanguageSheet`, `TabBar`, `ColorPicker`, `CustomColorSheet`, `ReorderList` (dipakai juga
+    nanti untuk Budget; varian `inset` tanpa panah untuk subkategori), `ActionSheet` (menu ⋮),
+    `CategoryIconSheet`, `CategoryFormSheet`, `SubCategoryFormSheet`, `SelectCategoriesSheet`,
+    `InvestmentTransactionList`. molecules baru: `AreaChart` (grafik area SVG ringan, kurva
+    monoton, label sumbu X berjarak piksel), `ProfitLossPill`, `InvestmentAccountSummary`,
+    `AmountField` (field nominal + kalkulator), `CheckboxRow`, `BudgetProgressBar`,
+    `BudgetPercentBadge`. Helper grafik bersama di `utils/chart.ts` (`monotonePath`, `niceTicks`,
+    `pickLabelIndexes`). `SegmentedControl` varian `solid` (nilai di luar opsi = tanpa thumb),
+    `EmptyState` varian `inset` (kosong di dalam kartu).
+  - Sinyal mutasi investasi: `transaction.investmentVersion` (`bumpInvestmentVersion`), dipakai
+    `useInvestmentTransactions` / `useInvestmentData` (timeline, nilai bersih, tanggal pertama). Atom `CategoryIcon`
+    (lingkaran `${warna}26` + ikon).
+  - `BottomSheet`: back Android saat keyboard terbuka hanya menutup keyboard (sheet tetap).
+  - Keyboard di sheet: Android edge-to-edge tidak me-resize window, jadi `SheetLayout` menambah
+    padding bawah setinggi keyboard (`hooks/useKeyboardHeight`); iOS tetap `KeyboardAvoidingView`.
   - templates: `MainLayout`, `AuthLayout`, `PlaceholderLayout`.
   - Prop ikon berupa fungsi render `renderIcon(color, size?)`, supaya warna ikon mengikuti varian
     dan lolos aturan lint `no-unstable-nested-components`.
-  - Hook shell: `useLogoutDialog` (konfirmasi keluar), `useLanguage` / `useLanguagePicker`.
+  - Hook shell: `useLogoutDialog` (konfirmasi keluar), `useLanguage` / `useLanguagePicker`,
+    `useThemePreference`.
 - **Satu salinan React (WAJIB)**: `moti` → `framer-motion@6` → `react-dom` terbaru, yang menarik
   React kedua ke `node_modules/moti/node_modules/react`, sehingga app crash `Cannot read property
   'useContext' of null` di Moti. Dicegah oleh `overrides.framer-motion` di `package.json`
@@ -125,24 +169,62 @@ tulis ulang dengan komponen RN di sini. Desain: Mist, lihat `DESIGN_SYSTEM.md` (
   `transitions.*` karena tipe moti 0.30 belum cocok dengan Reanimated 4 (sudah di-cast di sana).
 - **Notifikasi lokal**: `@notifee/react-native` tanpa Firebase.
   `services/notification/scheduleReminder.ts` (`requestNotificationPermission`,
-  `scheduleReminder`, `cancelReminder`, `cancelAllReminders`) untuk pengingat Jadwal; belum
-  disambungkan ke UI.
+  `scheduleReminder`, `syncScheduleReminders`, `cancelAllReminders`). `hooks/useScheduleReminders`
+  (dipanggil di AppShell) memuat jadwal saat login dan memasang satu pengingat jam 08.00 di jatuh
+  tempo berikutnya untuk tiap jadwal aktif (id `schedule-<idSchedule>`; yang dijeda/dihapus
+  dibatalkan). Alarm `SET_AND_ALLOW_WHILE_IDLE` (tanpa izin exact alarm). Izin notifikasi diminta
+  saat jadwal pertama dibuat. `index.js` mendaftarkan `notifee.onBackgroundEvent` (no-op).
 - **Kamera**: `react-native-vision-camera` v5 (butuh `react-native-nitro-modules` +
   `react-native-nitro-image`). API v5: `useCameraPermission()` +
   `<Camera device="back" isActive />`. Dipakai di `ScanReceipt` (pratinjau saja). Izin:
   `CAMERA` di AndroidManifest, `NSCameraUsageDescription` di Info.plist.
 - **Ikon**: `lucide-react-native` (set ikon sama dengan web `react-icons/lu`).
+- **Keyboard (WAJIB untuk layout baru)**: Android edge-to-edge tidak me-resize window. `MainLayout`,
+  `AuthLayout`, dan `SheetLayout` memendekkan area scroll setinggi keyboard (`useKeyboardHeight`)
+  lalu `hooks/useRevealFocusedInput` menggulir input yang fokus ke atas keyboard (diukur dua kali,
+  80 & 400 ms, karena sheet ikut memendek). Layar dengan ScrollView sendiri harus memakai pola sama.
+- **Performa (diukur dengan profiler Hermes lewat inspector Metro)**:
+  - `index.js` → `enableFreeze(true)` + tab `freezeOnBlur`: layar tak terlihat tidak ikut dirender ulang.
+  - `PressableScale` memakai `Animated` bawaan + native driver (bukan worklet per instance).
+  - Animasi masuk konten: `atoms/Reveal` (layout animation `entering`), **jangan** `<MotiView {...fadeInUp}>`.
+    Moti tetap untuk animasi state (thumb, sheet, rotasi).
+  - Format angka/tanggal lewat `utils/intl.ts` (`numberFormat`, `dateTimeFormat`, cache), jangan
+    `new Intl.*` / `toLocaleDateString` langsung.
+  - Context yang sering berubah dipisah state vs aksi (contoh `MoreSheetContext`), `RootNavigator`
+    di-`memo`, daftar berat (`TransactionList`, `TransactionCalendar`, `MonthTabs`, `SummaryBar`)
+    di-`memo` dengan prop stabil (`useMemo`/`useCallback`) di layar induk.
+  - Build debug 2–4× lebih lambat (React DEV `createTask`, error stack); nilai performa di build release.
 
 ## Status layar
 
 | Layar | Status |
 |---|---|
 | Login, Register | Fungsional (API asli, validasi, StatusModal, info sesi berakhir) |
-| Sheet Lainnya | Fungsional (profil, grid 6 menu, bahasa ID/EN/JP, keluar + konfirmasi) |
-| Profile | Identitas + info akun + logout (konfirmasi) |
-| Settings | Menu (Admin: Permintaan Pengguna, Log Error; Umum: Mata Uang) |
-| ScanReceipt | Izin + pratinjau kamera |
-| Dashboard, Transactions, Investment, Wallet, Categories, Schedule, Budgets, Reports, SettingsCurrency, SettingsUserApproval, SettingsErrorLog, QuickAdd | Placeholder (`PlaceholderLayout`), service sudah siap |
+| Sheet Lainnya | Fungsional (profil, grid 6 menu, tema, bahasa ID/EN/JP; logout hanya di Profil) |
+| Profile (Edit Profil) | Fungsional (pen `S5xzK`/`eCXQt`): identitas bergradien (avatar, @username, peran), Informasi Akun (nama/username + konfirmasi simpan, `useAuth().updateProfile`), Ubah Password (validasi min 6 & konfirmasi, sukses → sesi dibersihkan & kembali ke Login, `changePassword`), tombol Keluar (satu-satunya tempat logout) |
+| Settings | Fungsional (pen `k0SKz`): Admin (Permintaan Pengguna + badge "n baru" dari `hooks/useUserApproval`, Log Error), Umum (Mata Uang + ringkasan), Zona Berbahaya Reset Data (konfirmasi → `resetAccountDataApi` + aksi `accountDataReset` yang mengosongkan semua slice data akun). "Backend API" web sengaja tidak dibawa |
+| ScanReceipt | Izin + pratinjau kamera. Belum ada pintu masuk (tombolnya dulu di placeholder QuickAdd; Catat cepat versi pen/web tidak punya scan struk) |
+| Dashboard | Fungsional (pen `yHRM4`): hero (kekayaan bersih, sembunyikan saldo, cari, tema, avatar → sheet Lainnya), budget di-pin, ringkasan bulan (bar), kesehatan finansial, pengeluaran per kategori (donut + drill-down), dompet (tap → jadikan utama; tap dompet utama → koreksi saldo; Tambah dompet → form), transaksi bulan ini (infinite scroll), batalkan tagihan, pull-to-refresh. Tap baris → edit transaksi, Bayar tagihan, bar/kategori/cari → buka Transaksi dengan filter. |
+| Transactions | Fungsional (pen `PIoO4`): tab bulan, ringkasan, header hanya Cari + Filter; sheet Filter (`screens/Transactions/FilterSheet`: dompet, tipe, kategori → sub, rentang tanggal, urutan; draf diterapkan dengan "Terapkan", angka filter aktif di ikon) + banner aktif (`ActiveFilterBanner`), kalender bertitik (tap = filter hari), cari (debounce 1 dtk), daftar infinite scroll, bayar/batal tagihan, menerima filter awal lewat params `TransactionsParams` |
+| TransactionForm (route modal) | Catat/edit: 3 tipe (transfer + tukar dompet), subkategori cepat, kalkulator, kategori/subkategori, tanggal & jam, dompet, catat sebagai investasi, duplikat, hapus. Dibuka via `navigate(ROUTES.TRANSACTION_FORM, { transaction? })`; dari Catat cepat lewat "Catat manual". Pemilih kategori punya tile "Baru" dan pemilih subkategori punya "Subkategori baru" (langsung terpilih setelah dibuat) |
+| PayOccurrence (route modal) | Bayar/terima tagihan jadwal |
+| Wallet | Fungsional (pen `cnoOe`/`YYZ1Z`/`PWG8l`/`ZcRnk`): ringkasan total + bar porsi, tampilan grid/list (`settings.walletViewMode`, persisted), atur urutan (seret grip ⠿ atau panah, `organisms/ReorderList`), kosong, pull-to-refresh. Tap dompet → WalletForm |
+| WalletForm (route modal) | Tambah/edit dompet (pen `KiasV`/`nrR3J`): pratinjau, nama, saldo awal (baru saja), warna preset + "Warna custom" (`organisms/ColorPicker` → `CustomColorSheet` + `atoms/ColorWheel`), jadikan utama (bintang), hapus (konfirmasi). Petunjuk saldo → ganti ke Koreksi saldo |
+| BalanceCorrection (route modal) | Koreksi saldo (pen `kdRVQ`): params `{ idWallet, transaction? }`, kalkulator dari saldo dompet, pill selisih, tanggal, catatan, simpan/edit/hapus transaksi `correction`. Dibuka dari dompet utama (Dashboard), petunjuk saldo (WalletForm), dan baris koreksi di daftar transaksi (`navigation/openTransaction.ts`) |
+| Categories | Fungsional (pen `auPuW`/`y0vxv`/`ZVCxG`): tab Semua/Pengeluaran/Pemasukan, kartu kategori + pill subkategori (muat satu baris, "+N", "+"), menu ⋮ (`organisms/ActionSheet`: edit/hapus), atur urutan, kosong, pull-to-refresh. Form: `organisms/CategoryFormSheet` (jenis, ikon `CategoryIconSheet`, nama, warna, daftar subkategori seret/edit/hapus), `organisms/SubCategoryFormSheet` |
+| Schedule | Fungsional (pen `a0SVGi`/`go3lT`): jatuh tempo berikutnya, keluar/masuk rutin per bulan, seksi Aktif/Dijeda, kartu jadwal (jeda/aktifkan, edit, hapus + konfirmasi), kosong, pull-to-refresh. Logika aturan ulang di `utils/schedule.ts` (port schedule-utils web) |
+| ScheduleForm (route modal) | Tambah/edit jadwal (pen `nHHvn`/`W9TVu`): jenis, kategori/subkategori, nominal, judul, dompet, ulangi (harian/mingguan + pilih hari/bulanan/tahunan), tanggal mulai, pratinjau + catatan pengingat, catatan |
+| Budgets | Fungsional (pen `Lu9SC`/`JqSyG`): kartu budget (terpakai/limit, persen, bar + penanda "Hari ini", sisa per hari, pin), atur urutan, kosong, pull-to-refresh. Tap kartu → BudgetDetail |
+| BudgetDetail | Hero (terpakai, limit, bar, sisa/per hari/hari lagi), pin/lepas Dashboard, edit, "Per kategori" + subkategori (expand), sheet "Atur limit" (`screens/BudgetDetail/SetLimitSheet`, 0 = hapus limit). Dibuka juga dari budget di Dashboard |
+| BudgetForm (route modal) | Tambah/edit/hapus budget (pen `O98YEF`): nama, cakupan semua/kategori tertentu (`organisms/SelectCategoriesSheet`, multi-pilih + kategori baru), limit, warna |
+| Investment (tab) | Fungsional (pen `Q1BjKl`/`dZKTE`): hero nilai + P/L vs modal + periode Bulan ini/Tahun ini/Semua + grafik area (`molecules/AreaChart`, SVG), daftar instrumen (sparkline, urutkan nilai/kenaikan via OptionSheet), ledger investasi (cari, filter tipe, infinite scroll), transfer antar akun, kosong. Tap baris ledger → edit transaksi |
+| InstrumentDetail | Ringkasan akun terpilih (ketuk kartu akun untuk memilih), grafik riwayat nilai vs modal (Hari/Bulan/Tahun), kartu akun (Edit/Tarik/P/L), ledger instrumen + filter tipe |
+| Form investasi (route modal) | InstrumentForm (tambah → langsung buka detail; hapus), InvestmentAccountForm (instrumen terkunci; hapus = soft delete), InvestmentWithdraw (opsional setor ke dompet = transaksi pemasukan), InvestmentProfitLoss (nilai baru → profit/rugi), InvestmentTransfer (dari/ke via `InvestmentTargetSheet` + `excludeAccountId`, pratinjau saldo), InvestmentTransactionEdit (nominal, perubahan negatif untuk P/L, tanggal/jam, catatan untuk tarik; hapus). Tarik/Transfer/Update nilai/Edit punya Tanggal & Jam (`organisms/InvestmentDateTimeField`) untuk entri bertanggal mundur; Update nilai membandingkan dengan nilai akun per tanggal itu (`timelineValueAt`, sama dengan backend `198866f`) |
+| Reports | Fungsional (pen `S5YW9`/`CaSg9`): strip periode Hari/Minggu/Bulan/Tahun + custom range (`DateRangeSheet`), ringkasan 2 × 2 + perubahan vs periode lalu, Cash Flow (tap = tooltip, legenda sembunyikan seri, kumulatif/per periode), pengeluaran per kategori, Tren Bulanan 12 bulan (tap batang), Top Pengeluaran, Dompet Paling Aktif, pull-to-refresh. Data: `hooks/useReports` (satu endpoint per kartu, muat ulang saat `transaction.version` berubah), periode `utils/reportPeriod.ts`. Export PDF/Excel/CSV belum (butuh library native) |
+| QuickAdd (Catat cepat AI, modal) | Fungsional (pen `E5vp0` dkk.): chat ke `POST /assistant/chat` → pratinjau draft per hari (`screens/QuickAdd/AssistantPreviewCard`, tampilan TxRow sama dengan Transaksi/ledger investasi) → Simpan (`POST /assistant/commit`, satu batch) / Batal, juga lewat chat ("ok, catat"). Jawaban cepat (dompet bertitik warna, "Pilih tanggal" → `DateTimePickerSheet`), revisi dengan chip "lama → baru", validasi per baris, banner kuota/koneksi + Coba lagi, Mulai baru, Catat manual (ganti ke TransactionForm). State di `contexts/AssistantChatContext` (`hooks/useAssistantChat`, port web) supaya chat bertahan saat layar ditutup; direset saat logout |
+| SettingsCurrency | Fungsional (pen `TPJ9e`): pilih mata uang (IDR/USD/JPY) + format desimal 0/1/2 dengan contoh per opsi & pratinjau (`molecules/OptionRow`, `organisms/SettingsPanel`), disimpan di `settings` |
+| SettingsUserApproval (admin) | Fungsional (pen `DaxsW`): jumlah menunggu/aktif, daftar pendaftaran (menunggu di atas) + Aktifkan, pull-to-refresh |
+| SettingsErrorLog (admin) | Fungsional (pen `IMPbc`): cari (debounce 400 ms), filter environment, kartu error (Baru/environment, pesan mono, meta, stack trace bisa dibuka), hapus + konfirmasi. GET /errors menandai sudah dibaca, jadi kueri sama tidak diulang |
 
 ## Ukuran APK (R8, shrink, ABI)
 

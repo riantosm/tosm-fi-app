@@ -1,5 +1,5 @@
-import { StyleSheet, Text, type TextProps, type TextStyle } from 'react-native';
-import { colors } from '@/theme/colors';
+import { Text, type TextProps, type TextStyle } from 'react-native';
+import { makeStyles } from '@/theme/makeStyles';
 import { textStyles, type TextVariant } from '@/theme/typography';
 
 export type TypographyTone =
@@ -23,7 +23,9 @@ export interface TypographyProps extends TextProps {
   tabular?: boolean;
 }
 
-const toneStyles: Record<TypographyTone, TextStyle> = {
+const useStyles = makeStyles(({ colors }) => ({
+  base: { includeFontPadding: false },
+  tabular: { fontVariant: ['tabular-nums'] },
   default: { color: colors.text },
   muted: { color: colors.text2 },
   subtle: { color: colors.text3 },
@@ -34,7 +36,7 @@ const toneStyles: Record<TypographyTone, TextStyle> = {
   inverse: { color: colors.primaryFg },
   hero: { color: colors.heroFg },
   heroMuted: { color: colors.heroFg2 },
-};
+}));
 
 export default function Typography({
   variant = 'body',
@@ -44,12 +46,13 @@ export default function Typography({
   style,
   ...rest
 }: TypographyProps) {
+  const styles = useStyles();
   return (
     <Text
       style={[
         styles.base,
         textStyles[variant],
-        toneStyles[tone],
+        styles[tone],
         align && { textAlign: align },
         tabular && styles.tabular,
         style,
@@ -58,8 +61,3 @@ export default function Typography({
     />
   );
 }
-
-const styles = StyleSheet.create({
-  base: { includeFontPadding: false },
-  tabular: { fontVariant: ['tabular-nums'] },
-});

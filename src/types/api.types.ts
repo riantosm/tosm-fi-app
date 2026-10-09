@@ -5,3 +5,6 @@ export interface ApiResponse<T> {
   isSuccess: boolean;
   status: number;
 }
+
+/** Status muat data slice: `idle` = belum pernah dimuat. */
+export type LoadStatus = 'idle' | 'loading' | 'loaded';

@@ -1,12 +1,12 @@
 import type { ReactNode } from 'react';
-import { Modal, StyleSheet, View } from 'react-native';
+import { Modal, View } from 'react-native';
 import { MotiView } from 'moti';
 import Button from '@/components/atoms/Button';
 import Typography from '@/components/atoms/Typography';
-import { colors } from '@/theme/colors';
+import { makeStyles } from '@/theme/makeStyles';
 import { radius, spacing } from '@/theme/metrics';
-import { shadows } from '@/theme/shadows';
 import { transitions } from '@/utils/motion';
+import { useTheme } from '@/contexts/ThemeContext';
 
 export type ConfirmTone = 'danger' | 'primary';
 
@@ -24,10 +24,39 @@ export interface ConfirmDialogProps {
   onCancel: () => void;
 }
 
-const toneConfig: Record<ConfirmTone, { soft: string; text: string }> = {
-  danger: { soft: colors.expenseSoft, text: colors.expenseText },
-  primary: { soft: colors.primarySoft, text: colors.primaryText },
-};
+const useStyles = makeStyles(({ colors, shadows }) => ({
+  backdrop: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: spacing.xxl,
+    backgroundColor: colors.scrim,
+  },
+  card: {
+    width: '100%',
+    maxWidth: 360,
+    alignItems: 'center',
+    gap: spacing.md,
+    padding: spacing.xxl,
+    borderRadius: radius.sheet,
+    backgroundColor: colors.surface,
+    ...shadows.pop,
+  },
+  iconWrap: {
+    width: 56,
+    height: 56,
+    borderRadius: radius.pill,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  actions: {
+    flexDirection: 'row',
+    gap: 10,
+    alignSelf: 'stretch',
+    marginTop: spacing.sm,
+  },
+  action: { flex: 1 },
+}));
 
 /** Dialog konfirmasi di TENGAH (hapus, keluar, reset), bukan bottom sheet. */
 export default function ConfirmDialog({
@@ -42,7 +71,9 @@ export default function ConfirmDialog({
   onConfirm,
   onCancel,
 }: ConfirmDialogProps) {
-  const { soft, text } = toneConfig[tone];
+  const styles = useStyles();
+  const { tones } = useTheme();
+  const { soft, text } = tones[tone === 'danger' ? 'expense' : 'primary'];
   return (
     <Modal
       transparent
@@ -90,37 +121,3 @@ export default function ConfirmDialog({
     </Modal>
   );
 }
-
-const styles = StyleSheet.create({
-  backdrop: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: spacing.xxl,
-    backgroundColor: colors.scrim,
-  },
-  card: {
-    width: '100%',
-    maxWidth: 360,
-    alignItems: 'center',
-    gap: spacing.md,
-    padding: spacing.xxl,
-    borderRadius: radius.sheet,
-    backgroundColor: colors.surface,
-    ...shadows.pop,
-  },
-  iconWrap: {
-    width: 56,
-    height: 56,
-    borderRadius: radius.pill,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  actions: {
-    flexDirection: 'row',
-    gap: 10,
-    alignSelf: 'stretch',
-    marginTop: spacing.sm,
-  },
-  action: { flex: 1 },
-});

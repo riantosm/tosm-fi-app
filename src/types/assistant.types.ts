@@ -79,3 +79,40 @@ export interface AssistantCommitResult {
   transactions: Transaction[];
   investmentTransactions: InvestmentTransaction[];
 }
+
+/** Satu entri percakapan Catat cepat (state lokal app, tidak dikirim apa adanya ke server). */
+export type AssistantMessage =
+  | {
+      id: string;
+      role: 'user';
+      /** Yang tampil di bubble. */
+      text: string;
+      /** Yang dikirim ke asisten kalau beda dari `text` (mis. tanggal terpilih). */
+      payload?: string;
+      failed?: boolean;
+    }
+  | {
+      id: string;
+      role: 'assistant';
+      kind: 'text';
+      text: string;
+      quickReplies?: AssistantQuickReply[];
+    }
+  | {
+      id: string;
+      role: 'assistant';
+      kind: 'preview';
+      text: string;
+      drafts: AssistantDraft[];
+      status: 'pending' | 'saving' | 'saved' | 'cancelled' | 'replaced';
+      revised?: boolean;
+      savedAt?: string;
+    }
+  | { id: string; role: 'assistant'; kind: 'success'; count: number }
+  | {
+      id: string;
+      role: 'assistant';
+      kind: 'error';
+      error: AssistantErrorKind;
+      retryText: string;
+    };

@@ -23,7 +23,8 @@
     "moveUp": "Move up",
     "moveDown": "Move down",
     "more": "More",
-    "loading": "Loading…"
+    "loading": "Loading…",
+    "pressBackAgainToExit": "Press back again to exit"
   },
   "errorBoundary": {
     "title": "Oops, something went wrong",
@@ -223,7 +224,10 @@
     "roleLabel": "Role"
   },
   "theme": {
-    "toggle": "Toggle theme"
+    "toggle": "Toggle theme",
+    "light": "Light",
+    "dark": "Dark",
+    "system": "Follow system"
   },
   "settingsMenu": {
     "userApproval": {
@@ -401,7 +405,7 @@
       "food": "Food",
       "restaurant": "Restaurant",
       "cutlery": "Cutlery",
-      "cafe": "Cafe",
+      "cafe": "Coffee & cafe",
       "bakery": "Bakery",
       "pizza": "Pizza",
       "dessert": "Dessert",
@@ -647,6 +651,7 @@
     "profitLossNoChange": "Enter this account's latest value",
     "profitLossSubtitle": "Record profit/loss from the latest value",
     "recordedValue": "Recorded value {{amount}}",
+    "recordedValueOn": "Value on {{date}}: {{amount}}",
     "remainingAfterWithdraw": "Value left after withdrawal: {{amount}}",
     "save": "Save",
     "saveValue": "Save value",
@@ -761,6 +766,9 @@
     "filterType": "Type",
     "filterCategory": "Category",
     "filterSubCategory": "Subcategory",
+    "filterTitle": "Filter",
+    "filterAllDates": "All dates this month",
+    "filterSubtitle": "Wallet, type, category, date and sort order",
     "allWallets": "All wallets",
     "allTypes": "All types",
     "allCategories": "All categories",
@@ -853,7 +861,12 @@
     "previewDaily": "A bill shows up every day on the Dashboard & Transactions to be paid.",
     "previewWeekly": "A bill shows up every {{days}} on the Dashboard & Transactions to be paid.",
     "previewMonthly": "A bill shows up on day {{day}} of every month on the Dashboard & Transactions to be paid.",
-    "previewYearly": "A bill shows up every {{date}} on the Dashboard & Transactions to be paid."
+    "previewYearly": "A bill shows up every {{date}} on the Dashboard & Transactions to be paid.",
+    "listAnd": "and",
+    "reminderTitleExpense": "Bill due today",
+    "reminderTitleIncome": "Scheduled income today",
+    "reminderBody": "{{title}} · {{amount}}. Open TosmFi to record it.",
+    "reminderNote": "A reminder notification appears at 08:00 on the due date."
   },
   "budget": {
     "genericError": "Something went wrong, please try again.",
@@ -947,6 +960,12 @@
       "netCashFlow": "Net Cash Flow",
       "transactionCount": "Transaction Count",
       "previousPeriod": "vs previous period"
+    },
+    "summaryShort": {
+      "totalIncome": "Income",
+      "totalExpense": "Expense",
+      "netCashFlow": "Net Flow",
+      "transactionCount": "Transactions"
     },
     "cashFlow": {
       "title": "Cash Flow",

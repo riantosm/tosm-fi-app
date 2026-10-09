@@ -1,4 +1,4 @@
-import { StyleSheet, View, type ViewStyle } from 'react-native';
+import { View } from 'react-native';
 import {
   CircleAlert,
   CircleCheck,
@@ -6,7 +6,8 @@ import {
   TriangleAlert,
 } from 'lucide-react-native';
 import Typography, { type TypographyTone } from '@/components/atoms/Typography';
-import { colors } from '@/theme/colors';
+import { useTheme } from '@/contexts/ThemeContext';
+import { makeStyles } from '@/theme/makeStyles';
 import { radius, spacing } from '@/theme/metrics';
 
 export type BannerTone = 'error' | 'warning' | 'info' | 'success';
@@ -17,49 +18,70 @@ export interface BannerProps {
   message?: string;
 }
 
-const toneConfig: Record<
-  BannerTone,
-  { box: ViewStyle; Icon: typeof Info; color: string; title: TypographyTone }
-> = {
-  error: {
-    box: { backgroundColor: colors.expenseSoft },
-    Icon: CircleAlert,
-    color: colors.expenseText,
-    title: 'expense',
-  },
-  warning: {
-    box: { backgroundColor: colors.warningSoft },
-    Icon: TriangleAlert,
-    color: colors.warningText,
-    title: 'investment',
-  },
-  info: {
-    box: { backgroundColor: colors.primarySoft },
-    Icon: Info,
-    color: colors.primaryText,
-    title: 'primary',
-  },
-  success: {
-    box: { backgroundColor: colors.incomeSoft },
-    Icon: CircleCheck,
-    color: colors.incomeText,
-    title: 'income',
-  },
+const ICONS: Record<BannerTone, typeof Info> = {
+  error: CircleAlert,
+  warning: TriangleAlert,
+  info: Info,
+  success: CircleCheck,
 };
+
+const TITLE_TONE: Record<BannerTone, TypographyTone> = {
+  error: 'expense',
+  warning: 'investment',
+  info: 'primary',
+  success: 'income',
+};
+
+const useStyles = makeStyles(({ colors }) => ({
+  base: {
+    flexDirection: 'row',
+    gap: spacing.md,
+    paddingVertical: spacing.md,
+    paddingHorizontal: 14,
+    borderRadius: radius.field,
+  },
+  error: { backgroundColor: colors.expenseSoft },
+  warning: { backgroundColor: colors.warningSoft },
+  info: { backgroundColor: colors.primarySoft },
+  success: { backgroundColor: colors.incomeSoft },
+  iconWrap: {
+    width: 28,
+    height: 28,
+    borderRadius: radius.pill,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: colors.surface,
+  },
+  texts: { flex: 1, gap: spacing.xxs, justifyContent: 'center' },
+  title: { fontSize: 13.5 },
+}));
 
 /** Pesan inline (error login, info persetujuan, dll.). */
 export default function Banner({ tone, title, message }: BannerProps) {
-  const { box, Icon, color, title: titleTone } = toneConfig[tone];
+  const styles = useStyles();
+  const { colors } = useTheme();
+  const Icon = ICONS[tone];
+  const iconColor = {
+    error: colors.expenseText,
+    warning: colors.warningText,
+    info: colors.primaryText,
+    success: colors.incomeText,
+  }[tone];
+
   return (
     <View
       accessibilityRole={tone === 'error' ? 'alert' : undefined}
-      style={[styles.base, box]}
+      style={[styles.base, styles[tone]]}
     >
       <View style={styles.iconWrap}>
-        <Icon size={16} color={color} />
+        <Icon size={16} color={iconColor} />
       </View>
       <View style={styles.texts}>
-        <Typography variant="label" tone={titleTone} style={styles.title}>
+        <Typography
+          variant="label"
+          tone={TITLE_TONE[tone]}
+          style={styles.title}
+        >
           {title}
         </Typography>
         {!!message && (
@@ -71,23 +93,3 @@ export default function Banner({ tone, title, message }: BannerProps) {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  base: {
-    flexDirection: 'row',
-    gap: spacing.md,
-    paddingVertical: spacing.md,
-    paddingHorizontal: 14,
-    borderRadius: radius.field,
-  },
-  iconWrap: {
-    width: 28,
-    height: 28,
-    borderRadius: radius.pill,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: colors.surface,
-  },
-  texts: { flex: 1, gap: spacing.xxs, justifyContent: 'center' },
-  title: { fontSize: 13.5 },
-});

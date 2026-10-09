@@ -1,9 +1,10 @@
 import { forwardRef, useState, type ComponentRef, type ReactNode } from 'react';
-import { StyleSheet, TextInput, View, type TextInputProps } from 'react-native';
+import { TextInput, View, type TextInputProps } from 'react-native';
 import { Eye, EyeOff } from 'lucide-react-native';
 import PressableScale from '@/components/atoms/PressableScale';
 import Typography from '@/components/atoms/Typography';
-import { colors } from '@/theme/colors';
+import { useTheme } from '@/contexts/ThemeContext';
+import { makeStyles } from '@/theme/makeStyles';
 import { radius, spacing } from '@/theme/metrics';
 import { textStyles } from '@/theme/typography';
 
@@ -20,7 +21,40 @@ export interface TextFieldProps extends TextInputProps {
   /** Tampilkan tombol lihat/sembunyikan untuk input password. */
   secureToggle?: boolean;
   toggleLabels?: { show: string; hide: string };
+  /** Elemen di ujung kanan field (mis. tombol kalkulator). */
+  renderTrailing?: () => ReactNode;
 }
+
+const useStyles = makeStyles(({ colors }) => ({
+  wrapper: { gap: spacing.sm },
+  box: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.md,
+    height: 52,
+    paddingHorizontal: spacing.lg,
+    borderRadius: radius.field,
+    borderWidth: 1,
+  },
+  boxMultiline: {
+    height: undefined,
+    minHeight: 72,
+    alignItems: 'flex-start',
+    paddingVertical: 14,
+  },
+  outlined: { backgroundColor: colors.surface, borderColor: colors.border },
+  filled: { backgroundColor: colors.surface2, borderColor: colors.surface2 },
+  focused: { borderColor: colors.primary },
+  error: { borderColor: colors.expense },
+  input: {
+    ...textStyles.body,
+    flex: 1,
+    height: '100%',
+    paddingVertical: 0,
+    color: colors.text,
+  },
+  inputMultiline: { height: undefined, minHeight: 44 },
+}));
 
 const TextField = forwardRef<ComponentRef<typeof TextInput>, TextFieldProps>(
   function TextFieldRender(
@@ -32,6 +66,7 @@ const TextField = forwardRef<ComponentRef<typeof TextInput>, TextFieldProps>(
       error,
       secureToggle = false,
       toggleLabels,
+      renderTrailing,
       style,
       onFocus,
       onBlur,
@@ -39,6 +74,8 @@ const TextField = forwardRef<ComponentRef<typeof TextInput>, TextFieldProps>(
     },
     ref,
   ) {
+    const styles = useStyles();
+    const { colors } = useTheme();
     const [focused, setFocused] = useState(false);
     const [hidden, setHidden] = useState(true);
     const ToggleIcon = hidden ? Eye : EyeOff;
@@ -51,6 +88,7 @@ const TextField = forwardRef<ComponentRef<typeof TextInput>, TextFieldProps>(
         <View
           style={[
             styles.box,
+            rest.multiline && styles.boxMultiline,
             variant === 'filled' ? styles.filled : styles.outlined,
             focused && styles.focused,
             !!error && styles.error,
@@ -60,9 +98,15 @@ const TextField = forwardRef<ComponentRef<typeof TextInput>, TextFieldProps>(
           <TextInput
             ref={ref}
             placeholderTextColor={colors.text3}
+            selectionColor={colors.primary}
             secureTextEntry={secureToggle && hidden}
             autoCapitalize="none"
-            style={[styles.input, style]}
+            style={[
+              styles.input,
+              rest.multiline && styles.inputMultiline,
+              style,
+            ]}
+            textAlignVertical={rest.multiline ? 'top' : 'center'}
             {...rest}
             onFocus={event => {
               setFocused(true);
@@ -85,6 +129,7 @@ const TextField = forwardRef<ComponentRef<typeof TextInput>, TextFieldProps>(
               <ToggleIcon size={18} color={colors.text3} />
             </PressableScale>
           )}
+          {renderTrailing?.()}
         </View>
         {!!(error || helper) && (
           <Typography variant="caption" tone={error ? 'expense' : 'subtle'}>
@@ -97,27 +142,3 @@ const TextField = forwardRef<ComponentRef<typeof TextInput>, TextFieldProps>(
 );
 
 export default TextField;
-
-const styles = StyleSheet.create({
-  wrapper: { gap: spacing.sm },
-  box: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: spacing.md,
-    height: 52,
-    paddingHorizontal: spacing.lg,
-    borderRadius: radius.field,
-    borderWidth: 1,
-  },
-  outlined: { backgroundColor: colors.surface, borderColor: colors.border },
-  filled: { backgroundColor: colors.surface2, borderColor: colors.surface2 },
-  focused: { borderColor: colors.primary },
-  error: { borderColor: colors.expense },
-  input: {
-    ...textStyles.body,
-    flex: 1,
-    height: '100%',
-    paddingVertical: 0,
-    color: colors.text,
-  },
-});

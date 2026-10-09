@@ -7,10 +7,12 @@ import PressableScale from '@/components/atoms/PressableScale';
 import Typography from '@/components/atoms/Typography';
 import Banner from '@/components/molecules/Banner';
 import TextField from '@/components/molecules/TextField';
+import ThemeToggleButton from '@/components/molecules/ThemeToggleButton';
 import StatusModal from '@/components/organisms/StatusModal';
 import AuthLayout from '@/components/templates/AuthLayout';
 import { useAuth } from '@/hooks/useAuth';
 import { useLanguagePicker } from '@/hooks/useLanguagePicker';
+import { useThemePreference } from '@/hooks/useThemePreference';
 import { ROUTES } from '@/navigation/paths';
 import type { RootStackScreenProps } from '@/navigation/types';
 
@@ -22,6 +24,7 @@ export default function RegisterScreen({
   const usernameRef = useRef<ComponentRef<typeof TextInput>>(null);
   const passwordRef = useRef<ComponentRef<typeof TextInput>>(null);
   const language = useLanguagePicker();
+  const { isDark, toggle: toggleTheme } = useThemePreference();
 
   const [nameUser, setNameUser] = useState('');
   const [username, setUsername] = useState('');
@@ -62,6 +65,13 @@ export default function RegisterScreen({
       title={t('auth.registerTitle')}
       subtitle={t('auth.registerSubtitle')}
       bottom={language.trigger}
+      headerRight={
+        <ThemeToggleButton
+          isDark={isDark}
+          label={t('theme.toggle')}
+          onToggle={toggleTheme}
+        />
+      }
       footer={
         <>
           <Typography tone="muted">{t('auth.alreadyHaveAccount')}</Typography>

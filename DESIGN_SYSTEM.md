@@ -261,25 +261,34 @@ pertama kali dibutuhkan, mengikuti spesifikasinya di sini.
 |---|---|---|
 | 6.1 | Button | `atoms/Button` |
 | 6.2 | IconButton | `atoms/IconButton` |
-| 6.3 | Chip / Chip Active / Chip outline | `atoms/Chip` *belum* |
+| 6.3 | Chip / Chip Active / Chip outline | `atoms/Chip` (`soft` / `surface` / `outline`) |
 | 6.4 | Badge | `atoms/Badge` |
 | 6.5 | SegmentedControl | `molecules/SegmentedControl` |
-| 6.6 | Field / Textarea / PickerField | `molecules/TextField` (`outlined`/`filled`); Textarea & PickerField *belum* |
-| 6.7 | Checkbox | `atoms/Checkbox` *belum* |
+| 6.6 | Field / Textarea / PickerField | `molecules/TextField` (`outlined`/`filled`, `multiline`), `molecules/PickerField`, `molecules/SearchField` |
+| 6.7 | Checkbox | `atoms/Checkbox` |
 | 6.8 | LogoMark / Avatar | `atoms/LogoMark`, `atoms/Avatar` |
 | 6.9 | Banner | `molecules/Banner` |
-| 6.10 | Card + SectionHead | `molecules/Card`; `molecules/SectionHead` *belum* |
-| 6.11 | TxRow | `molecules/TxRow` *belum* |
+| 6.10 | Card + SectionHead | `molecules/Card`, `molecules/SectionHead` |
+| 6.11 | TxRow | `molecules/TxRow` (+ `TransactionRow`, `TransferRow`, `ScheduledTransactionRow`), `organisms/TransactionList` |
 | 6.12 | MenuRow / MenuGroup | `molecules/MenuRow`, `molecules/MenuGroup` |
-| 6.13 | AmountCard + Keypad | `molecules/AmountCard`, `molecules/Keypad` *belum* |
+| 6.13 | AmountCard + Keypad | `molecules/AmountCard`, `molecules/Keypad`, `organisms/AmountCalculatorSheet` |
 | 6.14 | Sheet Lainnya | `navigation/MoreMenuSheet.tsx` (+ `molecules/MenuTile`, `organisms/BottomSheet`) |
 | 6.15 | EmptyState / Loading / Error | `molecules/EmptyState`, … |
+| 6.16 | Dompet: WalletTile, ColorPicker, ReorderRow | `atoms/WalletTile`, `atoms/ColorWheel`, `organisms/ColorPicker` (+ `CustomColorSheet`), `organisms/ReorderList` |
+| 6.23 | Pengaturan, Profil, Admin, sheet Filter Transaksi | `organisms/SettingsPanel`, `molecules/OptionRow`, `screens/Transactions/FilterSheet` |
+| 6.22 | Catat cepat (AI): bubble, quick reply, preview card, banner error | `atoms/AiMark`, `screens/QuickAdd/*` |
+| 6.21 | Laporan: strip periode, kartu ringkasan, cash flow, tren bulanan | `screens/Reports/*`, `SegmentedControl` varian `solid`, `EmptyState` varian `inset`, `utils/chart.ts` |
+| 6.20 | Investasi: grafik area, pil P/L, kartu akun | `molecules/AreaChart`, `molecules/ProfitLossPill`, `molecules/InvestmentAccountSummary`, `molecules/AmountField`, `organisms/InvestmentTransactionList`, `screens/InstrumentDetail/AccountCard` |
+| 6.19 | Budget: tile, pil persen, bar bulanan | `atoms/BudgetTile`, `molecules/BudgetPercentBadge`, `molecules/BudgetProgressBar`, `organisms/SelectCategoriesSheet` |
+| 6.18 | Jadwal: ringkasan, kartu jadwal, pilih hari | `screens/Schedule/ScheduleSummary`, `screens/Schedule/ScheduleCard`, `screens/ScheduleForm` |
+| 6.17 | Kategori: CategoryIcon, pill subkategori, pilih ikon, menu aksi | `atoms/CategoryIcon`, `screens/Categories/SubCategoryPills`, `organisms/CategoryIconSheet`, `organisms/CategoryFormSheet`, `organisms/SubCategoryFormSheet`, `organisms/ActionSheet` |
 
 ### 6.1 Button
 
 - Bentuk **pill**, dengan isi ikon 17 + label Inter 14/600 berjarak 8.
-- Tinggi: **50** di footer sheet, **52** untuk submit auth, dan 44 di dalam kartu (misalnya
-  Bayar/Batalkan di baris jadwal). Padding horizontal 18.
+- Tinggi: **50** di footer sheet, **52** untuk submit auth, 44 di dalam kartu (misalnya
+  Bayar/Batalkan di baris jadwal), dan 36 (`sm`, padding 14) untuk aksi app bar seperti
+  Batal/Simpan di mode atur urutan. Padding horizontal 18.
 
 | Varian | Latar | Teks/ikon | Stroke |
 |---|---|---|---|
@@ -431,7 +440,8 @@ Bottom sheet dengan padding `12 16 34 16` dan jarak 14. Isinya dari atas:
    Dompet, Kategori, Jadwal, Budget, Laporan, Pengaturan.
 4. **Dua kotak berdampingan**: tema (ikon + segmented ☀/☾) dan bahasa (ikon `languages` + segmented
    ID/EN/JP).
-5. **Keluar**: Button `dangerSoft` lebar penuh dengan ikon `log-out`.
+
+Tombol **Keluar** sengaja tidak ada di sheet ini; logout hanya di halaman Profil (Edit Profil).
 
 ### 6.15 Status layar
 
@@ -441,6 +451,171 @@ Bottom sheet dengan padding `12 16 34 16` dan jarak 14. Isinya dari atas:
 - **Loading**: skeleton berbentuk konten (diutamakan), atau loader brand (LogoMark di dalam cincin
   berputar + "Memuat…").
 - **Error**: Banner `error` untuk error di dalam layar. Feedback sesaat memakai toast atau StatusModal.
+
+### 6.16 Dompet (WalletTile, ColorPicker, ReorderRow)
+
+- **WalletTile**: tile 40 radius 12 (38 di baris list, 44 radius 14 di pratinjau), latar
+  `${warna}26` dengan ikon `wallet` 45% sisi berwarna penuh. Di atas kotak berwarna (`${warna}1F`)
+  latar tile menjadi `surface`.
+- **Kartu dompet** (grid): `surface`, radius 20, padding 20, stroke 1.5 `primary` untuk dompet utama
+  (transparan untuk lainnya). Atas: tile + nama 14/600 + Badge "Utama" + "n transaksi", persen
+  di kanan. Bawah: "IDR" 13 `text3` + angka Outfit 24/600.
+- **Baris dompet** (list, di dalam Card list): tile 38, nama + badge, "n transaksi · p%", angka
+  Outfit 14/600 di kanan. Pemisah garis 1 `border`; baris terakhir "+ Tambah dompet" `primaryText`.
+- **Ringkasan Dompet**: gradien hero, radius 24, padding 20. "Total saldo · n dompet" 13
+  `heroFg2`, "IDR" 17 + angka 34, lalu bar porsi bertumpuk tinggi 10, celah 3, ujung pill.
+- **ColorPicker**: 9 swatch preset bulat 26 di slot 32 + pipet (latar `surface2`, stroke `border`).
+  Terpilih: lingkaran 20 dengan cincin 2 berwarna sama. Warna custom terpilih menggantikan ikon pipet.
+- **Warna custom** (sheet bertingkat, tombol kembali): cincin hue 240 tebal 24 (tampil pastel),
+  persegi saturasi/kecerahan di tengah, swatch 52 + field "Kode hex", footer Batal / Pakai warna.
+- **ReorderRow**: `surface`, radius 16, stroke 1.5 (`primary` untuk baris yang terakhir dipindah),
+  grip ⠿ `text3`, isi (tile + nama), dua IconButton 34 `surface2` naik/turun (disabled opacity 0.4).
+  Di atas daftar ada petunjuk `primarySoft` + ikon info. Baris yang diseret sedikit membesar (1.02)
+  dengan bayangan `pop`; baris lain bergeser dengan spring.
+
+### 6.17 Kategori
+
+- **CategoryIcon**: lingkaran `${warna}26` dengan ikon berwarna penuh (≈45% diameter). Ukuran 44
+  (kartu), 40 (atur urutan), 32 (baris subkategori), 52 + garis 1.5 (tombol pilih ikon).
+- **Kartu kategori**: Card default. Kepala: ikon 44, nama 15/600, Badge jenis (`expense`/`income`)
+  + "n trx" 12.5 `text3`, tombol ⋮ ghost 34. Bawah: satu baris pill subkategori.
+- **Pill subkategori**: tinggi 32, pill, garis `${warna}59`, latar `${warna}14`, ikon 14 berwarna +
+  nama 12.5. Pill yang tidak muat diganti "+N" (`surface2`); diakhiri tombol "+" bulat 32 bergaris
+  `border`.
+- **Menu ⋮** (HP): ActionSheet berjudul nama kategori, baris aksi tinggi 52 radius 14 (`surface2`;
+  hapus memakai `expenseSoft` + `expenseText`).
+- **Form kategori**: SegmentedControl jenis (teks aktif `expenseText`/`incomeText`), kolom "Ikon" +
+  field nama berdampingan, ColorPicker, lalu (edit) "Subkategori · n" + daftar ReorderList `inset`
+  (seret grip, tanpa panah; tersimpan saat dilepas) dan tombol soft "Tambah subkategori".
+- **Pilih ikon**: sheet bertingkat, SearchField, judul grup eyebrow, grid 8 kolom tile persegi radius
+  12 `surface2`; terpilih: latar `${warna}26` + garis warna. Grid dirender sesaat setelah sheet
+  tampil supaya sheet langsung muncul.
+- **Pemilih kategori/subkategori** (form transaksi): tile "Baru" (lingkaran `surface2` bergaris +
+  `plus`) di akhir grid dan tombol soft "Subkategori baru" di footer.
+
+### 6.18 Jadwal
+
+- **Ringkasan**: kartu gradien hero radius 20 (ikon `calendar-clock` `investmentText` di lingkaran
+  `surface` 44, "Jatuh tempo berikutnya" 12.5 `heroFg2`, "Judul · kapan" Outfit 15.5, nominal di
+  kanan) + dua kartu kecil `surface` radius 14 (label 12 `text3`, nilai ringkas Outfit 17
+  `expenseText`/`incomeText`).
+- **Seksi**: eyebrow "AKTIF · n" / "DIJEDA · n".
+- **Kartu jadwal**: `surface`, radius 20, padding 16. Atas: CategoryIcon 44, judul 15/600 (+ Badge
+  "Dijeda"), ikon `repeat` + aturan ulang 12.5 `text2`, nominal bertanda di kanan. Garis pemisah.
+  Bawah: "Berikutnya: …" 13 `text2` + tiga IconButton 34 `surface2` (jeda/aktifkan, edit, hapus
+  `expenseText`). Jadwal dijeda: opacity 0.6.
+- **Form**: seperti Catat transaksi (jenis, AmountCard + kategori, judul, dompet), lalu
+  SegmentedControl "Ulangi" (teks aktif `primaryText`), deretan 7 lingkaran hari (terpilih `primary`),
+  PickerField "Mulai", kotak pratinjau `primarySoft` dengan ikon `bell-ring` + catatan pengingat
+  jam 08.00.
+
+### 6.19 Budget
+
+- **BudgetTile**: radius 14, `${warna}26`, ikon: `layers` (semua kategori), ikon kategori (satu),
+  `shapes` (beberapa). Di atas hero: latar `surface`.
+- **BudgetPercentBadge**: pil Outfit 13 — `surface2`/`text2` (<90%), `investmentSoft` (90–100%),
+  `expenseSoft` (lewat).
+- **BudgetProgressBar**: pil "Hari ini" 9.5 (latar `text`, teks `surface`) di atas track 8
+  (`surface2`), isian warna budget (atau `expense` saat lewat), garis 2 penanda hari ini. Versi hero:
+  track 12 `heroControl`, pil & garis `heroFg`.
+- **Kartu budget**: `surface`, radius 20, padding 16; stroke 1.5 `expense` saat lewat limit. Atas:
+  tile 40, nama 15/600, "IDR terpakai / limit" 12.5, ikon pin `investmentText` (kalau disematkan) +
+  pil persen. Bawah: bar, lalu "Sisa … · …/hari" atau "Lewat …" (`expenseText`).
+- **Detail**: hero gradien radius 28 (cakupan · bulan, angka Outfit 32, "dari … · n%", bar hero, tiga
+  stat `surface` radius 14). Kartu "Per kategori": banner teralokasi (`investmentSoft`, merah jika
+  lebih dari limit), baris kategori (titik 9, nama, terpakai/limit ringkas, chevron expand, bar 6 atau
+  "Belum ada limit · ketuk untuk mengatur"); baris expand berlatar `surface2` dengan subkategori.
+- **Atur limit**: kartu kategori `${warna}1F`, display kalkulator `surface2`, Keypad "Simpan limit".
+- **Pilih kategori (multi)**: grid 4 kolom tile `surface2` radius 12; terpilih `primarySoft` + stroke
+  `primary` + centang bulat `primary` di sudut ikon; tombol soft "Kategori baru"; footer
+  Batal / "Pilih n kategori".
+
+### 6.20 Investasi
+
+- **Hero**: gradien hero radius 24, "Nilai investasi saat ini" 12.5 `heroFg2`, "IDR" 15 + angka 34,
+  ProfitLossPill (`surface`, ikon tren + nominal + %) + "Modal x jt" 12, SegmentedControl varian
+  `hero` (track `heroControl`, thumb `surface`), grafik area 150 (`investment`, isian 40%, titik
+  ujung bercincin `surface`, grid tipis `heroFg2` 14%).
+- **AreaChart**: SVG, kurva monoton (tidak melewati titik data), satu sumbu Y bersama, isian gradien
+  per seri, label sumbu X ≥ 54 px antar label (label terakhir diutamakan). Satu titik → garis datar.
+- **Baris instrumen**: Monogram solid kotak 38, nama 14/600 + "n akun", sparkline 64×28 (garis
+  saja), nilai Outfit 14.5 + "▲ 5,8%" (pil tanpa latar). Diakhiri "+ Tambah instrumen".
+- **Ledger**: TxRow — top up (`income`, ↙), tarik (`expense`, ↗), transfer (`primary`, ⇄), update nilai
+  (`investment`, ⤭). Header hari "Hari ini · 8 Okt". Chip tipe Semua/Masuk/Keluar/Transfer/P/L.
+- **Detail instrumen**: kartu ringkasan (nilai 30, pil P/L, kotak cakupan `primarySoft` + ikon
+  `layers`, legenda Nilai/Modal, grafik nilai vs modal abu-abu 55%, SegmentedControl Hari/Bulan/Tahun).
+  **Kartu akun**: monogram 34 + centang bulat di sudut (terpilih `primary`), garis 2 `primary` saat
+  dipilih, sparkline 56, tiga tombol pill 33 (Edit, Tarik `surface2`, P/L `primary`).
+- **Form uang**: InvestmentAccountSummary (`surface2` radius 18, tile `landmark` `primarySoft`, nilai
+  di kanan; versi pemicu pakai chevron). Update nilai: kotak nilai bergaris (fokus `primary`) dengan
+  input Outfit 34 di tengah + kotak selisih profit/rugi. Transfer: Dari/Ke + tombol tukar bulat
+  `primarySoft`, pratinjau "lama → baru" dua kolom.
+
+### 6.21 Laporan
+
+- **Strip periode**: SegmentedControl varian `solid` (track `surface` + bayangan card, thumb
+  `primary`, teks aktif `primaryFg`) Hari/Minggu/Bulan/Tahun + IconButton 46 `calendar-range`
+  (`surface`; latar `primarySoft` saat custom range aktif, thumb segmen disembunyikan). Custom range
+  memakai `DateRangeSheet`. Subjudul "1 – 31 Oktober 2026" ("Hari Ini · 8 Oktober 2026" untuk hari).
+- **Kartu ringkasan** 2 × 2: padding 14, tile 26 radius 8 (`*Soft`), label 12 `text2`, angka Outfit
+  20 ringkas ("18,5 jt"), chip perubahan 11/600 (`incomeSoft` naik baik, `expenseSoft` buruk,
+  `surface2` netral) dengan panah ↑/↓/–.
+- **Cash Flow**: legenda Masuk/Keluar bisa diketuk (sembunyikan seri, teks dicoret), grafik 200
+  (sumbu Y ringkas 40, grid `border`, `chart1`/`chart2` isian 32%, titik "hari ini" r5.5 bercincin
+  `surface`), ketuk grafik → garis vertikal + tooltip (`surface`, radius 12, bayangan pop),
+  SegmentedControl Kumulatif/Per Periode di bawah.
+- **Tren Bulanan**: 12 batang (radius atas 12, bawah 4) `expenseSoft`/`incomeSoft`, batang terpilih
+  solid `expense`/`income` + pill nilai (`text` di atas `surface`); default bulan berjalan, ketuk
+  batang lain untuk memilih. Label huruf awal bulan, yang terpilih 12/600 `text`.
+- **Top Pengeluaran**: badge 32 bulat, trofi untuk peringkat 1–3 (`investment`, `medalSilver`,
+  `medalBronze`), angka untuk sisanya (`surface2`); judul 14/600 + "8 Okt · Kategori · Sub", nominal
+  `expenseText`.
+- **Dompet Paling Aktif**: kotak `surface2` radius 12, titik warna dompet 10, nama + persen 14/600,
+  "n transaksi" 12 lebar 92 + bar 6 (`surface`, isian warna dompet tumbuh 700 ms).
+- **Kosong di dalam kartu**: `EmptyState variant="inset"` (kotak `surface2` radius 14 min 150, ikon 18
+  `text2` dalam lingkaran `surface` 40, teks 13 `text2`).
+
+### 6.22 Catat cepat (AI)
+
+- **Layar penuh** `surface`: header 64 bergaris bawah `border` (kembali 44, AiMark 36, "Catat cepat"
+  Outfit 17 + subjudul 12 `text3`, IconButton Catat manual & Mulai baru 44; Mulai baru redup bila
+  belum ada chat). Komposer: kotak pill `surface2` radius 24 min 48 (sparkles 18 `primaryText` +
+  input multi-baris maks 132) + tombol kirim bulat 48 (`primary` saat bisa kirim, `surface2` saat
+  kosong). Di Android tinggi keyboard ditambahkan sebagai padding bawah komposer.
+- **Bubble**: AI = AiMark 28 + bubble `surface2` radius 6/18/18/18 maks 92%; user = bubble `primary`
+  radius 18/6/18/18 rata kanan (indent kiri 40), teks `primaryFg`. Teks bubble diberi `paddingRight`
+  2 (pembulatan lebar teks Android). Mengetik = tiga titik 7 berdenyut.
+- **Awal percakapan**: "Contoh, tinggal tap:" + 5 QuickReply, kotak info `surface2` (ikon `info`),
+  kartu "Lebih suka isi form?" bergaris `border` → Catat manual.
+- **QuickReply**: pill tinggi 44 garis 1 `primary`, latar `surface`, teks 13.5/600 `primaryText`,
+  titik warna dompet 8 atau ikon kalender.
+- **PreviewCard**: `surface`, radius 20, garis 1 `border` (`expense` saat ada error), eyebrow
+  "PREVIEW" + judul 18; header hari (eyebrow + total hari), baris TxRow, angka tanpa simbol mata
+  uang; baris direvisi `primarySoft` + chip `surface` (ikon pensil, "lama → baru"); baris error garis
+  `expense` latar `expenseSoft` + pesan; footer: total (netto dompet), Batal (outline) / Simpan
+  (primary), petunjuk "atau ketik “catat”"; status akhir pill Tersimpan (`incomeSoft`), Dibatalkan /
+  Diperbarui di bawah (`surface2`, kartu lama redup 70%).
+- **Error**: banner `investmentSoft` (kuota, ikon jam pasir) / `expenseSoft` (koneksi, wifi-off) +
+  Coba lagi (primary sm) dan Catat manual (outline sm, kuota saja).
+
+### 6.23 Pengaturan, Profil, Admin
+
+- **SettingsPanel**: Card gap 16, kepala tile 36 radius 11 (`*Soft`, ikon 18 `*Text`) + judul Outfit 17
+  + subjudul 12.5 `text3`.
+- **OptionRow**: kotak `surface2` radius 12, garis 1.5 transparan (terpilih: `primary` + latar
+  `primarySoft`), tile 40 `surface` berisi glyph Outfit 15, judul 14/600 + contoh 12.5, radio 22
+  (terpilih: isi `primary` + centang).
+- **Identitas profil**: gradien hero radius 24, avatar 52 bercincin 2 `primary` di atas `surface`,
+  nama Outfit 17 `heroFg`, @username `heroFg2`, pill peran `surface` + `shield-check`.
+- **Zona Berbahaya**: kotak `expenseSoft` garis 1 `expense` radius 20, judul `triangle-alert` +
+  14/600 `expenseText`, tombol `danger` md.
+- **Log Error**: badge Baru (`primary`), environment (production `expenseSoft`, development
+  `investmentSoft`, titik 6), pesan monospace 13 `expenseText`, stack trace kotak `codeBg`/`codeFg`
+  radius 16 maks 256, tombol hapus bulat 32.
+- **Bottom nav**: pill `surface` + garis 1 `borderStrong` (supaya terpisah dari latar `bg`).
+- **Sheet Filter Transaksi**: seksi eyebrow (Dompet, Tipe, Kategori, Subkategori, Rentang tanggal,
+  Urutkan) berisi chip wrap; rentang tanggal = PickerField tanpa label → DateRangeSheet; footer
+  Reset (outline) / Terapkan (primary). Ikon Filter aktif: latar `primarySoft` + badge angka 16.
 
 ---
 
@@ -502,15 +677,24 @@ Durasi berada di 180–500 ms, dan animasi tidak boleh memblokir input. Hormati 
 
 ---
 
-## 10. Dark mode
+## 10. Dark mode & bahasa
 
-- Semua token di §2 punya nilai dark (pen: tema `mode: dark`). `darkColors` di `colors.ts` sudah
-  berisi nilai-nilai itu.
-- Toggle tema ada di sheet Lainnya (§6.14) dan di app bar Login. Saat diimplementasikan, komponen
-  harus membaca warna dari hook tema (misalnya `useThemeColors()`), bukan dari `colors` statis.
+- **Tema**: `contexts/ThemeContext.tsx` (`ThemeProvider`, `useTheme()`).
+  - Preferensi `settings.theme` (persisted): `system` (default, ikut HP), `light`, atau `dark`.
+  - Toggle ☀/☾ ada di sheet Lainnya (segmented) dan di header Login/Register (`ThemeToggleButton`).
+  - Memilih ☀/☾ menyimpan pilihan eksplisit.
+- **Cara pakai warna di kode**:
+  - Style dibuat dengan `makeStyles(({ colors, shadows }) => ({ … }))` dari `theme/makeStyles.ts`.
+    Hasilnya di-cache per skema.
+  - Warna dinamis (ikon, warna label) diambil dari `useTheme().colors`. Nada tile dari
+    `useTheme().tones`.
+  - `@/theme/colors` **tidak** mengekspor palet statis. Jangan menyimpan warna di `StyleSheet.create`
+    level modul.
+- **Bahasa**: id / en / jp lewat `useLanguage()`.
+  - Default mengikuti bahasa HP.
+  - Pilihan disimpan di `settings.language`.
+  - Pemilihnya ada di sheet Lainnya (ID/EN/JP) dan di pill bahasa layar auth.
 - Frame referensi dark: Dashboard HP `kUFIm`.
-
----
 
 ## 11. Status implementasi vs pen
 
@@ -533,17 +717,40 @@ Sudah sesuai pen (2026-10-08):
   - atoms: `IconButton`, `LogoMark`, `Avatar`, `Badge`, `Gradient`;
   - molecules: `Card`, `Banner`, `MenuGroup`, `MenuTile`, `SegmentedControl`, `LanguagePill`;
   - organisms: `BottomSheet`, `ConfirmDialog`, `LanguageSheet`.
+- **Dark/light mode** dengan `ThemeProvider` + `makeStyles` (§10), plus toggle di sheet Lainnya dan header auth.
+- **Animasi sheet**: `transitions.sheet` (timing 280 ms ease-out, tanpa pantulan). `pop` hanya untuk dialog tengah.
 - **Konvensi prop ikon**: fungsi render bernama `renderIcon`/`renderLeadingIcon` yang menerima warna
   (dan ukuran). Dengan begitu warna ikon selalu mengikuti varian komponen.
+
+- **Pengaturan & Profil** (2026-10-09): Edit Profil (info akun + konfirmasi, ubah password), Mata
+  Uang (OptionRow + pratinjau), Permintaan Pengguna, Log Error, Zona Berbahaya, badge pendaftaran.
+- **Transaksi** (2026-10-09): filter pindah ke sheet Filter (ikon `sliders-horizontal`, angka filter
+  aktif di pojok ikon); header hanya Cari + Filter.
+- **Catat cepat (AI)** (2026-10-09): chat, jawaban cepat, pilih tanggal, pratinjau + revisi +
+  validasi, simpan/batal, error kuota/koneksi, mulai baru, catat manual; percakapan bertahan saat
+  layar ditutup.
+- **Laporan** (2026-10-08): strip periode + custom range, ringkasan 2 × 2, cash flow (tooltip,
+  legenda, kumulatif/per periode), pengeluaran per kategori, tren 12 bulan, top pengeluaran, dompet
+  paling aktif. Export PDF/Excel/CSV belum (butuh library native penyimpan file).
+- **Investasi** (2026-10-08): tab (hero + grafik, instrumen, ledger), detail instrumen, form
+  instrumen/akun, tarik dana, update nilai, transfer, edit transaksi.
+- **Budget** (2026-10-08): daftar, detail + atur limit per kategori/subkategori, form
+  tambah/edit/hapus dengan multi-pilih kategori, pin ke Dashboard.
+- **Jadwal** (2026-10-08): halaman (ringkasan, seksi aktif/dijeda, jeda/edit/hapus, kosong), form
+  tambah/edit, dan pengingat notifikasi lokal jam 08.00.
+- **Kategori** (2026-10-08): halaman (tab jenis, kartu + pill, menu ⋮, atur urutan, kosong), form
+  kategori/subkategori, pilih ikon, dan "Baru" di pemilih kategori/subkategori.
+- **Dompet** (2026-10-08): halaman (grid/list, ringkasan, atur urutan seret/panah, kosong),
+  WalletForm (tambah/edit, warna preset + custom, utama, hapus), dan Koreksi saldo.
 
 Belum dikerjakan:
 
 | Area | Catatan |
 |---|---|
-| Dark mode | `darkColors` sudah ada; butuh hook tema + toggle (di sheet Lainnya dan app bar Login, sesuai pen) |
 | "Ingat saya" & "Lupa password?" (Login) | Ada di pen, tapi belum ada perilakunya (sesi selalu diingat, belum ada endpoint lupa password) |
-| Hero band Dashboard, grafik, TxRow, AmountCard, Keypad, Chip | Dibuat saat layar terkait di-port |
-| Badge jumlah baru di menu admin Pengaturan | Butuh data hitungan dari API |
+| Export laporan (PDF/Excel/CSV, pen `MVyzc`) | Butuh library native untuk menulis/membagikan file (+ rebuild) |
+| Badge "n baru" Log Error (pen `k0SKz`) | Web juga hanya menampilkan badge Permintaan Pengguna; jumlah error baru belum ada endpoint-nya |
+| Menu "Backend API" Pengaturan | Dokumentasi developer khusus web, sengaja tidak dibawa |
 
 ## 12. Indeks frame pen (HP)
 

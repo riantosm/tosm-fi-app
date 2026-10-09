@@ -1,13 +1,17 @@
 import notifee, {
+  AlarmType,
   AndroidImportance,
   AuthorizationStatus,
   TriggerType,
 } from '@notifee/react-native';
 
 /**
- * Notifikasi LOKAL untuk pengingat Jadwal (tanpa Firebase / push server).
- * Belum disambungkan ke UI; dipakai saat layar Jadwal di-port.
+ * Notifikasi LOKAL untuk pengingat Jadwal (tanpa Firebase / push server). Disinkronkan oleh
+ * `hooks/useScheduleReminders` setiap daftar jadwal berubah.
  */
+
+/** Prefix id notifikasi pengingat jadwal (`schedule-<idSchedule>`). */
+export const SCHEDULE_REMINDER_PREFIX = 'schedule-';
 
 const CHANNEL_ID = 'schedule-reminder';
 
@@ -55,13 +59,32 @@ export async function scheduleReminder({
     {
       type: TriggerType.TIMESTAMP,
       timestamp: date.getTime(),
-      alarmManager: { allowWhileIdle: true },
+      // Tidak butuh izin exact alarm (Android 14 menolaknya secara default); meleset beberapa
+      // menit tidak masalah untuk pengingat harian.
+      alarmManager: { type: AlarmType.SET_AND_ALLOW_WHILE_IDLE },
     },
   );
 }
 
 export async function cancelReminder(id: string): Promise<void> {
   await notifee.cancelTriggerNotification(id);
+}
+
+/**
+ * Samakan pengingat terjadwal dengan daftar `reminders`: yang tidak ada lagi dibatalkan,
+ * sisanya dibuat/ditimpa (id sama).
+ */
+export async function syncScheduleReminders(
+  reminders: ScheduleReminderInput[],
+): Promise<void> {
+  const wanted = new Set(reminders.map(reminder => reminder.id));
+  const existing = await notifee.getTriggerNotificationIds();
+  await Promise.all(
+    existing
+      .filter(id => id.startsWith(SCHEDULE_REMINDER_PREFIX) && !wanted.has(id))
+      .map(id => notifee.cancelTriggerNotification(id)),
+  );
+  await Promise.all(reminders.map(scheduleReminder));
 }
 
 /** Dipanggil saat logout supaya pengingat akun sebelumnya tidak muncul. */

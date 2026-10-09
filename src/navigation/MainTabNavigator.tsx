@@ -16,7 +16,12 @@ const hideTabBar = () => null;
 export default function MainTabNavigator() {
   return (
     <Tab.Navigator
-      screenOptions={{ headerShown: false, animation: 'fade' }}
+      screenOptions={{
+        headerShown: false,
+        animation: 'fade',
+        // Tab yang tidak aktif tidak ikut dirender ulang (lihat enableFreeze di index.js).
+        freezeOnBlur: true,
+      }}
       tabBar={hideTabBar}
     >
       <Tab.Screen name={ROUTES.DASHBOARD} component={DashboardScreen} />

@@ -1,10 +1,11 @@
 import type { ReactNode } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { View } from 'react-native';
 import PressableScale from '@/components/atoms/PressableScale';
 import Typography from '@/components/atoms/Typography';
-import { colors } from '@/theme/colors';
+import { useTheme } from '@/contexts/ThemeContext';
+import { makeStyles } from '@/theme/makeStyles';
 import { radius, spacing } from '@/theme/metrics';
-import { toneColors, type Tone } from '@/theme/tones';
+import type { Tone } from '@/theme/tones';
 
 export interface MenuTileProps {
   label: string;
@@ -14,31 +15,7 @@ export interface MenuTileProps {
   onPress: () => void;
 }
 
-/** Tile grid menu (sheet Lainnya). */
-export default function MenuTile({
-  label,
-  renderIcon,
-  tone = 'primary',
-  onPress,
-}: MenuTileProps) {
-  const { soft, text } = toneColors[tone];
-  return (
-    <PressableScale
-      accessibilityRole="button"
-      onPress={onPress}
-      style={styles.tile}
-    >
-      <View style={[styles.iconWrap, { backgroundColor: soft }]}>
-        {renderIcon(text)}
-      </View>
-      <Typography variant="tileLabel" align="center" numberOfLines={1}>
-        {label}
-      </Typography>
-    </PressableScale>
-  );
-}
-
-const styles = StyleSheet.create({
+const useStyles = makeStyles(({ colors }) => ({
   tile: {
     flex: 1,
     alignItems: 'center',
@@ -55,4 +32,30 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-});
+}));
+
+/** Tile grid menu (sheet Lainnya). */
+export default function MenuTile({
+  label,
+  renderIcon,
+  tone = 'primary',
+  onPress,
+}: MenuTileProps) {
+  const styles = useStyles();
+  const { tones } = useTheme();
+  const { soft, text } = tones[tone];
+  return (
+    <PressableScale
+      accessibilityRole="button"
+      onPress={onPress}
+      style={styles.tile}
+    >
+      <View style={[styles.iconWrap, { backgroundColor: soft }]}>
+        {renderIcon(text)}
+      </View>
+      <Typography variant="tileLabel" align="center" numberOfLines={1}>
+        {label}
+      </Typography>
+    </PressableScale>
+  );
+}

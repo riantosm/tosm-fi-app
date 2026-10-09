@@ -1,16 +1,12 @@
 import type { ReactNode } from 'react';
-import {
-  ActivityIndicator,
-  StyleSheet,
-  View,
-  type TextStyle,
-  type ViewStyle,
-} from 'react-native';
+import { ActivityIndicator, View } from 'react-native';
 import PressableScale, {
   type PressableScaleProps,
 } from '@/components/atoms/PressableScale';
 import Typography from '@/components/atoms/Typography';
-import { colors } from '@/theme/colors';
+import { useTheme } from '@/contexts/ThemeContext';
+import type { ColorTokens } from '@/theme/colors';
+import { makeStyles } from '@/theme/makeStyles';
 import { radius, spacing } from '@/theme/metrics';
 
 export type ButtonVariant =
@@ -21,8 +17,8 @@ export type ButtonVariant =
   | 'danger'
   | 'dangerSoft';
 
-/** md 44 (dalam kartu) · lg 50 (footer sheet) · xl 52 (submit auth). */
-export type ButtonSize = 'md' | 'lg' | 'xl';
+/** sm 36 (aksi app bar) · md 44 (dalam kartu) · lg 50 (footer sheet) · xl 52 (submit auth). */
+export type ButtonSize = 'sm' | 'md' | 'lg' | 'xl';
 
 export interface ButtonProps extends Omit<PressableScaleProps, 'children'> {
   label: string;
@@ -33,7 +29,28 @@ export interface ButtonProps extends Omit<PressableScaleProps, 'children'> {
   renderIcon?: (color: string) => ReactNode;
 }
 
-const variantStyles: Record<ButtonVariant, ViewStyle> = {
+const labelColor = (colors: ColorTokens): Record<ButtonVariant, string> => ({
+  primary: colors.primaryFg,
+  soft: colors.primaryText,
+  outline: colors.text,
+  ghost: colors.primaryText,
+  danger: colors.onDanger,
+  dangerSoft: colors.expenseText,
+});
+
+const useStyles = makeStyles(({ colors }) => ({
+  base: {
+    borderRadius: radius.pill,
+    paddingHorizontal: 18,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  content: { flexDirection: 'row', alignItems: 'center', gap: spacing.sm },
+  disabled: { opacity: 0.55 },
+  sm: { minHeight: 36, paddingHorizontal: 14 },
+  md: { minHeight: 44 },
+  lg: { minHeight: 50 },
+  xl: { minHeight: 52 },
   primary: { backgroundColor: colors.primary },
   soft: { backgroundColor: colors.primarySoft },
   outline: {
@@ -44,22 +61,7 @@ const variantStyles: Record<ButtonVariant, ViewStyle> = {
   ghost: { backgroundColor: colors.transparent },
   danger: { backgroundColor: colors.expenseText },
   dangerSoft: { backgroundColor: colors.expenseSoft },
-};
-
-const labelColors: Record<ButtonVariant, string> = {
-  primary: colors.primaryFg,
-  soft: colors.primaryText,
-  outline: colors.text,
-  ghost: colors.primaryText,
-  danger: colors.onDanger,
-  dangerSoft: colors.expenseText,
-};
-
-const sizeStyles: Record<ButtonSize, ViewStyle> = {
-  md: { minHeight: 44 },
-  lg: { minHeight: 50 },
-  xl: { minHeight: 52 },
-};
+}));
 
 export default function Button({
   label,
@@ -71,9 +73,10 @@ export default function Button({
   style,
   ...rest
 }: ButtonProps) {
+  const styles = useStyles();
+  const { colors } = useTheme();
   const isDisabled = disabled || loading;
-  const color = labelColors[variant];
-  const labelStyle: TextStyle = { color };
+  const color = labelColor(colors)[variant];
 
   return (
     <PressableScale
@@ -82,8 +85,8 @@ export default function Button({
       disabled={isDisabled}
       style={[
         styles.base,
-        variantStyles[variant],
-        sizeStyles[size],
+        styles[variant],
+        styles[size],
         isDisabled && styles.disabled,
         style,
       ]}
@@ -94,7 +97,7 @@ export default function Button({
       ) : (
         <View style={styles.content}>
           {renderIcon?.(color)}
-          <Typography variant="label" style={labelStyle} numberOfLines={1}>
+          <Typography variant="label" style={{ color }} numberOfLines={1}>
             {label}
           </Typography>
         </View>
@@ -102,18 +105,3 @@ export default function Button({
     </PressableScale>
   );
 }
-
-const styles = StyleSheet.create({
-  base: {
-    borderRadius: radius.pill,
-    paddingHorizontal: 18,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  content: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: spacing.sm,
-  },
-  disabled: { opacity: 0.55 },
-});

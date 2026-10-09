@@ -3,9 +3,9 @@ import { StyleSheet, View } from 'react-native';
 import { MotiView } from 'moti';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import PressableScale from '@/components/atoms/PressableScale';
-import { colors } from '@/theme/colors';
+import { useTheme } from '@/contexts/ThemeContext';
+import { makeStyles } from '@/theme/makeStyles';
 import { layout, radius, spacing } from '@/theme/metrics';
-import { shadows } from '@/theme/shadows';
 import { transitions } from '@/utils/motion';
 
 export interface TabBarItem {
@@ -35,6 +35,8 @@ export interface TabBarProps {
  * tombol tengah 48. Dirender absolut di atas layar.
  */
 export default function TabBar({ items, centerAction }: TabBarProps) {
+  const styles = useStyles();
+  const { colors } = useTheme();
   const insets = useSafeAreaInsets();
   const centerIndex = Math.ceil(items.length / 2);
 
@@ -96,7 +98,7 @@ export default function TabBar({ items, centerAction }: TabBarProps) {
   );
 }
 
-const styles = StyleSheet.create({
+const useStyles = makeStyles(({ colors, shadows }) => ({
   container: {
     position: 'absolute',
     left: 0,
@@ -113,6 +115,9 @@ const styles = StyleSheet.create({
     height: layout.bottomNavHeight,
     paddingHorizontal: 6,
     borderRadius: radius.pill,
+    // Garis tipis supaya pill tidak menyatu dengan latar halaman (terutama tema gelap).
+    borderWidth: 1,
+    borderColor: colors.borderStrong,
     backgroundColor: colors.surface,
     ...shadows.nav,
   },
@@ -136,4 +141,4 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     backgroundColor: colors.primary,
   },
-});
+}));

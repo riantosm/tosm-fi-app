@@ -1,27 +1,31 @@
-import { StyleSheet, View } from 'react-native';
+import { View } from 'react-native';
 import {
   CalendarClock,
   ChartColumn,
   ChevronRight,
   Languages,
-  LogOut,
+  Moon,
   Settings,
+  Sun,
+  SunMoon,
   Tag,
   Target,
   Wallet,
 } from 'lucide-react-native';
 import { useTranslation } from 'react-i18next';
 import Avatar from '@/components/atoms/Avatar';
-import Button from '@/components/atoms/Button';
 import PressableScale from '@/components/atoms/PressableScale';
 import Typography from '@/components/atoms/Typography';
 import MenuTile from '@/components/molecules/MenuTile';
 import SegmentedControl from '@/components/molecules/SegmentedControl';
 import BottomSheet from '@/components/organisms/BottomSheet';
+import { useTheme } from '@/contexts/ThemeContext';
 import { useLanguage } from '@/hooks/useLanguage';
+import { useThemePreference } from '@/hooks/useThemePreference';
 import { ROUTES } from '@/navigation/paths';
 import { useAppSelector } from '@/store/hooks';
-import { colors } from '@/theme/colors';
+import type { ColorScheme } from '@/theme/colors';
+import { makeStyles } from '@/theme/makeStyles';
 import { radius, spacing } from '@/theme/metrics';
 import type { Tone } from '@/theme/tones';
 import type { LanguageCode } from '@/types';
@@ -80,23 +84,50 @@ const TILES: {
   },
 ];
 
+const useStyles = makeStyles(({ colors }) => ({
+  profile: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.md,
+    padding: spacing.md,
+    borderRadius: radius.control,
+    backgroundColor: colors.surface2,
+  },
+  profileText: { flex: 1, gap: 1 },
+  row: { flexDirection: 'row', gap: 10 },
+  prefRow: { flexDirection: 'row', gap: 10 },
+  prefBox: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.sm,
+    paddingVertical: 6,
+    paddingLeft: spacing.md,
+    paddingRight: 6,
+    borderRadius: radius.control,
+    backgroundColor: colors.surface2,
+  },
+  prefControl: { flex: 1 },
+}));
+
 export interface MoreMenuSheetProps {
   visible: boolean;
   onClose: () => void;
   onNavigate: (route: MoreRoute) => void;
-  onLogout: () => void;
 }
 
-/** Sheet "Lainnya" dari bottom nav (DESIGN_SYSTEM.md §6.14). */
+/** Sheet "Lainnya" dari bottom nav (DESIGN_SYSTEM.md §6.14). Logout hanya di halaman Profil. */
 export default function MoreMenuSheet({
   visible,
   onClose,
   onNavigate,
-  onLogout,
 }: MoreMenuSheetProps) {
   const { t } = useTranslation();
   const user = useAppSelector(state => state.auth.user);
+  const styles = useStyles();
+  const { colors } = useTheme();
   const { language, setLanguage, options } = useLanguage();
+  const { scheme, setPreference } = useThemePreference();
   const rows = [TILES.slice(0, 3), TILES.slice(3)];
 
   return (
@@ -138,48 +169,41 @@ export default function MoreMenuSheet({
         </View>
       ))}
 
-      <View style={styles.prefBox}>
-        <Languages size={18} color={colors.text2} />
-        <View style={styles.prefControl}>
-          <SegmentedControl<LanguageCode>
-            variant="compact"
-            value={language}
-            onChange={setLanguage}
-            options={options.map(o => ({ value: o.code, label: o.short }))}
-          />
+      <View style={styles.prefRow}>
+        <View style={styles.prefBox}>
+          <SunMoon size={18} color={colors.text2} />
+          <View style={styles.prefControl}>
+            <SegmentedControl<ColorScheme>
+              variant="compact"
+              value={scheme}
+              onChange={setPreference}
+              options={[
+                {
+                  value: 'light',
+                  label: t('theme.light'),
+                  renderIcon: color => <Sun size={16} color={color} />,
+                },
+                {
+                  value: 'dark',
+                  label: t('theme.dark'),
+                  renderIcon: color => <Moon size={16} color={color} />,
+                },
+              ]}
+            />
+          </View>
+        </View>
+        <View style={styles.prefBox}>
+          <Languages size={18} color={colors.text2} />
+          <View style={styles.prefControl}>
+            <SegmentedControl<LanguageCode>
+              variant="compact"
+              value={language}
+              onChange={setLanguage}
+              options={options.map(o => ({ value: o.code, label: o.short }))}
+            />
+          </View>
         </View>
       </View>
-
-      <Button
-        variant="dangerSoft"
-        label={t('topbar.logout')}
-        renderIcon={color => <LogOut size={18} color={color} />}
-        onPress={onLogout}
-      />
     </BottomSheet>
   );
 }
-
-const styles = StyleSheet.create({
-  profile: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: spacing.md,
-    padding: spacing.md,
-    borderRadius: radius.control,
-    backgroundColor: colors.surface2,
-  },
-  profileText: { flex: 1, gap: 1 },
-  row: { flexDirection: 'row', gap: 10 },
-  prefBox: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: spacing.md,
-    paddingVertical: 6,
-    paddingLeft: 14,
-    paddingRight: 6,
-    borderRadius: radius.control,
-    backgroundColor: colors.surface2,
-  },
-  prefControl: { flex: 1 },
-});

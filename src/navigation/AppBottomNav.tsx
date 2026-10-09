@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { StackActions } from '@react-navigation/native';
 import {
   ArrowLeftRight,
@@ -9,7 +8,7 @@ import {
 } from 'lucide-react-native';
 import { useTranslation } from 'react-i18next';
 import TabBar from '@/components/organisms/TabBar';
-import { useLogoutDialog } from '@/hooks/useLogoutDialog';
+import { useMoreSheet } from '@/contexts/MoreSheetContext';
 import MoreMenuSheet, { type MoreRoute } from '@/navigation/MoreMenuSheet';
 import { navigationRef } from '@/navigation/navigationRef';
 import { MORE_ROUTES, ROUTES, ROUTES_WITHOUT_NAV } from '@/navigation/paths';
@@ -38,8 +37,11 @@ export interface AppBottomNavProps {
  */
 export default function AppBottomNav({ currentRoute }: AppBottomNavProps) {
   const { t } = useTranslation();
-  const [sheetOpen, setSheetOpen] = useState(false);
-  const { requestLogout, dialog } = useLogoutDialog();
+  const {
+    isOpen: sheetOpen,
+    open: openSheet,
+    close: closeSheet,
+  } = useMoreSheet();
 
   const hidden =
     !currentRoute ||
@@ -55,7 +57,7 @@ export default function AppBottomNav({ currentRoute }: AppBottomNavProps) {
   };
 
   const goToMore = (route: MoreRoute) => {
-    setSheetOpen(false);
+    closeSheet();
     if (!navigationRef.isReady() || currentRoute === route) {
       return;
     }
@@ -78,7 +80,12 @@ export default function AppBottomNav({ currentRoute }: AppBottomNavProps) {
               renderIcon: (color: string, size: number) => (
                 <Icon color={color} size={size} />
               ),
-              active: !sheetOpen && currentRoute === route,
+              active:
+                !sheetOpen &&
+                (currentRoute === route ||
+                  // Detail instrumen adalah turunan tab Investasi.
+                  (route === ROUTES.INVESTMENT &&
+                    currentRoute === ROUTES.INSTRUMENT_DETAIL)),
               onPress: () => goToTab(route),
             })),
             {
@@ -88,7 +95,7 @@ export default function AppBottomNav({ currentRoute }: AppBottomNavProps) {
                 <Menu color={color} size={size} />
               ),
               active: sheetOpen || onMorePage,
-              onPress: () => setSheetOpen(true),
+              onPress: openSheet,
             },
           ]}
           centerAction={{
@@ -102,14 +109,9 @@ export default function AppBottomNav({ currentRoute }: AppBottomNavProps) {
       )}
       <MoreMenuSheet
         visible={sheetOpen}
-        onClose={() => setSheetOpen(false)}
+        onClose={closeSheet}
         onNavigate={goToMore}
-        onLogout={() => {
-          setSheetOpen(false);
-          requestLogout();
-        }}
       />
-      {dialog}
     </>
   );
 }

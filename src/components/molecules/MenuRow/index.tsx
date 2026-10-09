@@ -1,13 +1,14 @@
 import type { ReactNode } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { View } from 'react-native';
 import { ChevronRight } from 'lucide-react-native';
 import PressableScale, {
   type PressableScaleProps,
 } from '@/components/atoms/PressableScale';
 import Typography from '@/components/atoms/Typography';
-import { colors } from '@/theme/colors';
+import { useTheme } from '@/contexts/ThemeContext';
+import { makeStyles } from '@/theme/makeStyles';
 import { radius, spacing } from '@/theme/metrics';
-import { toneColors, type Tone } from '@/theme/tones';
+import type { Tone } from '@/theme/tones';
 
 export interface MenuRowProps extends Omit<PressableScaleProps, 'children'> {
   /** Render ikon (ukuran 18) dengan warna nada. */
@@ -19,6 +20,23 @@ export interface MenuRowProps extends Omit<PressableScaleProps, 'children'> {
   trailing?: ReactNode;
 }
 
+const useStyles = makeStyles(() => ({
+  row: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.md,
+    paddingVertical: 13,
+  },
+  iconWrap: {
+    width: 38,
+    height: 38,
+    borderRadius: radius.control,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  texts: { flex: 1, gap: spacing.xxs },
+}));
+
 /** Satu baris menu (Pengaturan). Dikumpulkan di dalam MenuGroup. */
 export default function MenuRow({
   renderIcon,
@@ -29,7 +47,9 @@ export default function MenuRow({
   style,
   ...rest
 }: MenuRowProps) {
-  const { soft, text } = toneColors[tone];
+  const styles = useStyles();
+  const { colors, tones } = useTheme();
+  const { soft, text } = tones[tone];
   return (
     <PressableScale
       accessibilityRole="button"
@@ -53,20 +73,3 @@ export default function MenuRow({
     </PressableScale>
   );
 }
-
-const styles = StyleSheet.create({
-  row: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: spacing.md,
-    paddingVertical: 13,
-  },
-  iconWrap: {
-    width: 38,
-    height: 38,
-    borderRadius: radius.control,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  texts: { flex: 1, gap: spacing.xxs },
-});

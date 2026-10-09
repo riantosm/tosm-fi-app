@@ -1,9 +1,10 @@
 import type { ReactNode } from 'react';
-import { StyleSheet, type ViewStyle } from 'react-native';
 import PressableScale, {
   type PressableScaleProps,
 } from '@/components/atoms/PressableScale';
-import { colors } from '@/theme/colors';
+import { useTheme } from '@/contexts/ThemeContext';
+import type { ColorTokens } from '@/theme/colors';
+import { makeStyles } from '@/theme/makeStyles';
 import { radius } from '@/theme/metrics';
 
 export type IconButtonVariant =
@@ -25,21 +26,22 @@ export interface IconButtonProps
   shape?: 'circle' | 'square';
 }
 
-const variantStyles: Record<IconButtonVariant, ViewStyle> = {
-  surface: { backgroundColor: colors.surface },
-  surface2: { backgroundColor: colors.surface2 },
-  hero: { backgroundColor: colors.heroControl },
-  primary: { backgroundColor: colors.primary },
-  ghost: { backgroundColor: colors.transparent },
-};
-
-const iconColors: Record<IconButtonVariant, string> = {
+const iconColor = (colors: ColorTokens): Record<IconButtonVariant, string> => ({
   surface: colors.text2,
   surface2: colors.text2,
   hero: colors.heroFg,
   primary: colors.primaryFg,
   ghost: colors.text2,
-};
+});
+
+const useStyles = makeStyles(({ colors }) => ({
+  base: { alignItems: 'center', justifyContent: 'center' },
+  surface: { backgroundColor: colors.surface },
+  surface2: { backgroundColor: colors.surface2 },
+  hero: { backgroundColor: colors.heroControl },
+  primary: { backgroundColor: colors.primary },
+  ghost: { backgroundColor: colors.transparent },
+}));
 
 export default function IconButton({
   label,
@@ -50,6 +52,8 @@ export default function IconButton({
   style,
   ...rest
 }: IconButtonProps) {
+  const styles = useStyles();
+  const { colors } = useTheme();
   return (
     <PressableScale
       accessibilityRole="button"
@@ -57,7 +61,7 @@ export default function IconButton({
       hitSlop={4}
       style={[
         styles.base,
-        variantStyles[variant],
+        styles[variant],
         {
           width: size,
           height: size,
@@ -67,11 +71,7 @@ export default function IconButton({
       ]}
       {...rest}
     >
-      {renderIcon(iconColors[variant], 18)}
+      {renderIcon(iconColor(colors)[variant], 18)}
     </PressableScale>
   );
 }
-
-const styles = StyleSheet.create({
-  base: { alignItems: 'center', justifyContent: 'center' },
-});

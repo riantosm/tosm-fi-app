@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import LanguagePill from '@/components/molecules/LanguagePill';
-import LanguageSheet from '@/components/organisms/LanguageSheet';
+import OptionSheet from '@/components/organisms/OptionSheet';
 import { useLanguage } from '@/hooks/useLanguage';
 import type { LanguageCode } from '@/types';
 
@@ -21,7 +21,7 @@ export function useLanguagePicker() {
   );
 
   const sheet = (
-    <LanguageSheet<LanguageCode>
+    <OptionSheet<LanguageCode>
       visible={open}
       title={t('nav.language')}
       closeLabel={t('common.close')}

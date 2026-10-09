@@ -1,6 +1,7 @@
-import { StyleSheet, View } from 'react-native';
+import { View } from 'react-native';
 import { Sprout } from 'lucide-react-native';
-import { colors } from '@/theme/colors';
+import { useTheme } from '@/contexts/ThemeContext';
+import { makeStyles } from '@/theme/makeStyles';
 import { radius } from '@/theme/metrics';
 
 export type LogoMarkSize = 'xs' | 'sm' | 'md' | 'lg';
@@ -17,8 +18,19 @@ const SIZES: Record<LogoMarkSize, { box: number; icon: number }> = {
   lg: { box: 56, icon: 28 },
 };
 
+const useStyles = makeStyles(({ colors }) => ({
+  base: {
+    borderRadius: radius.pill,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: colors.primary,
+  },
+}));
+
 /** Satu-satunya bentuk logo di dalam app: lingkaran primary + sprout. */
 export default function LogoMark({ size = 'sm' }: LogoMarkProps) {
+  const styles = useStyles();
+  const { colors } = useTheme();
   const { box, icon } = SIZES[size];
   return (
     <View
@@ -30,12 +42,3 @@ export default function LogoMark({ size = 'sm' }: LogoMarkProps) {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  base: {
-    borderRadius: radius.pill,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: colors.primary,
-  },
-});

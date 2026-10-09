@@ -23,7 +23,8 @@
     "moveUp": "Naikkan",
     "moveDown": "Turunkan",
     "more": "Lainnya",
-    "loading": "Memuat…"
+    "loading": "Memuat…",
+    "pressBackAgainToExit": "Ketuk sekali lagi untuk keluar"
   },
   "errorBoundary": {
     "title": "Ups, terjadi kesalahan",
@@ -223,7 +224,10 @@
     "roleLabel": "Peran"
   },
   "theme": {
-    "toggle": "Ubah tema"
+    "toggle": "Ubah tema",
+    "light": "Terang",
+    "dark": "Gelap",
+    "system": "Ikuti sistem"
   },
   "settingsMenu": {
     "userApproval": {
@@ -401,7 +405,7 @@
       "food": "Makanan",
       "restaurant": "Restoran",
       "cutlery": "Alat Makan",
-      "cafe": "Kafe",
+      "cafe": "Kopi & kafe",
       "bakery": "Toko Roti",
       "pizza": "Pizza",
       "dessert": "Makanan Penutup",
@@ -647,6 +651,7 @@
     "profitLossNoChange": "Masukkan nilai terbaru akun ini",
     "profitLossSubtitle": "Catat profit/rugi dari nilai terbaru",
     "recordedValue": "Nilai tercatat {{amount}}",
+    "recordedValueOn": "Nilai per {{date}}: {{amount}}",
     "remainingAfterWithdraw": "Sisa nilai setelah tarik: {{amount}}",
     "save": "Simpan",
     "saveValue": "Simpan nilai",
@@ -761,6 +766,9 @@
     "filterType": "Tipe",
     "filterCategory": "Kategori",
     "filterSubCategory": "Subkategori",
+    "filterTitle": "Filter",
+    "filterAllDates": "Semua tanggal di bulan ini",
+    "filterSubtitle": "Atur dompet, tipe, kategori, tanggal, dan urutan",
     "allWallets": "Semua dompet",
     "allTypes": "Semua tipe",
     "allCategories": "Semua kategori",
@@ -853,7 +861,12 @@
     "previewDaily": "Tagihan muncul setiap hari di Dashboard & Transaksi untuk dibayar.",
     "previewWeekly": "Tagihan muncul tiap {{days}} di Dashboard & Transaksi untuk dibayar.",
     "previewMonthly": "Tagihan muncul tiap tanggal {{day}} di Dashboard & Transaksi untuk dibayar.",
-    "previewYearly": "Tagihan muncul tiap {{date}} di Dashboard & Transaksi untuk dibayar."
+    "previewYearly": "Tagihan muncul tiap {{date}} di Dashboard & Transaksi untuk dibayar.",
+    "listAnd": "dan",
+    "reminderTitleExpense": "Tagihan jatuh tempo hari ini",
+    "reminderTitleIncome": "Pemasukan terjadwal hari ini",
+    "reminderBody": "{{title}} · {{amount}}. Buka TosmFi untuk mencatatnya.",
+    "reminderNote": "Pengingat notifikasi muncul jam 08.00 di hari jatuh tempo."
   },
   "budget": {
     "genericError": "Terjadi kesalahan, coba lagi.",
@@ -947,6 +960,12 @@
       "netCashFlow": "Saldo Bersih",
       "transactionCount": "Jumlah Transaksi",
       "previousPeriod": "dari periode sebelumnya"
+    },
+    "summaryShort": {
+      "totalIncome": "Pemasukan",
+      "totalExpense": "Pengeluaran",
+      "netCashFlow": "Saldo Bersih",
+      "transactionCount": "Transaksi"
     },
     "cashFlow": {
       "title": "Cash Flow",

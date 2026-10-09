@@ -7,9 +7,11 @@ import PressableScale from '@/components/atoms/PressableScale';
 import Typography from '@/components/atoms/Typography';
 import Banner, { type BannerTone } from '@/components/molecules/Banner';
 import TextField from '@/components/molecules/TextField';
+import ThemeToggleButton from '@/components/molecules/ThemeToggleButton';
 import AuthLayout from '@/components/templates/AuthLayout';
 import { useAuth } from '@/hooks/useAuth';
 import { useLanguagePicker } from '@/hooks/useLanguagePicker';
+import { useThemePreference } from '@/hooks/useThemePreference';
 import { ROUTES } from '@/navigation/paths';
 import type { RootStackScreenProps } from '@/navigation/types';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
@@ -30,6 +32,7 @@ export default function LoginScreen({
   const sessionExpired = useAppSelector(state => state.auth.sessionExpired);
   const passwordRef = useRef<ComponentRef<typeof TextInput>>(null);
   const language = useLanguagePicker();
+  const { isDark, toggle: toggleTheme } = useThemePreference();
 
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -78,6 +81,13 @@ export default function LoginScreen({
       title={t('auth.welcomeTitle')}
       subtitle={t('auth.welcomeSubtitle')}
       bottom={language.trigger}
+      headerRight={
+        <ThemeToggleButton
+          isDark={isDark}
+          label={t('theme.toggle')}
+          onToggle={toggleTheme}
+        />
+      }
       footer={
         <>
           <Typography tone="muted">{t('auth.noAccount')}</Typography>
