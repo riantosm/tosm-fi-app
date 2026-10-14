@@ -79,6 +79,8 @@ export default function InstrumentRow({
                 values: sparkline.map(point => point.current),
                 color: instrument.color,
                 strokeWidth: 1.75,
+                // Gradasi sama dengan sparkline kartu akun.
+                fillOpacity: 0.3,
               },
             ]}
           />
