@@ -263,7 +263,7 @@ export default function TransactionsScreen({
     !!search ||
     !!(range.from || range.to);
   const resetFilters = () => {
-    setFilters(current => ({ ...DEFAULT_FILTERS, sort: current.sort }));
+    setFilters(DEFAULT_FILTERS);
     setSearch('');
   };
   const activeFilterCount = countActiveFilters(filters);
@@ -383,7 +383,7 @@ export default function TransactionsScreen({
         wallets={wallets}
         categories={categories}
         locale={locale}
-        matchCount={hasActiveFilter ? total : null}
+        matchCount={total}
         onPress={() => setFilterOpen(true)}
         onReset={resetFilters}
       />

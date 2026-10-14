@@ -7,6 +7,7 @@ import { radius, spacing } from '@/theme/metrics';
 import type { Category, WalletAccount } from '@/types';
 import { transitions } from '@/utils/motion';
 import {
+  DEFAULT_FILTERS,
   TYPE_OPTIONS,
   formatRangeLabel,
   type TransactionFilters,
@@ -37,7 +38,11 @@ export interface ActiveFilterBannerProps {
   onReset: () => void;
 }
 
-/** Ringkasan filter aktif ("9 transaksi · Pengeluaran › Makan") + Reset (pen `z5AbmD`). */
+/**
+ * Ringkasan filter aktif ("9 transaksi · Pengeluaran › Makan") + Reset (pen `z5AbmD`). Urutan
+ * non-default ikut tampil supaya selaras dengan angka di tombol Filter; Reset mengembalikan semua
+ * (filter, urutan, kata kunci).
+ */
 export default function ActiveFilterBanner({
   filters,
   search,
@@ -63,6 +68,9 @@ export default function ActiveFilterBanner({
     sub?.nameSubCategory,
     search ? `“${search}”` : null,
     formatRangeLabel(filters.range, locale) || null,
+    filters.sort !== DEFAULT_FILTERS.sort
+      ? t(`transaction.sortShort.${filters.sort}`)
+      : null,
   ].filter(Boolean);
 
   return (

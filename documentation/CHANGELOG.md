@@ -63,3 +63,6 @@ Kategori tanpa isi boleh dihilangkan.
 - Bottom nav diberi garis tipis supaya tidak menyatu dengan latar.
 - Perpindahan halaman, membuka sheet, dan ganti bahasa/tema lebih cepat.
 - Cari ikon "kopi" kini menemukan ikon kopi.
+- Transaksi: tanggal hari ini yang dipilih di kalender kini terlihat terpilih.
+- Transaksi: urutan yang diubah ikut tampil di banner filter (sesuai angka di ikon Filter), dan
+  Reset di banner mengembalikan semua filter, urutan, serta kata kunci.

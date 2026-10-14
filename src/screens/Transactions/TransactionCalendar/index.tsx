@@ -37,6 +37,17 @@ const useStyles = makeStyles(({ colors }) => ({
     borderWidth: 2,
     borderColor: colors.primary,
   },
+  // Hari ini yang sedang dipilih: cincin di luar lingkaran "hari ini" (margin negatif → tata letak tetap).
+  todayRing: {
+    width: 38,
+    height: 38,
+    margin: -3,
+    borderRadius: radius.pill,
+    borderWidth: 2,
+    borderColor: colors.primary,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   dots: { flexDirection: 'row', gap: 3 },
   dot: { width: 5, height: 5, borderRadius: radius.pill },
   dim: { opacity: 0.5 },
@@ -123,22 +134,24 @@ function TransactionCalendar({
                 onPress={() => onSelectDay(isSelected ? null : day.iso)}
                 style={styles.cell}
               >
-                <View
-                  style={[
-                    styles.day,
-                    isToday && styles.today,
-                    isSelected && !isToday && styles.selected,
-                  ]}
-                >
-                  <Typography
-                    variant={isToday || isSelected ? 'label' : 'body'}
-                    tone={
-                      isToday ? 'inverse' : isSelected ? 'primary' : 'default'
-                    }
-                    tabular
+                <View style={isToday && isSelected && styles.todayRing}>
+                  <View
+                    style={[
+                      styles.day,
+                      isToday && styles.today,
+                      isSelected && !isToday && styles.selected,
+                    ]}
                   >
-                    {day.date.getDate()}
-                  </Typography>
+                    <Typography
+                      variant={isToday || isSelected ? 'label' : 'body'}
+                      tone={
+                        isToday ? 'inverse' : isSelected ? 'primary' : 'default'
+                      }
+                      tabular
+                    >
+                      {day.date.getDate()}
+                    </Typography>
+                  </View>
                 </View>
                 {dots.length > 0 && (
                   <View style={styles.dots}>
