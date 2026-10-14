@@ -70,8 +70,11 @@ export function useNetWorthTimeline(
   dateFrom: string,
   dateTo: string,
   refreshKey = 0,
+  /** Subset instrumen (filter portofolio); kosong = semua. */
+  idInstruments: string[] = [],
 ) {
   const { i18n } = useTranslation();
+  const instrumentKey = idInstruments.join(',');
   const { version } = useInvestmentTransactions();
   const [data, setData] = useState<NetWorthTimelinePoint[]>([]);
   const [loading, setLoading] = useState(true);
@@ -87,6 +90,7 @@ export function useNetWorthTimeline(
       dateFrom,
       dateTo,
       locale: i18n.language,
+      idInstrument: instrumentKey ? instrumentKey.split(',') : undefined,
     })
       .then(result => {
         if (!cancelled) {
@@ -102,7 +106,15 @@ export function useNetWorthTimeline(
     return () => {
       cancelled = true;
     };
-  }, [granularity, dateFrom, dateTo, i18n.language, version, refreshKey]);
+  }, [
+    granularity,
+    dateFrom,
+    dateTo,
+    i18n.language,
+    version,
+    refreshKey,
+    instrumentKey,
+  ]);
 
   return { data, loading };
 }

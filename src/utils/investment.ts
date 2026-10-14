@@ -131,16 +131,23 @@ export function formatTimelineDate(
   iso: string,
   granularity: NetWorthTimelineGranularity,
   language: string,
+  /** `tooltip` menambahkan tahun (judul tooltip grafik, sama dengan web). */
+  variant: 'axis' | 'tooltip' = 'axis',
 ): string {
   const date = new Date(iso);
   if (Number.isNaN(date.getTime())) {
     return '';
   }
+  const withYear = variant === 'tooltip';
   const options: Intl.DateTimeFormatOptions =
     granularity === 'year'
       ? { year: 'numeric' }
       : granularity === 'month'
-      ? { month: 'short' }
+      ? withYear
+        ? { month: 'short', year: 'numeric' }
+        : { month: 'short' }
+      : withYear
+      ? { day: 'numeric', month: 'short', year: 'numeric' }
       : { day: 'numeric', month: 'short' };
   return dateTimeFormat(toIntlLocale(language), options).format(date);
 }

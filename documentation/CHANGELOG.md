@@ -48,6 +48,9 @@ Kategori tanpa isi boleh dihilangkan.
   tahun, atau rentang tanggal sendiri.
 - Laporan: Export PDF, Excel, atau CSV untuk periode yang dipilih (ringkasan, kategori, dompet, top
   pengeluaran, dan daftar transaksi), lalu simpan atau bagikan lewat menu bagikan Android.
+- Investasi: filter instrumen di portofolio (grafik, total, dan daftar ikut tersaring) dan di
+  riwayat transaksi; ketuk grafik untuk melihat nilai dan modal; buat instrumen atau akun baru
+  langsung dari pemilih akun.
 - Catat cepat (AI): ketik transaksi seperti chat biasa ("makan siang 25rb"), AI menanyakan yang
   kurang (dompet, tanggal), menampilkan pratinjau, dan baru menyimpan setelah kamu tekan Simpan atau
   ketik "catat". Bisa merevisi lewat chat, banyak transaksi sekaligus (termasuk transfer, koreksi

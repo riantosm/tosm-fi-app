@@ -1,12 +1,18 @@
 import { useState } from 'react';
 import { ScrollView, View } from 'react-native';
-import { Check } from 'lucide-react-native';
+import { Check, Plus } from 'lucide-react-native';
 import { useTranslation } from 'react-i18next';
 import Button from '@/components/atoms/Button';
 import Monogram from '@/components/atoms/Monogram';
 import PressableScale from '@/components/atoms/PressableScale';
 import Typography from '@/components/atoms/Typography';
 import BottomSheet from '@/components/organisms/BottomSheet';
+import InstrumentFields from '@/components/organisms/InstrumentFields';
+import InvestmentAccountFields from '@/components/organisms/InvestmentAccountFields';
+import { WALLET_COLOR_PRESETS } from '@/constants/walletColors';
+import { useTheme } from '@/contexts/ThemeContext';
+import { useToast } from '@/contexts/ToastContext';
+import { useInstruments } from '@/hooks/useInstruments';
 import { useMoneyFormat } from '@/hooks/useMoneyFormat';
 import { makeStyles } from '@/theme/makeStyles';
 import { radius, spacing } from '@/theme/metrics';
@@ -41,6 +47,20 @@ const useStyles = makeStyles(({ colors }) => ({
   tileActive: {
     borderColor: colors.primary,
     backgroundColor: colors.primarySoft,
+  },
+  // Tile "Baru" (garis putus-putus, sama dengan web).
+  tileNew: {
+    borderStyle: 'dashed',
+    borderColor: colors.borderStrong,
+    backgroundColor: colors.transparent,
+  },
+  newIcon: {
+    width: 46,
+    height: 46,
+    borderRadius: radius.pill,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: colors.surface2,
   },
   accounts: { gap: spacing.sm },
   account: {
@@ -99,8 +119,12 @@ function TargetBody({
   excludeAccountId,
 }: InvestmentTargetSheetProps) {
   const styles = useStyles();
+  const { colors } = useTheme();
   const { t } = useTranslation();
   const { format } = useMoneyFormat();
+  const [creating, setCreating] = useState<'instrument' | 'account' | null>(
+    null,
+  );
   const [instrumentId, setInstrumentId] = useState(
     idInstrument ?? instruments[0]?.idInstrument ?? null,
   );
@@ -153,6 +177,18 @@ function TargetBody({
               </PressableScale>
             );
           })}
+          <PressableScale
+            accessibilityRole="button"
+            onPress={() => setCreating('instrument')}
+            style={[styles.tile, styles.tileNew]}
+          >
+            <View style={styles.newIcon}>
+              <Plus size={20} color={colors.text2} />
+            </View>
+            <Typography variant="metaMedium" tone="muted" numberOfLines={1}>
+              {t('investment.newShort')}
+            </Typography>
+          </PressableScale>
         </ScrollView>
       </View>
       {instrument && (
@@ -195,6 +231,12 @@ function TargetBody({
               })}
             </View>
           )}
+          <Button
+            variant="soft"
+            label={t('investment.newAccount')}
+            renderIcon={color => <Plus size={18} color={color} />}
+            onPress={() => setCreating('account')}
+          />
         </View>
       )}
       <View style={styles.actions}>
@@ -217,6 +259,204 @@ function TargetBody({
           style={styles.action}
         />
       </View>
+
+      <CreateInstrumentSheet
+        visible={creating === 'instrument'}
+        onCreated={created => {
+          setInstrumentId(created.idInstrument);
+          setAccountId(null);
+          setCreating(null);
+        }}
+        onClose={() => setCreating(null)}
+      />
+      <CreateAccountSheet
+        visible={creating === 'account'}
+        instrument={instrument ?? null}
+        onCreated={created => {
+          setAccountId(created.idInvestmentAccount);
+          setCreating(null);
+        }}
+        onClose={() => setCreating(null)}
+      />
     </>
+  );
+}
+
+/** Tombol Batal + Simpan untuk sheet buat baru. */
+function CreateFooter({
+  busy,
+  canSave,
+  saveLabel,
+  onCancel,
+  onSave,
+}: {
+  busy: boolean;
+  canSave: boolean;
+  saveLabel: string;
+  onCancel: () => void;
+  onSave: () => void;
+}) {
+  const styles = useStyles();
+  const { t } = useTranslation();
+  return (
+    <>
+      <Button
+        variant="outline"
+        label={t('common.cancel')}
+        disabled={busy}
+        onPress={onCancel}
+        style={styles.action}
+      />
+      <Button
+        label={saveLabel}
+        renderIcon={color => <Check size={18} color={color} />}
+        loading={busy}
+        disabled={busy || !canSave}
+        onPress={onSave}
+        style={styles.action}
+      />
+    </>
+  );
+}
+
+/** "+ Baru": buat instrumen lalu langsung dipilih (sama dengan web). */
+function CreateInstrumentSheet({
+  visible,
+  onCreated,
+  onClose,
+}: {
+  visible: boolean;
+  onCreated: (instrument: Instrument) => void;
+  onClose: () => void;
+}) {
+  const { t } = useTranslation();
+  const showToast = useToast();
+  const { createInstrument } = useInstruments({ autoLoad: false });
+  const [name, setName] = useState('');
+  const [color, setColor] = useState(WALLET_COLOR_PRESETS[0]);
+  const [busy, setBusy] = useState(false);
+
+  const close = () => {
+    setName('');
+    setColor(WALLET_COLOR_PRESETS[0]);
+    onClose();
+  };
+  const save = async () => {
+    setBusy(true);
+    try {
+      const created = await createInstrument({
+        nameInstrument: name.trim(),
+        color,
+      });
+      setName('');
+      setColor(WALLET_COLOR_PRESETS[0]);
+      onCreated(created);
+    } catch (error) {
+      showToast(
+        error instanceof Error ? error.message : t('investment.genericError'),
+        'error',
+      );
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  return (
+    <BottomSheet
+      visible={visible}
+      title={t('investment.addTitle')}
+      subtitle={t('investment.addInstrumentSubtitle')}
+      closeLabel={t('common.close')}
+      onClose={close}
+      footer={
+        <CreateFooter
+          busy={busy}
+          canSave={!!name.trim()}
+          saveLabel={t('investment.save')}
+          onCancel={close}
+          onSave={save}
+        />
+      }
+    >
+      <InstrumentFields
+        name={name}
+        onNameChange={setName}
+        color={color}
+        onColorChange={setColor}
+      />
+    </BottomSheet>
+  );
+}
+
+/** "Akun baru": buat akun di instrumen terpilih lalu langsung dipilih. */
+function CreateAccountSheet({
+  visible,
+  instrument,
+  onCreated,
+  onClose,
+}: {
+  visible: boolean;
+  instrument: Instrument | null;
+  onCreated: (account: InvestmentAccount) => void;
+  onClose: () => void;
+}) {
+  const { t } = useTranslation();
+  const showToast = useToast();
+  const { createInvestmentAccount } = useInstruments({ autoLoad: false });
+  const [name, setName] = useState('');
+  const [busy, setBusy] = useState(false);
+
+  const close = () => {
+    setName('');
+    onClose();
+  };
+  const save = async () => {
+    if (!instrument) {
+      return;
+    }
+    setBusy(true);
+    try {
+      const created = await createInvestmentAccount(instrument.idInstrument, {
+        nameInvestmentAccount: name.trim(),
+      });
+      setName('');
+      onCreated(created);
+    } catch (error) {
+      showToast(
+        error instanceof Error ? error.message : t('investment.genericError'),
+        'error',
+      );
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  return (
+    <BottomSheet
+      visible={visible}
+      title={t('investment.addAccountTitle')}
+      subtitle={
+        instrument
+          ? t('investment.inInstrument', { name: instrument.nameInstrument })
+          : undefined
+      }
+      closeLabel={t('common.close')}
+      onClose={close}
+      footer={
+        <CreateFooter
+          busy={busy}
+          canSave={!!name.trim() && !!instrument}
+          saveLabel={t('investment.addAccount')}
+          onCancel={close}
+          onSave={save}
+        />
+      }
+    >
+      <InvestmentAccountFields
+        instrument={instrument}
+        name={name}
+        onNameChange={setName}
+      />
+    </BottomSheet>
   );
 }

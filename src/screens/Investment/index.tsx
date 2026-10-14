@@ -84,7 +84,17 @@ const useStyles = makeStyles(({ colors }) => ({
     borderTopColor: colors.border,
   },
   addLabel: { fontSize: 13.5, lineHeight: 19 },
-  chips: { gap: spacing.sm, paddingHorizontal: spacing.xs },
+  chips: {
+    alignItems: 'center',
+    gap: spacing.sm,
+    paddingHorizontal: spacing.xs,
+  },
+  chipDivider: {
+    width: 1,
+    height: 22,
+    marginHorizontal: 2,
+    backgroundColor: colors.border,
+  },
   ledger: { paddingHorizontal: spacing.lg, paddingVertical: spacing.xs },
   more: { paddingVertical: spacing.md },
   activeAction: { backgroundColor: colors.primarySoft },
@@ -164,6 +174,31 @@ export default function InvestmentScreen({
   const { timelines } = useInvestmentTimelines(refreshKey);
   const firstDate = useFirstInvestmentDate();
   const [period, setPeriod] = useState<NetWorthPeriodPreset>('year');
+  // Filter portofolio (multi-pilih, kosong = semua): hero, total, dan daftar instrumen.
+  const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  // Abaikan id instrumen yang sudah dihapus.
+  const activeFilterIds = useMemo(
+    () =>
+      selectedIds.filter(id =>
+        instruments.some(instrument => instrument.idInstrument === id),
+      ),
+    [selectedIds, instruments],
+  );
+  const visibleInstruments = useMemo(
+    () =>
+      activeFilterIds.length === 0
+        ? instruments
+        : instruments.filter(instrument =>
+            activeFilterIds.includes(instrument.idInstrument),
+          ),
+    [instruments, activeFilterIds],
+  );
+  const toggleInstrument = (idInstrument: string) =>
+    setSelectedIds(current =>
+      current.includes(idInstrument)
+        ? current.filter(id => id !== idInstrument)
+        : [...current, idInstrument],
+    );
   const range = useMemo(
     () => resolveNetWorthPeriod(period, new Date(), firstDate),
     [period, firstDate],
@@ -173,6 +208,7 @@ export default function InvestmentScreen({
     range.dateFrom,
     range.dateTo,
     refreshKey,
+    activeFilterIds,
   );
   const [sort, setSort] = useState<SortOption>('amount');
   const [sortOpen, setSortOpen] = useState(false);
@@ -183,17 +219,20 @@ export default function InvestmentScreen({
     [navigation, loadInstruments],
   );
 
-  const totals = useMemo(() => getPortfolioTotals(instruments), [instruments]);
+  const totals = useMemo(
+    () => getPortfolioTotals(visibleInstruments),
+    [visibleInstruments],
+  );
   const sorted = useMemo(
     () =>
-      [...instruments].sort((a, b) => {
+      [...visibleInstruments].sort((a, b) => {
         const totalsA = getInstrumentTotals(a);
         const totalsB = getInstrumentTotals(b);
         return sort === 'amount'
           ? totalsB.currentValue - totalsA.currentValue
           : totalsB.profitLossPercent - totalsA.profitLossPercent;
       }),
-    [instruments, sort],
+    [visibleInstruments, sort],
   );
   const accountCount = instruments.reduce(
     (sum, instrument) => sum + activeAccounts(instrument).length,
@@ -207,6 +246,8 @@ export default function InvestmentScreen({
   const [debouncedSearch, setDebouncedSearch] = useState('');
   const [searchOpen, setSearchOpen] = useState(false);
   const [typeFilter, setTypeFilter] = useState<TypeFilter>('all');
+  // Filter instrumen ledger (pilih satu), sama dengan web.
+  const [instrumentFilter, setInstrumentFilter] = useState('all');
   useEffect(() => {
     const timer = setTimeout(
       () => setDebouncedSearch(search.trim()),
@@ -217,6 +258,7 @@ export default function InvestmentScreen({
 
   const filterParams: InvestmentTransactionListParams = {
     type: typeFilter !== 'all' ? typeFilter : undefined,
+    idInstrument: instrumentFilter !== 'all' ? instrumentFilter : undefined,
     search: debouncedSearch || undefined,
     sort: 'dateDesc',
   };
@@ -272,7 +314,8 @@ export default function InvestmentScreen({
   const openCreate = () => navigation.navigate(ROUTES.INSTRUMENT_FORM);
   const openDetail = (idInstrument: string) =>
     navigation.navigate(ROUTES.INSTRUMENT_DETAIL, { idInstrument });
-  const hasFilter = typeFilter !== 'all' || !!search;
+  const hasFilter =
+    typeFilter !== 'all' || instrumentFilter !== 'all' || !!search;
 
   return (
     <>
@@ -375,6 +418,30 @@ export default function InvestmentScreen({
                   </Typography>
                 </PressableScale>
               </View>
+              {instruments.length > 1 && (
+                <ScrollView
+                  horizontal
+                  showsHorizontalScrollIndicator={false}
+                  contentContainerStyle={styles.chips}
+                >
+                  <Chip
+                    variant="surface"
+                    label={t('common.all')}
+                    active={activeFilterIds.length === 0}
+                    onPress={() => setSelectedIds([])}
+                  />
+                  {instruments.map(instrument => (
+                    <Chip
+                      key={instrument.idInstrument}
+                      variant="surface"
+                      label={instrument.nameInstrument}
+                      dot={instrument.color}
+                      active={activeFilterIds.includes(instrument.idInstrument)}
+                      onPress={() => toggleInstrument(instrument.idInstrument)}
+                    />
+                  ))}
+                </ScrollView>
+              )}
               <Card variant="list" style={styles.instruments}>
                 {sorted.map((instrument, index) => (
                   <InstrumentRow
@@ -465,6 +532,27 @@ export default function InvestmentScreen({
                     }
                   />
                 ))}
+                {instruments.length > 1 && (
+                  <>
+                    <View style={styles.chipDivider} />
+                    {instruments.map(instrument => (
+                      <Chip
+                        key={instrument.idInstrument}
+                        variant="surface"
+                        label={instrument.nameInstrument}
+                        dot={instrument.color}
+                        active={instrumentFilter === instrument.idInstrument}
+                        onPress={() =>
+                          setInstrumentFilter(prev =>
+                            prev === instrument.idInstrument
+                              ? 'all'
+                              : instrument.idInstrument,
+                          )
+                        }
+                      />
+                    ))}
+                  </>
+                )}
               </ScrollView>
               <Card variant="list" style={styles.ledger}>
                 <InvestmentTransactionList

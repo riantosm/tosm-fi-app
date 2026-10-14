@@ -70,7 +70,7 @@ export default function NetWorthHero({
   const styles = useStyles();
   const { colors } = useTheme();
   const { t, i18n } = useTranslation();
-  const { symbol, formatNumber, formatCompact } = useMoneyFormat();
+  const { symbol, format, formatNumber, formatCompact } = useMoneyFormat();
   const empty = data === undefined;
 
   return (
@@ -150,6 +150,30 @@ export default function NetWorthHero({
                     color: colors.investment,
                     ringColor: colors.surface,
                   }}
+                  renderTooltip={index => ({
+                    title: formatTimelineDate(
+                      data[index].date,
+                      PERIOD_GRANULARITY[period],
+                      i18n.language,
+                      'tooltip',
+                    ),
+                    rows: [
+                      {
+                        key: 'current',
+                        label: t('investment.currentValue'),
+                        value: format(data[index].current),
+                        color: colors.investment,
+                      },
+                      {
+                        key: 'invested',
+                        label: t('investment.capital'),
+                        value: format(data[index].invested),
+                        color: colors.text3,
+                        marker: 'line',
+                        muted: true,
+                      },
+                    ],
+                  })}
                   series={[
                     {
                       key: 'current',

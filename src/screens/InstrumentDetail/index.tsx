@@ -102,7 +102,7 @@ export default function InstrumentDetailScreen({
   const styles = useStyles();
   const { colors } = useTheme();
   const { t, i18n } = useTranslation();
-  const { formatNumber } = useMoneyFormat();
+  const { format, formatNumber } = useMoneyFormat();
   const { instruments, status, loadInstruments } = useInstruments();
   const { version, queryInvestmentTransactions } = useInvestmentTransactions();
   const [refreshKey, setRefreshKey] = useState(0);
@@ -319,6 +319,30 @@ export default function InstrumentDetailScreen({
                 labelColor={colors.text3}
                 labelFontSize={11.5}
                 gridColor={colors.border}
+                renderTooltip={index => ({
+                  title: formatTimelineDate(
+                    history[index].date,
+                    granularity,
+                    i18n.language,
+                    'tooltip',
+                  ),
+                  rows: [
+                    {
+                      key: 'current',
+                      label: t('investment.valueShort'),
+                      value: format(history[index].current),
+                      color: instrument.color,
+                    },
+                    {
+                      key: 'invested',
+                      label: t('investment.capital'),
+                      value: format(history[index].invested),
+                      color: colors.text3,
+                      marker: 'line',
+                      muted: true,
+                    },
+                  ],
+                })}
                 series={[
                   {
                     key: 'current',

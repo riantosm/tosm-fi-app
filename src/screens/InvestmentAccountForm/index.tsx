@@ -1,13 +1,10 @@
 import { useState } from 'react';
-import { View } from 'react-native';
-import { Check, Landmark, Lock, Plus, Trash2 } from 'lucide-react-native';
+import { Check, Plus, Trash2 } from 'lucide-react-native';
 import { useTranslation } from 'react-i18next';
 import Button from '@/components/atoms/Button';
 import IconButton from '@/components/atoms/IconButton';
-import Monogram from '@/components/atoms/Monogram';
-import Typography from '@/components/atoms/Typography';
-import TextField from '@/components/molecules/TextField';
 import ConfirmDialog from '@/components/organisms/ConfirmDialog';
+import InvestmentAccountFields from '@/components/organisms/InvestmentAccountFields';
 import SheetLayout from '@/components/templates/SheetLayout';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useToast } from '@/contexts/ToastContext';
@@ -15,19 +12,8 @@ import { useInstruments } from '@/hooks/useInstruments';
 import type { ROUTES } from '@/navigation/paths';
 import type { RootStackScreenProps } from '@/navigation/types';
 import { makeStyles } from '@/theme/makeStyles';
-import { radius } from '@/theme/metrics';
 
 const useStyles = makeStyles(({ colors }) => ({
-  locked: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 10,
-    paddingVertical: 10,
-    paddingHorizontal: 14,
-    borderRadius: radius.control,
-    backgroundColor: colors.surface2,
-  },
-  lockedName: { flex: 1 },
   delete: { width: 50, height: 50, backgroundColor: colors.expenseSoft },
   footerButton: { flex: 1 },
 }));
@@ -152,40 +138,10 @@ export default function InvestmentAccountFormScreen({
           </>
         }
       >
-        {instrument && (
-          <View style={styles.locked}>
-            <Monogram
-              name={instrument.nameInstrument}
-              color={instrument.color}
-              variant="solid"
-              shape="square"
-              size={28}
-            />
-            <Typography
-              variant="label"
-              numberOfLines={1}
-              style={styles.lockedName}
-            >
-              {instrument.nameInstrument}
-            </Typography>
-            <Lock
-              size={16}
-              color={colors.text3}
-              accessibilityLabel={t('investment.instrumentLocked')}
-            />
-          </View>
-        )}
-        <TextField
-          variant="filled"
-          label={t('investment.accountNameLabel')}
-          helper={t('investment.accountNameHelper')}
-          value={name}
-          onChangeText={setName}
-          placeholder={t('investment.accountNamePlaceholder')}
-          autoCapitalize="words"
-          renderLeadingIcon={iconColor => (
-            <Landmark size={18} color={iconColor} />
-          )}
+        <InvestmentAccountFields
+          instrument={instrument}
+          name={name}
+          onNameChange={setName}
         />
       </SheetLayout>
 
