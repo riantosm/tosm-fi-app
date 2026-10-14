@@ -24,6 +24,7 @@ import type { ROUTES } from '@/navigation/paths';
 import type { RootStackScreenProps } from '@/navigation/types';
 import { makeStyles } from '@/theme/makeStyles';
 import { radius, spacing } from '@/theme/metrics';
+import { fonts } from '@/theme/typography';
 import type { BudgetInput } from '@/types';
 import { transitions } from '@/utils/motion';
 import { formatNumberInput, parseFormattedNumber } from '@/utils/numberInput';
@@ -67,6 +68,8 @@ const useStyles = makeStyles(({ colors }) => ({
     borderWidth: 1,
     borderColor: colors.primary,
   },
+  // Nominal limit: Outfit 400 (web font-num).
+  limitInput: { fontFamily: fonts.numRegular },
   footerButton: { flex: 1 },
 }));
 
@@ -247,7 +250,7 @@ export default function BudgetFormScreen({
                     >
                       <Icon size={14} color={category.color} />
                       <Typography
-                        variant="meta"
+                        variant="metaMedium"
                         numberOfLines={1}
                         style={styles.chipText}
                       >
@@ -279,7 +282,7 @@ export default function BudgetFormScreen({
                   style={styles.pick}
                 >
                   <Plus size={14} color={colors.primaryText} />
-                  <Typography variant="captionStrong" tone="primary">
+                  <Typography variant="tileLabel" tone="primary">
                     {t(
                       selectedCategories.length === 0
                         ? 'budget.selectCategoryPlaceholder'
@@ -299,6 +302,7 @@ export default function BudgetFormScreen({
           onChangeText={raw => setLimitInput(formatNumberInput(raw))}
           placeholder="0"
           keyboardType="decimal-pad"
+          style={styles.limitInput}
           renderLeadingIcon={iconColor => (
             <Banknote size={18} color={iconColor} />
           )}

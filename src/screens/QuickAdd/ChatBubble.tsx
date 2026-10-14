@@ -110,7 +110,7 @@ export function UserBubble({
       {failed && (
         <View style={styles.failedRow}>
           <CircleAlert size={14} color={colors.expenseText} />
-          <Typography variant="captionStrong" tone="expense">
+          <Typography variant="captionMedium" tone="expense">
             {t('assistant.sendFailed')}
           </Typography>
         </View>

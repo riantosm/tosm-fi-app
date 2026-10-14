@@ -144,7 +144,7 @@ function TargetBody({
                   size={46}
                 />
                 <Typography
-                  variant={active ? 'tileLabel' : 'meta'}
+                  variant={active ? 'tileLabel' : 'metaMedium'}
                   tone={active ? 'primary' : 'muted'}
                   numberOfLines={1}
                 >
@@ -161,7 +161,7 @@ function TargetBody({
             {t('investment.accountsIn', { name: instrument.nameInstrument })}
           </Typography>
           {accounts.length === 0 ? (
-            <Typography variant="secondary" tone="subtle">
+            <Typography variant="label" tone="subtle">
               {t('investment.noAccounts')}
             </Typography>
           ) : (
@@ -181,13 +181,13 @@ function TargetBody({
                       style={[styles.radio, active && styles.radioActive]}
                     />
                     <Typography
-                      variant="label"
+                      variant={active ? 'label' : 'body'}
                       numberOfLines={1}
                       style={styles.accountName}
                     >
                       {item.nameInvestmentAccount}
                     </Typography>
-                    <Typography variant="meta" tone="muted" tabular>
+                    <Typography variant="numSecondary" tone="muted" tabular>
                       {format(item.currentValue)}
                     </Typography>
                   </PressableScale>

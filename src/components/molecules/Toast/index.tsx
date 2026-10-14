@@ -5,6 +5,7 @@ import { useTheme } from '@/contexts/ThemeContext';
 import { makeStyles } from '@/theme/makeStyles';
 import { radius, spacing } from '@/theme/metrics';
 import type { Tone } from '@/theme/tones';
+import { fonts } from '@/theme/typography';
 
 export type ToastTone = 'success' | 'error' | 'info';
 
@@ -38,7 +39,8 @@ const useStyles = makeStyles(({ colors, shadows }) => ({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  message: { flex: 1, fontSize: 13.5 },
+  // Web: pesan toast Inter 500/13.5.
+  message: { flex: 1, fontFamily: fonts.bodyMedium, fontSize: 13.5 },
 }));
 
 /** Toast Mist (pen `vFxAJ`): pill surface + ikon bulat bernada. Tampilan saja; lihat ToastContext. */
@@ -52,7 +54,7 @@ export default function Toast({ message, tone = 'info' }: ToastProps) {
       <View style={[styles.iconWrap, { backgroundColor: soft }]}>
         <Icon size={16} color={text} />
       </View>
-      <Typography variant="label" numberOfLines={2} style={styles.message}>
+      <Typography variant="body" numberOfLines={2} style={styles.message}>
         {message}
       </Typography>
     </View>

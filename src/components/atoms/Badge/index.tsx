@@ -13,6 +13,8 @@ export type BadgeTone =
 export interface BadgeProps {
   label: string;
   tone?: BadgeTone;
+  /** sm: Inter 600/11 · md: Inter 600/12. */
+  size?: 'sm' | 'md';
   style?: StyleProp<ViewStyle>;
 }
 
@@ -39,11 +41,20 @@ const useStyles = makeStyles(({ colors }) => ({
   neutral: { backgroundColor: colors.surface2 },
 }));
 
-export default function Badge({ label, tone = 'primary', style }: BadgeProps) {
+export default function Badge({
+  label,
+  tone = 'primary',
+  size = 'sm',
+  style,
+}: BadgeProps) {
   const styles = useStyles();
   return (
     <View style={[styles.base, styles[tone], style]}>
-      <Typography variant="badge" tone={TEXT_TONE[tone]} numberOfLines={1}>
+      <Typography
+        variant={size === 'md' ? 'captionStrong' : 'badge'}
+        tone={TEXT_TONE[tone]}
+        numberOfLines={1}
+      >
         {label}
       </Typography>
     </View>

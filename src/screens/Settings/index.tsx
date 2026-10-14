@@ -39,6 +39,7 @@ const useStyles = makeStyles(({ colors }) => ({
     backgroundColor: colors.expenseSoft,
   },
   dangerHead: { flexDirection: 'row', alignItems: 'center', gap: spacing.sm },
+  dangerTitle: { fontSize: 16, lineHeight: 22 },
   dangerText: { lineHeight: 19 },
 }));
 
@@ -100,6 +101,7 @@ export default function SettingsScreen({
             pendingCount > 0 ? (
               <Badge
                 tone="income"
+                size="md"
                 label={t('settingsMenu.newCount', { n: pendingCount })}
               />
             ) : undefined
@@ -129,7 +131,7 @@ export default function SettingsScreen({
     <View key="danger" style={styles.danger}>
       <View style={styles.dangerHead}>
         <TriangleAlert size={18} color={colors.expenseText} />
-        <Typography variant="label" tone="expense">
+        <Typography variant="label" tone="expense" style={styles.dangerTitle}>
           {t('settingsDanger.title')}
         </Typography>
       </View>

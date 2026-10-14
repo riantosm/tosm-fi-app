@@ -58,6 +58,7 @@ const useStyles = makeStyles(({ colors, shadows }) => ({
     backgroundColor: colors.surface,
     ...shadows.card,
   },
+  nextDueAmount: { fontSize: 15, lineHeight: 20 },
   statValue: { fontSize: 17, lineHeight: 22 },
 }));
 
@@ -98,7 +99,12 @@ export default function ScheduleSummary({
           )}
         </View>
         {nextDue && !loading && (
-          <Typography variant="num" tone="hero" tabular>
+          <Typography
+            variant="num"
+            tone="hero"
+            tabular
+            style={styles.nextDueAmount}
+          >
             {nextDue.isIncome ? '+' : MINUS}
             {formatNumber(nextDue.amount)}
           </Typography>

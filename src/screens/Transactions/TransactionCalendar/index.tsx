@@ -6,6 +6,7 @@ import Card from '@/components/molecules/Card';
 import { useTheme } from '@/contexts/ThemeContext';
 import { makeStyles } from '@/theme/makeStyles';
 import { radius } from '@/theme/metrics';
+import { fonts } from '@/theme/typography';
 import type { Category, Transaction } from '@/types';
 import { buildMonthWeeks, getWeekdayLabels, toIsoDate } from '@/utils/calendar';
 
@@ -48,6 +49,9 @@ const useStyles = makeStyles(({ colors }) => ({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  // Angka tanggal = web: Outfit 13,5, medium (biasa) / semibold (hari ini & terpilih).
+  dayNum: { fontFamily: fonts.displayMedium, fontSize: 13.5 },
+  dayNumStrong: { fontFamily: fonts.num },
   dots: { flexDirection: 'row', gap: 3 },
   dot: { width: 5, height: 5, borderRadius: radius.pill },
   dim: { opacity: 0.5 },
@@ -115,7 +119,10 @@ function TransactionCalendar({
               return (
                 <View key={day.iso} style={styles.cell}>
                   <View style={styles.day}>
-                    <Typography tone="subtle" style={styles.dim}>
+                    <Typography
+                      tone="subtle"
+                      style={[styles.dayNum, styles.dim]}
+                    >
                       {day.date.getDate()}
                     </Typography>
                   </View>
@@ -143,7 +150,10 @@ function TransactionCalendar({
                     ]}
                   >
                     <Typography
-                      variant={isToday || isSelected ? 'label' : 'body'}
+                      style={[
+                        styles.dayNum,
+                        (isToday || isSelected) && styles.dayNumStrong,
+                      ]}
                       tone={
                         isToday ? 'inverse' : isSelected ? 'primary' : 'default'
                       }

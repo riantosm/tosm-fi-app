@@ -144,6 +144,7 @@ export default function NetWorthHero({
                     ),
                   )}
                   labelColor={colors.heroFg2}
+                  labelFontSize={11}
                   gridColor={`${colors.heroFg2}24`}
                   endDot={{
                     color: colors.investment,

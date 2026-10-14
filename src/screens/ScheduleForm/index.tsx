@@ -327,7 +327,7 @@ export default function ScheduleFormScreen({
                       style={[styles.day, selected && styles.daySelected]}
                     >
                       <Typography
-                        variant={selected ? 'tileLabel' : 'meta'}
+                        variant={selected ? 'fieldLabel' : 'secondaryMedium'}
                         tone={selected ? 'inverse' : 'muted'}
                         numberOfLines={1}
                       >

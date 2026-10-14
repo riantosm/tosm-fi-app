@@ -125,7 +125,8 @@ function TransactionList({
   if (groups.length === 0) {
     return (
       <EmptyState
-        icon={<ReceiptText size={32} color={colors.primaryText} />}
+        variant="inset"
+        icon={<ReceiptText size={18} color={colors.text2} />}
         title={emptyMessage ?? t('dashboard.noTransactions')}
       />
     );
@@ -150,7 +151,7 @@ function TransactionList({
               })}
             </Typography>
             {group.net !== 0 && (
-              <Typography variant="caption" tone="subtle" tabular>
+              <Typography variant="numCaption" tone="subtle" tabular>
                 {group.net < 0 ? MINUS : '+'}
                 {format(Math.abs(group.net))}
               </Typography>

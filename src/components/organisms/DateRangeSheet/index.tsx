@@ -33,6 +33,8 @@ export interface DateRangeSheetProps {
 }
 
 const useStyles = makeStyles(({ colors }) => ({
+  // Web: judul DateRangeFields Outfit 600/19.
+  title: { fontSize: 19, lineHeight: 24 },
   fields: { flexDirection: 'row', gap: 10 },
   field: {
     flex: 1,
@@ -54,11 +56,13 @@ const useStyles = makeStyles(({ colors }) => ({
 
 /** Rentang tanggal (pen `TtzF7`): Dari/Sampai + kalender rentang, Hapus / Terapkan. */
 export default function DateRangeSheet(props: DateRangeSheetProps) {
+  const styles = useStyles();
   const { t } = useTranslation();
   return (
     <BottomSheet
       visible={props.visible}
       title={t('transaction.dateFilterTitle')}
+      titleStyle={styles.title}
       closeLabel={t('common.close')}
       onClose={props.onClose}
     >

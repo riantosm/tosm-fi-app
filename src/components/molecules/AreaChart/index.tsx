@@ -11,6 +11,7 @@ import Svg, {
 } from 'react-native-svg';
 import Typography from '@/components/atoms/Typography';
 import { makeStyles } from '@/theme/makeStyles';
+import { textStyles } from '@/theme/typography';
 import { monotonePath, pickLabelIndexes } from '@/utils/chart';
 import { transitions } from '@/utils/motion';
 
@@ -30,6 +31,8 @@ export interface AreaChartProps {
   /** Label sumbu X (sepanjang data) — kosong = tanpa sumbu. */
   labels?: string[];
   labelColor?: string;
+  /** Ukuran teks label sumbu X (default 12 = caption). */
+  labelFontSize?: number;
   /** Garis grid horizontal (3 garis). */
   gridColor?: string;
   /** Titik di ujung seri pertama. */
@@ -55,6 +58,7 @@ export default function AreaChart({
   height,
   labels,
   labelColor,
+  labelFontSize = textStyles.caption.fontSize,
   gridColor,
   endDot,
 }: AreaChartProps) {
@@ -219,6 +223,7 @@ export default function AreaChart({
                         width - LABEL_WIDTH,
                       ),
                       color: labelColor,
+                      fontSize: labelFontSize,
                     },
                   ]}
                 >

@@ -35,6 +35,7 @@ const useStyles = makeStyles(() => ({
     justifyContent: 'center',
   },
   texts: { flex: 1, gap: spacing.xxs },
+  title: { fontSize: 15, lineHeight: 20 },
 }));
 
 /** Satu baris menu (Pengaturan). Dikumpulkan di dalam MenuGroup. */
@@ -61,7 +62,9 @@ export default function MenuRow({
         {renderIcon(text)}
       </View>
       <View style={styles.texts}>
-        <Typography variant="label">{title}</Typography>
+        <Typography variant="label" style={styles.title}>
+          {title}
+        </Typography>
         {!!description && (
           <Typography variant="caption" tone="subtle">
             {description}

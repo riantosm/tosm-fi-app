@@ -56,7 +56,7 @@ const useStyles = makeStyles(({ colors }) => ({
   selectedColumn: { zIndex: 1 },
   pillText: { color: colors.surface, fontSize: 10.5, lineHeight: 15 },
   labels: { flexDirection: 'row', gap: 4, marginTop: 8 },
-  label: { flex: 1 },
+  label: { flex: 1, fontSize: 11, lineHeight: 14 },
   dim: { opacity: 0.5 },
 }));
 
@@ -162,6 +162,7 @@ export default function MonthlyTrendCard({
       </View>
 
       <SegmentedControl<MonthlyTrendMetric>
+        size="sm"
         options={METRICS.map(option => ({
           value: option,
           label: t(`reports.monthlyTrend.metrics.${option}`),

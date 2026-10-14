@@ -6,6 +6,7 @@ import Typography from '@/components/atoms/Typography';
 import { useTheme } from '@/contexts/ThemeContext';
 import { makeStyles } from '@/theme/makeStyles';
 import { radius } from '@/theme/metrics';
+import { fonts } from '@/theme/typography';
 import { transitions } from '@/utils/motion';
 
 export interface SegmentOption<T extends string> {
@@ -28,6 +29,8 @@ export interface SegmentedControlProps<T extends string> {
   variant?: 'track' | 'compact' | 'hero' | 'solid';
   /** Warna teks segmen aktif (mis. expenseText untuk Pengeluaran). */
   activeColor?: string;
+  /** Ukuran teks: sm 12.5 · md 13.5. Default ikut varian (compact sm, lainnya md). */
+  size?: 'sm' | 'md';
 }
 
 const useStyles = makeStyles(({ colors, shadows }) => ({
@@ -54,8 +57,10 @@ const useStyles = makeStyles(({ colors, shadows }) => ({
     paddingVertical: 10,
   },
   segmentCompact: { paddingVertical: 6 },
-  label: { fontSize: 13.5 },
-  labelCompact: { fontSize: 12.5 },
+  labelMd: { fontSize: 13.5 },
+  labelSm: { fontSize: 12.5 },
+  // Web: segmen non-aktif Inter 500.
+  labelInactive: { fontFamily: fonts.bodyMedium },
 }));
 
 /** Toggle bergaya pill dengan thumb yang bergeser. */
@@ -65,6 +70,7 @@ export default function SegmentedControl<T extends string>({
   onChange,
   variant = 'track',
   activeColor,
+  size,
 }: SegmentedControlProps<T>) {
   const styles = useStyles();
   const { colors } = useTheme();
@@ -73,6 +79,7 @@ export default function SegmentedControl<T extends string>({
   const index = options.findIndex(option => option.value === value);
   const segmentWidth = width / options.length;
   const compact = variant === 'compact';
+  const isSm = (size ?? (compact ? 'sm' : 'md')) === 'sm';
 
   return (
     <View
@@ -139,7 +146,8 @@ export default function SegmentedControl<T extends string>({
                   variant={selected ? 'label' : 'body'}
                   numberOfLines={1}
                   style={[
-                    compact ? styles.labelCompact : styles.label,
+                    isSm ? styles.labelSm : styles.labelMd,
+                    !selected && styles.labelInactive,
                     { color },
                   ]}
                 >

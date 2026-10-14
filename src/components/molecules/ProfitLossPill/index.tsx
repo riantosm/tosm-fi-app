@@ -36,7 +36,7 @@ const useStyles = makeStyles(({ colors }) => ({
   loss: { backgroundColor: colors.expenseSoft },
   surface: { backgroundColor: colors.surface },
   text: { fontSize: 12, lineHeight: 15 },
-  arrow: { fontSize: 9, lineHeight: 15 },
+  arrow: { fontSize: 10, lineHeight: 15 },
 }));
 
 /** Pil P/L hijau/merah untuk instrumen, akun, dan hero. */
@@ -82,7 +82,7 @@ export default function ProfitLossPill({
         </>
       ) : (
         <>
-          <Typography tone={tone} style={styles.arrow}>
+          <Typography variant="num" tone={tone} style={styles.arrow}>
             {loss ? '▼' : '▲'}
           </Typography>
           <Typography variant="num" tone={tone} tabular style={styles.text}>

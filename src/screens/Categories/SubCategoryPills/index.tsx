@@ -142,7 +142,11 @@ export default function SubCategoryPills({
         ]}
       >
         <Icon size={14} color={category.color} />
-        <Typography variant="meta" numberOfLines={1} style={styles.pillText}>
+        <Typography
+          variant="secondaryMedium"
+          numberOfLines={1}
+          style={styles.pillText}
+        >
           {sub.nameSubCategory}
         </Typography>
       </PressableScale>
@@ -155,7 +159,11 @@ export default function SubCategoryPills({
     return (
       <View style={styles.pill}>
         <Icon size={14} color={category.color} />
-        <Typography variant="meta" numberOfLines={1} style={styles.pillText}>
+        <Typography
+          variant="secondaryMedium"
+          numberOfLines={1}
+          style={styles.pillText}
+        >
           {sub.nameSubCategory}
         </Typography>
       </View>

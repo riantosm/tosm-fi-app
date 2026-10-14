@@ -93,7 +93,7 @@ export default function OptionRow({
           {title}
         </Typography>
         {!!subtitle && (
-          <Typography variant="meta" tone="subtle" tabular numberOfLines={1}>
+          <Typography variant="numMeta" tone="subtle" tabular numberOfLines={1}>
             {subtitle}
           </Typography>
         )}

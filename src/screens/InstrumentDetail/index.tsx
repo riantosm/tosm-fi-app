@@ -86,10 +86,11 @@ const useStyles = makeStyles(({ colors }) => ({
     gap: spacing.md,
     paddingHorizontal: spacing.xs,
   },
-  sectionTitle: { flex: 1 },
+  sectionTitle: { flex: 1, fontSize: 17, lineHeight: 22 },
   add: { flexDirection: 'row', alignItems: 'center', gap: spacing.xs },
   chips: { gap: spacing.sm },
   ledgerHead: { gap: spacing.md },
+  ledgerTitle: { fontSize: 17, lineHeight: 22 },
   dim: { opacity: 0.5 },
 }));
 
@@ -264,7 +265,7 @@ export default function InstrumentDetailScreen({
           <View style={styles.scope}>
             <Layers size={16} color={colors.primaryText} />
             <Typography
-              variant="captionStrong"
+              variant="tileLabel"
               tone="primary"
               numberOfLines={1}
               style={styles.scopeText}
@@ -281,7 +282,7 @@ export default function InstrumentDetailScreen({
                 hitSlop={8}
                 onPress={() => setSelectedIds([])}
               >
-                <Typography variant="captionStrong" tone="primary">
+                <Typography variant="tileLabel" tone="primary">
                   {t('common.all')}
                 </Typography>
               </PressableScale>
@@ -316,6 +317,7 @@ export default function InstrumentDetailScreen({
                   formatTimelineDate(point.date, granularity, i18n.language),
                 )}
                 labelColor={colors.text3}
+                labelFontSize={11.5}
                 gridColor={colors.border}
                 series={[
                   {
@@ -344,6 +346,7 @@ export default function InstrumentDetailScreen({
             </View>
           )}
           <SegmentedControl<NetWorthTimelineGranularity>
+            size="sm"
             value={granularity}
             onChange={setGranularity}
             options={GRANULARITIES.map(option => ({
@@ -371,7 +374,7 @@ export default function InstrumentDetailScreen({
             style={styles.add}
           >
             <Plus size={16} color={colors.primaryText} />
-            <Typography variant="label" tone="primary">
+            <Typography variant="fieldLabel" tone="primary">
               {t('investment.addShort')}
             </Typography>
           </PressableScale>
@@ -421,7 +424,7 @@ export default function InstrumentDetailScreen({
       <Reveal delay={100}>
         <Card>
           <View style={styles.ledgerHead}>
-            <Typography variant="cardTitle">
+            <Typography variant="cardTitle" style={styles.ledgerTitle}>
               {t('investment.instrumentTransactions', {
                 name: instrument.nameInstrument,
               })}

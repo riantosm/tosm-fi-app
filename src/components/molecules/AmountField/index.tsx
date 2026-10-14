@@ -5,6 +5,8 @@ import PressableScale from '@/components/atoms/PressableScale';
 import TextField from '@/components/molecules/TextField';
 import AmountCalculatorSheet from '@/components/organisms/AmountCalculatorSheet';
 import { useTheme } from '@/contexts/ThemeContext';
+import { makeStyles } from '@/theme/makeStyles';
+import { fonts } from '@/theme/typography';
 import { formatNumberInput, parseFormattedNumber } from '@/utils/numberInput';
 
 export interface AmountFieldProps {
@@ -16,6 +18,11 @@ export interface AmountFieldProps {
   error?: string;
 }
 
+const useStyles = makeStyles(() => ({
+  // Web: input nominal Outfit 400, angka sejajar.
+  input: { fontFamily: fonts.numRegular, fontVariant: ['tabular-nums'] },
+}));
+
 /** Field nominal (ikon banknote) + tombol kalkulator yang membuka kalkulator bersama. */
 export default function AmountField({
   label,
@@ -24,6 +31,7 @@ export default function AmountField({
   helper,
   error,
 }: AmountFieldProps) {
+  const styles = useStyles();
   const { colors } = useTheme();
   const { t } = useTranslation();
   const [calculatorOpen, setCalculatorOpen] = useState(false);
@@ -37,6 +45,7 @@ export default function AmountField({
         onChangeText={raw => onChange(formatNumberInput(raw))}
         placeholder="0"
         keyboardType="decimal-pad"
+        style={styles.input}
         helper={helper}
         error={error}
         renderLeadingIcon={color => <Banknote size={18} color={color} />}

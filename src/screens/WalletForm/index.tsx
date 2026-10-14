@@ -30,8 +30,11 @@ import type { RootStackScreenProps } from '@/navigation/types';
 import { makeStyles } from '@/theme/makeStyles';
 import { radius, spacing } from '@/theme/metrics';
 import { formatNumberInput, parseFormattedNumber } from '@/utils/numberInput';
+import { fonts } from '@/theme/typography';
 
 const useStyles = makeStyles(({ colors }) => ({
+  // Angka saldo = web `font-num`.
+  numText: { fontFamily: fonts.numRegular },
   preview: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -188,7 +191,12 @@ export default function WalletFormScreen({
             <Typography variant="label" numberOfLines={1}>
               {name.trim() || t('wallet.namePreview')}
             </Typography>
-            <Typography variant="meta" tone="muted" tabular numberOfLines={1}>
+            <Typography
+              variant="numSecondary"
+              tone="muted"
+              tabular
+              numberOfLines={1}
+            >
               {format(previewBalance)}
             </Typography>
           </View>
@@ -241,6 +249,7 @@ export default function WalletFormScreen({
             onChangeText={raw => setBalanceInput(formatNumberInput(raw))}
             placeholder="0"
             keyboardType="decimal-pad"
+            style={styles.numText}
             renderLeadingIcon={iconColor => (
               <Banknote size={18} color={iconColor} />
             )}

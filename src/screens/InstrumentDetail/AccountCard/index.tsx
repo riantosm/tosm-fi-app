@@ -114,7 +114,7 @@ export default function AccountCard({
     >
       <Icon size={14} color={primary ? colors.primaryFg : colors.text2} />
       <Typography
-        variant={primary ? 'tileLabel' : 'meta'}
+        variant={primary ? 'tileLabel' : 'metaMedium'}
         style={{ color: primary ? colors.primaryFg : colors.text2 }}
       >
         {label}
@@ -140,6 +140,7 @@ export default function AccountCard({
             color={instrument.color}
             shape="square"
             size={34}
+            fontSize={13}
           />
           <View style={[styles.check, selected && styles.checkOn]}>
             <AnimatePresence>

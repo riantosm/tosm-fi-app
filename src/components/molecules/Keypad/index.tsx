@@ -5,6 +5,7 @@ import Typography from '@/components/atoms/Typography';
 import { useTheme } from '@/contexts/ThemeContext';
 import { makeStyles } from '@/theme/makeStyles';
 import { radius, spacing } from '@/theme/metrics';
+import { fonts } from '@/theme/typography';
 import type { CalculatorOperator } from '@/hooks/useAmountCalculator';
 
 export interface KeypadProps {
@@ -67,7 +68,9 @@ const useStyles = makeStyles(({ colors }) => ({
   },
   op: { backgroundColor: colors.primarySoft },
   confirm: { borderRadius: 16, backgroundColor: colors.primary },
-  label: { fontSize: 21, lineHeight: 26 },
+  label: { fontSize: 20, lineHeight: 26, letterSpacing: 0 },
+  // Web: angka Outfit 500, operator Outfit 600.
+  labelDigit: { fontFamily: fonts.displayMedium },
   confirmLabel: { fontSize: 15 },
 }));
 
@@ -124,7 +127,7 @@ export default function Keypad({
               <Typography
                 variant="amount"
                 tone={key.kind === 'op' ? 'primary' : 'default'}
-                style={styles.label}
+                style={[styles.label, key.kind !== 'op' && styles.labelDigit]}
               >
                 {label(key)}
               </Typography>

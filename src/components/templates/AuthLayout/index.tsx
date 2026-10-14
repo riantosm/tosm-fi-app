@@ -42,6 +42,9 @@ const useStyles = makeStyles(({ colors }) => ({
     justifyContent: 'space-between',
   },
   brand: { flexDirection: 'row', alignItems: 'center', gap: 10 },
+  // Web HP: headline hero Outfit 600/24; judul form tracking -0.01em.
+  headline: { fontSize: 24, lineHeight: 30 },
+  title: { letterSpacing: -0.26 },
   sheet: {
     flexGrow: 1,
     justifyContent: 'space-between',
@@ -117,7 +120,11 @@ export default function AuthLayout({
                 </View>
                 {headerRight}
               </View>
-              <Typography variant="headline" tone="hero">
+              <Typography
+                variant="pageTitle"
+                tone="hero"
+                style={styles.headline}
+              >
                 {headline}
               </Typography>
             </View>
@@ -125,7 +132,9 @@ export default function AuthLayout({
             <Reveal style={styles.sheet}>
               <View style={styles.form}>
                 <View style={styles.head}>
-                  <Typography variant="headline">{title}</Typography>
+                  <Typography variant="headline" style={styles.title}>
+                    {title}
+                  </Typography>
                   <Typography tone="muted">{subtitle}</Typography>
                 </View>
                 {children}

@@ -40,6 +40,7 @@ const useStyles = makeStyles(({ colors }) => ({
     borderRadius: radius.field,
     backgroundColor: colors.surface2,
   },
+  title: { fontSize: 20, lineHeight: 26 },
   insetIcon: {
     width: 40,
     height: 40,
@@ -62,7 +63,7 @@ export default function EmptyState({
     return (
       <Reveal style={styles.inset}>
         <View style={styles.insetIcon}>{icon}</View>
-        <Typography variant="secondary" tone="muted" align="center">
+        <Typography variant="label" align="center">
           {title}
         </Typography>
         {action}
@@ -72,7 +73,7 @@ export default function EmptyState({
   return (
     <Reveal style={styles.container}>
       <View style={styles.iconWrap}>{icon}</View>
-      <Typography variant="cardTitle" align="center">
+      <Typography variant="cardTitle" align="center" style={styles.title}>
         {title}
       </Typography>
       {!!description && (

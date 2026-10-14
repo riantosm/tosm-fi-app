@@ -71,6 +71,7 @@ const useStyles = makeStyles(({ colors }) => ({
     gap: spacing.md,
     paddingHorizontal: spacing.xs,
   },
+  sectionTitle: { fontSize: 17, lineHeight: 22 },
   sort: { flexDirection: 'row', alignItems: 'center', gap: 6 },
   instruments: { paddingHorizontal: spacing.lg, paddingBottom: spacing.xs },
   addRow: {
@@ -82,6 +83,7 @@ const useStyles = makeStyles(({ colors }) => ({
     borderTopWidth: 1,
     borderTopColor: colors.border,
   },
+  addLabel: { fontSize: 13.5, lineHeight: 19 },
   chips: { gap: spacing.sm, paddingHorizontal: spacing.xs },
   ledger: { paddingHorizontal: spacing.lg, paddingVertical: spacing.xs },
   more: { paddingVertical: spacing.md },
@@ -92,6 +94,7 @@ const useStyles = makeStyles(({ colors }) => ({
     paddingVertical: spacing.xxxl,
     paddingHorizontal: spacing.xl,
   },
+  emptyTitle: { fontSize: 20, lineHeight: 26 },
   tiles: { flexDirection: 'row', marginBottom: spacing.md },
   tileFront: { zIndex: 1 },
   tile: {
@@ -324,7 +327,11 @@ export default function InvestmentScreen({
             <Card>
               <View style={styles.empty}>
                 <EmptyIllustration />
-                <Typography variant="cardTitle" align="center">
+                <Typography
+                  variant="cardTitle"
+                  align="center"
+                  style={styles.emptyTitle}
+                >
                   {t('investment.emptyTitle')}
                 </Typography>
                 <Typography variant="secondary" tone="muted" align="center">
@@ -352,7 +359,7 @@ export default function InvestmentScreen({
 
             <Reveal delay={50} style={styles.section}>
               <View style={styles.sectionHead}>
-                <Typography variant="cardTitle">
+                <Typography variant="cardTitle" style={styles.sectionTitle}>
                   {t('investment.instrumentLabel')}
                 </Typography>
                 <PressableScale
@@ -387,7 +394,11 @@ export default function InvestmentScreen({
                   style={styles.addRow}
                 >
                   <Plus size={16} color={colors.primaryText} />
-                  <Typography variant="label" tone="primary">
+                  <Typography
+                    variant="label"
+                    tone="primary"
+                    style={styles.addLabel}
+                  >
                     {t('investment.addInstrument')}
                   </Typography>
                 </PressableScale>
@@ -396,7 +407,7 @@ export default function InvestmentScreen({
 
             <Reveal delay={100} style={styles.section}>
               <View style={styles.sectionHead}>
-                <Typography variant="cardTitle">
+                <Typography variant="cardTitle" style={styles.sectionTitle}>
                   {t('investment.ledgerTitleShort')}
                 </Typography>
                 <IconButton

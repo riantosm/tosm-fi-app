@@ -80,7 +80,7 @@ export default function ActionSheet({
               ]}
             >
               {action.renderIcon(color)}
-              <Typography variant="label" style={{ color }}>
+              <Typography variant="body" style={{ color }}>
                 {action.label}
               </Typography>
             </PressableScale>

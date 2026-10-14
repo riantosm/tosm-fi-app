@@ -107,7 +107,7 @@ function IdentityCard() {
       </View>
       <View style={styles.role}>
         <ShieldCheck size={14} color={colors.primaryText} />
-        <Typography variant="captionStrong" tone="primary">
+        <Typography variant="tileLabel" tone="primary">
           {user?.role === 'admin'
             ? t('profile.roleAdmin')
             : t('profile.roleUser')}

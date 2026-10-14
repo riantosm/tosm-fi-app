@@ -6,6 +6,8 @@ import {
   ScrollView,
   StyleSheet,
   View,
+  type StyleProp,
+  type TextStyle,
 } from 'react-native';
 import { MotiView } from 'moti';
 import { ArrowLeft, X } from 'lucide-react-native';
@@ -22,8 +24,10 @@ import { transitions } from '@/utils/motion';
 export interface SheetLayoutProps {
   onClose: () => void;
   closeLabel?: string;
-  /** Judul Outfit 21 + tombol tutup. Tanpa judul: hanya handle. */
+  /** Judul Outfit 20 + tombol tutup. Tanpa judul: hanya handle. */
   title?: string;
+  /** Override gaya judul (mis. ukuran khusus per sheet). */
+  titleStyle?: StyleProp<TextStyle>;
   subtitle?: string;
   /** Ada → tombol kembali di kiri judul (sheet bertingkat, mis. subkategori). */
   onBack?: () => void;
@@ -68,6 +72,8 @@ const useStyles = makeStyles(({ colors, shadows }) => ({
     marginBottom: spacing.xl,
   },
   titles: { flex: 1, gap: spacing.xxs },
+  // Web: judul sheet di HP Outfit 20 (dialog tetap 21).
+  title: { fontSize: 20, lineHeight: 26 },
   body: { gap: spacing.xl },
   bodyCompact: { gap: 14 },
   footer: { flexDirection: 'row', gap: 10, paddingTop: spacing.lg },
@@ -82,6 +88,7 @@ export default function SheetLayout({
   onClose,
   closeLabel,
   title,
+  titleStyle,
   subtitle,
   onBack,
   backLabel,
@@ -144,7 +151,11 @@ export default function SheetLayout({
               />
             )}
             <View style={styles.titles}>
-              <Typography variant="sheetTitle" numberOfLines={1}>
+              <Typography
+                variant="sheetTitle"
+                numberOfLines={1}
+                style={[styles.title, titleStyle]}
+              >
                 {title}
               </Typography>
               {!!subtitle && (

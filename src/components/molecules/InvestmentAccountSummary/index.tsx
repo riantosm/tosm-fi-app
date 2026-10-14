@@ -40,6 +40,7 @@ const useStyles = makeStyles(({ colors }) => ({
   },
   texts: { flex: 1, gap: 1 },
   value: { alignItems: 'flex-end', gap: 1 },
+  valueLabel: { fontSize: 11, lineHeight: 14 },
 }));
 
 /** Kartu akun di atas form uang investasi (Tarik dana, Update nilai, Transfer). */
@@ -87,7 +88,11 @@ export default function InvestmentAccountSummary({
       {value !== undefined && (
         <View style={styles.value}>
           {!!valueLabel && (
-            <Typography variant="caption" tone="subtle">
+            <Typography
+              variant="caption"
+              tone="subtle"
+              style={styles.valueLabel}
+            >
               {valueLabel}
             </Typography>
           )}

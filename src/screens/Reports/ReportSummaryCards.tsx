@@ -80,7 +80,7 @@ const useStyles = makeStyles(({ colors }) => ({
     justifyContent: 'center',
   },
   label: { flex: 1 },
-  value: { fontSize: 20, lineHeight: 26 },
+  value: { fontSize: 20, lineHeight: 26, letterSpacing: 0 },
   body: { gap: spacing.sm },
   skeletons: { gap: 10, paddingVertical: 2 },
   chip: {

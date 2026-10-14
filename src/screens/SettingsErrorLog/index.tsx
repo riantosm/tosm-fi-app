@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { Platform, ScrollView, View } from 'react-native';
+import { Platform, ScrollView, View, type TextStyle } from 'react-native';
 import { AnimatePresence, MotiView } from 'moti';
 import { Bug, ChevronDown, Trash2 } from 'lucide-react-native';
 import { useTranslation } from 'react-i18next';
@@ -35,6 +35,12 @@ const ENVIRONMENT_FILTERS = ['all', 'development', 'production'] as const;
 type EnvironmentFilter = (typeof ENVIRONMENT_FILTERS)[number];
 
 const MONO = Platform.select({ ios: 'Menlo', default: 'monospace' });
+// Pesan error = mono 600 (web). Font mono sistem tanpa file berat: iOS punya Menlo-Bold,
+// Android butuh fontWeight (satu-satunya pengecualian aturan tanpa fontWeight).
+const MONO_STRONG = Platform.select<TextStyle>({
+  ios: { fontFamily: 'Menlo-Bold' },
+  default: { fontFamily: 'monospace', fontWeight: '600' },
+});
 
 const useStyles = makeStyles(({ colors }) => ({
   chipsScroll: { flexGrow: 0 },
@@ -64,7 +70,7 @@ const useStyles = makeStyles(({ colors }) => ({
   },
   envDot: { width: 6, height: 6, borderRadius: radius.pill },
   message: {
-    fontFamily: MONO,
+    ...MONO_STRONG,
     fontSize: 13,
     lineHeight: 20,
     color: colors.expenseText,

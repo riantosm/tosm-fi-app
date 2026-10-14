@@ -41,7 +41,7 @@ export default function LanguagePill({
       style={styles.pill}
     >
       <Languages size={15} color={colors.text2} />
-      <Typography variant="secondary" tone="muted">
+      <Typography variant="secondaryMedium" tone="muted">
         {label}
       </Typography>
       <ChevronUp size={14} color={colors.text3} />

@@ -132,7 +132,10 @@ const TextField = forwardRef<ComponentRef<typeof TextInput>, TextFieldProps>(
           {renderTrailing?.()}
         </View>
         {!!(error || helper) && (
-          <Typography variant="caption" tone={error ? 'expense' : 'subtle'}>
+          <Typography
+            variant={error ? 'captionMedium' : 'caption'}
+            tone={error ? 'expense' : 'subtle'}
+          >
             {error || helper}
           </Typography>
         )}

@@ -33,7 +33,7 @@ const useStyles = makeStyles(() => ({
     justifyContent: 'center',
     paddingHorizontal: 32,
   },
-  value: { fontSize: 26, lineHeight: 32 },
+  value: { fontSize: 22, lineHeight: 28, letterSpacing: 0 },
 }));
 
 /**

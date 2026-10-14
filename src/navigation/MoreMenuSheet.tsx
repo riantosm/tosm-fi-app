@@ -143,7 +143,7 @@ export default function MoreMenuSheet({
         onPress={() => onNavigate(ROUTES.PROFILE)}
         style={styles.profile}
       >
-        <Avatar name={user?.nameUser ?? ''} size={44} />
+        <Avatar name={user?.nameUser ?? ''} size={40} />
         <View style={styles.profileText}>
           <Typography variant="label" numberOfLines={1}>
             {user?.nameUser ?? ''}

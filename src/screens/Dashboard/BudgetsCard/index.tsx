@@ -108,7 +108,7 @@ export default function BudgetsCard({
                     {budget.name}
                   </Typography>
                   <Typography
-                    variant="meta"
+                    variant="numMeta"
                     tone="muted"
                     tabular
                     numberOfLines={1}

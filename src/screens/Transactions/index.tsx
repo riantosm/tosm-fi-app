@@ -79,7 +79,7 @@ const useStyles = makeStyles(({ colors }) => ({
     justifyContent: 'center',
     backgroundColor: colors.primary,
   },
-  filterBadgeText: { color: colors.primaryFg, fontSize: 10, lineHeight: 12 },
+  filterBadgeText: { color: colors.primaryFg, lineHeight: 13 },
   filterButton: { position: 'relative' },
   count: { marginLeft: spacing.sm },
   more: {

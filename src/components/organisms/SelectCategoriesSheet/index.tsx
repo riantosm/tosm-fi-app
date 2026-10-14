@@ -172,7 +172,7 @@ export default function SelectCategoriesSheet({
                     </AnimatePresence>
                   </View>
                   <Typography
-                    variant={isSelected ? 'tileLabel' : 'caption'}
+                    variant={isSelected ? 'captionStrong' : 'captionMedium'}
                     tone={isSelected ? 'primary' : 'muted'}
                     align="center"
                     numberOfLines={1}

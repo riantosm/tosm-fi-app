@@ -3,6 +3,7 @@ import { ChevronLeft, ChevronRight } from 'lucide-react-native';
 import IconButton from '@/components/atoms/IconButton';
 import Typography from '@/components/atoms/Typography';
 import { makeStyles } from '@/theme/makeStyles';
+import { fonts } from '@/theme/typography';
 
 export interface MonthNavProps {
   label: string;
@@ -18,7 +19,12 @@ const useStyles = makeStyles(() => ({
     alignItems: 'center',
     justifyContent: 'space-between',
   },
-  label: { textTransform: 'capitalize' },
+  label: {
+    fontFamily: fonts.display,
+    fontSize: 16,
+    lineHeight: 22,
+    textTransform: 'capitalize',
+  },
 }));
 
 /** "‹ Oktober 2026 ›" di atas grid kalender. */

@@ -18,6 +18,8 @@ export interface SectionHeadProps {
 }
 
 const useStyles = makeStyles(() => ({
+  // Web: judul kartu 17 di HP (18 baru dari lg).
+  title: { fontSize: 17, lineHeight: 22 },
   row: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -46,7 +48,7 @@ export default function SectionHead({
             {eyebrow}
           </Typography>
         )}
-        <Typography variant="cardTitle" numberOfLines={1}>
+        <Typography variant="cardTitle" numberOfLines={1} style={styles.title}>
           {title}
         </Typography>
       </View>

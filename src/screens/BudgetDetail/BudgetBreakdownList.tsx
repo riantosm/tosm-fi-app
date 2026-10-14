@@ -126,7 +126,7 @@ export default function BudgetBreakdownList({
             color={overAllocated ? colors.expenseText : colors.investmentText}
           />
           <Typography
-            variant="captionStrong"
+            variant="tileLabel"
             tone={overAllocated ? 'expense' : 'investment'}
             numberOfLines={1}
             style={styles.bannerText}
@@ -183,7 +183,7 @@ export default function BudgetBreakdownList({
                         {slice.name ?? t('dashboard.otherSubCategory')}
                       </Typography>
                       <Typography
-                        variant="meta"
+                        variant="numMeta"
                         tone={metrics.over ? 'expense' : 'muted'}
                         tabular
                       >
@@ -274,7 +274,7 @@ export default function BudgetBreakdownList({
                               {sub.name ?? t('dashboard.otherSubCategory')}
                             </Typography>
                             <Typography
-                              variant="caption"
+                              variant="numCaption"
                               tone={subMetrics.over ? 'expense' : 'muted'}
                               tabular
                             >

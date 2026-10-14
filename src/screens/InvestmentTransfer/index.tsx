@@ -43,6 +43,7 @@ const useStyles = makeStyles(({ colors }) => ({
   },
   previewRow: { flexDirection: 'row', alignItems: 'center', gap: 6 },
   previewBefore: { flexShrink: 1 },
+  previewAfter: { fontSize: 12.5, lineHeight: 17 },
   footerButton: { flex: 1 },
 }));
 
@@ -156,7 +157,7 @@ export default function InvestmentTransferScreen({
       </Typography>
       <View style={styles.previewRow}>
         <Typography
-          variant="caption"
+          variant="numMeta"
           tone="subtle"
           tabular
           numberOfLines={1}
@@ -165,7 +166,12 @@ export default function InvestmentTransferScreen({
           {formatNumber(before)}
         </Typography>
         <ArrowRight size={12} color={colors.text3} />
-        <Typography variant="captionStrong" tabular numberOfLines={1}>
+        <Typography
+          variant="num"
+          tabular
+          numberOfLines={1}
+          style={styles.previewAfter}
+        >
           {formatNumber(after)}
         </Typography>
       </View>

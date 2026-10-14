@@ -15,6 +15,8 @@ export interface MonogramProps {
   /** circle (pemilih, alokasi aset) atau square (tile instrumen/akun). */
   shape?: 'circle' | 'square';
   size?: number;
+  /** Ukuran huruf (default 34% dari size). */
+  fontSize?: number;
 }
 
 const useStyles = makeStyles(() => ({
@@ -29,6 +31,7 @@ export default function Monogram({
   variant = 'soft',
   shape = 'circle',
   size = 38,
+  fontSize,
 }: MonogramProps) {
   const styles = useStyles();
   const { colors } = useTheme();
@@ -48,7 +51,10 @@ export default function Monogram({
       <Typography
         style={[
           styles.text,
-          { fontSize: size * 0.34, color: solid ? colors.onData : color },
+          {
+            fontSize: fontSize ?? size * 0.34,
+            color: solid ? colors.onData : color,
+          },
         ]}
       >
         {getInitials(name)}

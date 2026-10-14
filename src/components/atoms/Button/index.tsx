@@ -48,6 +48,7 @@ const useStyles = makeStyles(({ colors }) => ({
   content: { flexDirection: 'row', alignItems: 'center', gap: spacing.sm },
   disabled: { opacity: 0.55 },
   sm: { minHeight: 36, paddingHorizontal: 14 },
+  labelSm: { fontSize: 13, lineHeight: 18 },
   md: { minHeight: 44 },
   lg: { minHeight: 50 },
   xl: { minHeight: 52 },
@@ -97,7 +98,11 @@ export default function Button({
       ) : (
         <View style={styles.content}>
           {renderIcon?.(color)}
-          <Typography variant="label" style={{ color }} numberOfLines={1}>
+          <Typography
+            variant="label"
+            style={[size === 'sm' && styles.labelSm, { color }]}
+            numberOfLines={1}
+          >
             {label}
           </Typography>
         </View>

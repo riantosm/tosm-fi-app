@@ -104,7 +104,7 @@ function MonthTabs({
                 style={[styles.tab, active && styles.tabActive]}
               >
                 <Typography
-                  variant={active ? 'label' : 'body'}
+                  variant={active ? 'label' : 'metaMedium'}
                   tone={active ? 'inverse' : 'muted'}
                   numberOfLines={1}
                   style={styles.label}

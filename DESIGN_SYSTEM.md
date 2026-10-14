@@ -112,17 +112,18 @@ Setiap jenis punya tiga nada: **dasar** (grafik, titik, stroke), **`-soft`** (la
 - **Inter** untuk body (default).
 - **Outfit** untuk judul (`display`) dan angka (`num`).
 - Berat yang dipakai hanya 400 (regular), 500 (medium), dan 600 (semibold / "strong").
-- File font belum terpasang (§11). Sebelum terpasang, font sistem dipakai sebagai cadangan.
+- Acuan ukuran = layout HP web (`tosm-fi-fe`, class tanpa prefix `sm:`/`lg:`); diaudit per elemen 2026-10-14.
+- Kalau semua teks tampil Roboto, APK yang terpasang dibuat sebelum font tertaut: build ulang.
 
 | Peran | Font | Ukuran / berat | Warna | Contoh |
 |---|---|---|---|---|
 | Angka hero (Dashboard HP) | Outfit | 42 / 600, letterSpacing −1; prefix "IDR" 18/500 `heroFg2` | `heroFg` | `IDR 128.450.000` |
 | Angka uang di sheet | Outfit | 40–44 / 600 | `text` | `IDR 45.000` |
-| Judul app bar (halaman HP) | Outfit | 24 / 600 | `text` | Transaksi, Pengaturan |
+| Judul app bar (halaman HP) | Outfit | 22 / 600 | `text` | Transaksi, Pengaturan |
 | Headline Login/Register HP | Outfit | 26 / 600, letterSpacing −0.5 | `heroFg` | Catat, pahami, … |
 | Judul form auth | Outfit | 26 / 600 | `text` | Selamat datang kembali |
-| Judul sheet / dialog | Outfit | 21 / 600 | `text` | Catat transaksi |
-| Judul kartu | Outfit | 18 / 600 | `text` | Transaksi terbaru |
+| Judul sheet / dialog | Outfit | 20 / 600 sheet (`SheetLayout`), 21 / 600 dialog | `text` | Catat transaksi |
+| Judul kartu | Outfit | 17 / 600 (`SectionHead`, judul seksi), 18 di panel; judul empty state 20 | `text` | Transaksi terbaru |
 | Wordmark "TosmFi" | Outfit | 19 / 600 | `text` / `heroFg` | — |
 | Sapaan hero | Outfit | 17 / 500 | `heroFg2` | Selamat pagi, Andi |
 | Body | Inter | 14 / 400 | `text2` | Paragraf |
@@ -134,7 +135,10 @@ Setiap jenis punya tiga nada: **dasar** (grafik, titik, stroke), **`-soft`** (la
 | Helper / waktu | Inter | 12 / 400 | `text3` | 08.42 |
 | Eyebrow / judul seksi | Inter | 11 / 600, UPPERCASE, letterSpacing 0.8–1 | `text3` | RINGKASAN, ADMIN |
 | Header hari di daftar | Inter | 12 / 600, UPPERCASE, letterSpacing 0.6; total hari Outfit 12/400 | `text3` | HARI INI · −85.000 |
-| Badge | Inter | 11 / 600 | `*Text` | Utama, 2 baru |
+| Badge | Inter | 11 / 600 (`size="md"`: 12) | `*Text` | Utama, 2 baru |
+| Angka tanpa tebal (web `font-num` 400) | Outfit | 14 / 13 / 12.5 / 12 / 400 (`numBody`, `numSecondary`, `numMeta`, `numCaption`) | sesuai konteks | `1.200.000 / 4.500.000` |
+| Label sedang (web `font-medium`) | Inter | 13 / 12.5 / 12 / 500 (`secondaryMedium`, `metaMedium`, `captionMedium`); juga chip & segmen tidak aktif | `text2` | Agu, Sep |
+| Label sumbu grafik | Inter | 11 / 400 (`axis`) | `text3` | W1, 2 jt |
 
 `atoms/Typography` wajib menyediakan varian untuk peran-peran di atas (font, ukuran, dan berat
 sekaligus). Jangan menulis `fontSize`/`fontWeight` bebas di layar.
@@ -187,7 +191,7 @@ Kartu **tanpa stroke** (`card-stroke` = 0). Batas kartu dibentuk oleh bayangan d
 
 | Jenis layar | Kiri | Kanan |
 |---|---|---|
-| Halaman tab / menu (Transaksi, Pengaturan, Dompet, …) | `LogoMark` 32 + judul Outfit 24/600, jarak 10 | 0–3 `IconButton` bulat 38, latar `surface`, jarak 6 |
+| Halaman tab / menu (Transaksi, Pengaturan, Dompet, …) | `LogoMark` 32 + judul Outfit 22/600, jarak 10 | 0–3 `IconButton` bulat 38, latar `surface`, jarak 6 |
 | Sub-halaman (Mata Uang, Edit Profil, detail) | `IconButton` kembali 38 (`chevron-left`/`arrow-left`) + judul 24/600 | opsional |
 | Dashboard | Di dalam hero band: LogoMark 32 + wordmark 19 | Tombol bulat 36 `#FFFFFF66` (cari, tema) + Avatar 36 `primary` |
 
@@ -707,7 +711,7 @@ Sudah sesuai pen (2026-10-08):
 - **Token**: `metrics.radius` (control/field/card/sheet/hero/pill), `layout` (gutter, appBar, ruang
   bottom nav 130), `shadows` (card/nav/pop/thumb), `colors.warning*`, `heroControl`, `onDanger`, dan
   `theme/tones.ts`.
-- **App bar** (`MainLayout`): tinggi 64, LogoMark atau tombol kembali 38, judul Outfit 24.
+- **App bar** (`MainLayout`): tinggi 64, LogoMark atau tombol kembali 38, judul Outfit 22.
 - **Bottom nav global** (`navigation/AppBottomNav.tsx`): tampil di semua layar login kecuali modal.
   Slot Lainnya membuka **sheet** (`navigation/MoreMenuSheet.tsx`) dan tetap aktif di halaman
   turunannya.

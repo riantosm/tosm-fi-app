@@ -5,6 +5,7 @@ import Typography from '@/components/atoms/Typography';
 import { useTheme } from '@/contexts/ThemeContext';
 import { makeStyles } from '@/theme/makeStyles';
 import { radius } from '@/theme/metrics';
+import { fonts } from '@/theme/typography';
 
 /**
  * soft: filter/pilihan cepat di dalam kartu/sheet (latar surface2).
@@ -47,6 +48,8 @@ const useStyles = makeStyles(({ colors }) => ({
   disabled: { opacity: 0.4 },
   dot: { width: 7, height: 7, borderRadius: radius.pill },
   label: { fontSize: 12.5, flexShrink: 1 },
+  // Web: chip non-aktif Inter 500.
+  labelInactive: { fontFamily: fonts.bodyMedium },
 }));
 
 export default function Chip({
@@ -80,7 +83,7 @@ export default function Chip({
       <Typography
         variant={active ? 'label' : 'body'}
         numberOfLines={1}
-        style={[styles.label, { color }]}
+        style={[styles.label, !active && styles.labelInactive, { color }]}
       >
         {label}
         {!!suffix && (

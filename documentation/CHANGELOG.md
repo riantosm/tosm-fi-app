@@ -68,3 +68,5 @@ Kategori tanpa isi boleh dihilangkan.
 - Transaksi: tanggal hari ini yang dipilih di kalender kini terlihat terpilih.
 - Transaksi: urutan yang diubah ikut tampil di banner filter (sesuai angka di ikon Filter), dan
   Reset di banner mengembalikan semua filter, urutan, serta kata kunci.
+- Tipografi disamakan dengan versi web di semua halaman (ukuran judul, angka, label, chip, grafik,
+  dan kalender).

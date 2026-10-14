@@ -12,7 +12,7 @@ import BottomSheet from '@/components/organisms/BottomSheet';
 import { useTheme } from '@/contexts/ThemeContext';
 import { makeStyles } from '@/theme/makeStyles';
 import { radius, spacing } from '@/theme/metrics';
-import { textStyles } from '@/theme/typography';
+import { fonts, textStyles } from '@/theme/typography';
 import { formatMonthYear, parseIsoDate, toIsoDate } from '@/utils/calendar';
 import { toIntlLocale } from '@/utils/locale';
 
@@ -39,7 +39,9 @@ const useStyles = makeStyles(({ colors }) => ({
     borderRadius: 16,
     backgroundColor: colors.surface2,
   },
-  timeLabel: { flex: 1 },
+  // Web: label "Jam" Inter 500/13.5.
+  timeLabel: { flex: 1, fontFamily: fonts.bodyMedium, fontSize: 13.5 },
+  timeSeparator: { fontSize: 18, lineHeight: 24 },
   timeBox: {
     ...textStyles.num,
     width: 52,
@@ -143,7 +145,7 @@ function PickerBody({
       {!dateOnly && (
         <View style={styles.time}>
           <Clock size={16} color={colors.text3} />
-          <Typography variant="label" tone="muted" style={styles.timeLabel}>
+          <Typography variant="body" tone="muted" style={styles.timeLabel}>
             {t('transaction.timeLabel')}
           </Typography>
           <TextInput
@@ -155,7 +157,7 @@ function PickerBody({
             accessibilityLabel={t('transaction.hourLabel')}
             style={styles.timeBox}
           />
-          <Typography variant="num" tone="subtle">
+          <Typography variant="num" tone="subtle" style={styles.timeSeparator}>
             :
           </Typography>
           <TextInput

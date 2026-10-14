@@ -37,8 +37,8 @@ export const textStyles = {
     lineHeight: 32,
     letterSpacing: -0.5,
   },
-  /** Judul app bar: Outfit 24/600. */
-  pageTitle: { fontFamily: fonts.display, fontSize: 24, lineHeight: 30 },
+  /** Judul app bar: Outfit 22/600 (= web PageHeader di HP). */
+  pageTitle: { fontFamily: fonts.display, fontSize: 22, lineHeight: 28 },
   /** Judul sheet / dialog: Outfit 21/600. */
   sheetTitle: { fontFamily: fonts.display, fontSize: 21, lineHeight: 26 },
   /** Wordmark "TosmFi": Outfit 19/600. */
@@ -75,6 +75,21 @@ export const textStyles = {
   },
   /** Badge: Inter 11/600. */
   badge: { fontFamily: fonts.bodyStrong, fontSize: 11, lineHeight: 14 },
+  /** Angka kecil tanpa tebal (web `font-num` 400): Outfit 14 / 13 / 12.5 / 12. */
+  numBody: { fontFamily: fonts.numRegular, fontSize: 14, lineHeight: 20 },
+  numSecondary: { fontFamily: fonts.numRegular, fontSize: 13, lineHeight: 18 },
+  numMeta: { fontFamily: fonts.numRegular, fontSize: 12.5, lineHeight: 17 },
+  numCaption: { fontFamily: fonts.numRegular, fontSize: 12, lineHeight: 16 },
+  /** Label sedang (web `font-medium`): Inter 13 / 12.5 / 12 / 500. */
+  secondaryMedium: {
+    fontFamily: fonts.bodyMedium,
+    fontSize: 13,
+    lineHeight: 18,
+  },
+  metaMedium: { fontFamily: fonts.bodyMedium, fontSize: 12.5, lineHeight: 17 },
+  captionMedium: { fontFamily: fonts.bodyMedium, fontSize: 12, lineHeight: 16 },
+  /** Label sumbu grafik: Inter 11/400. */
+  axis: { fontFamily: fonts.body, fontSize: 11, lineHeight: 14 },
 } satisfies Record<string, TextStyle>;
 
 export type TextVariant = keyof typeof textStyles;

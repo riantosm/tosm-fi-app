@@ -111,7 +111,7 @@ export default function WalletUsageCard({
                 >
                   {item.nameWallet}
                 </Typography>
-                <Typography variant="label" tabular>
+                <Typography variant="num" tabular>
                   {Math.round(item.percentage)}%
                 </Typography>
               </View>

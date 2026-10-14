@@ -43,6 +43,9 @@ import Reveal from '@/components/atoms/Reveal';
 type PreviewMessage = Extract<AssistantMessage, { kind: 'preview' }>;
 
 const useStyles = makeStyles(({ colors, shadows }) => ({
+  // Ukuran HP web: judul 17, kepala hari 12 / tracking 0.05em.
+  previewTitle: { fontSize: 17, lineHeight: 22 },
+  dayLabel: { fontSize: 12, lineHeight: 16, letterSpacing: 0.6 },
   card: {
     alignSelf: 'stretch',
     padding: spacing.lg,
@@ -501,7 +504,7 @@ export default function AssistantPreviewCard({
         <Typography variant="eyebrow" tone="subtle">
           {t('assistant.previewEyebrow')}
         </Typography>
-        <Typography variant="cardTitle">
+        <Typography variant="cardTitle" style={styles.previewTitle}>
           {t('assistant.previewTitle')}
         </Typography>
       </View>
@@ -528,7 +531,11 @@ export default function AssistantPreviewCard({
         return (
           <Fragment key={group.key}>
             <View style={styles.dayHead}>
-              <Typography variant="eyebrow" tone="subtle">
+              <Typography
+                variant="eyebrow"
+                tone="subtle"
+                style={styles.dayLabel}
+              >
                 {group.label}
               </Typography>
               <Typography variant="caption" tone="subtle" tabular>

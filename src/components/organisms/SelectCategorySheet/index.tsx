@@ -107,7 +107,8 @@ export default function SelectCategorySheet({
         />
         {filtered.length === 0 && normalized ? (
           <EmptyState
-            icon={<SearchX size={32} color={colors.primaryText} />}
+            variant="inset"
+            icon={<SearchX size={18} color={colors.text2} />}
             title={t('transaction.noCategoryMatch')}
           />
         ) : (
@@ -135,7 +136,7 @@ export default function SelectCategorySheet({
                     <Icon size={22} color={category.color} />
                   </View>
                   <Typography
-                    variant={selected ? 'tileLabel' : 'meta'}
+                    variant={selected ? 'tileLabel' : 'metaMedium'}
                     tone={selected ? 'primary' : 'muted'}
                     align="center"
                     numberOfLines={1}
@@ -155,7 +156,7 @@ export default function SelectCategorySheet({
                 <Plus size={22} color={colors.text2} />
               </View>
               <Typography
-                variant="meta"
+                variant="metaMedium"
                 tone="muted"
                 align="center"
                 numberOfLines={1}

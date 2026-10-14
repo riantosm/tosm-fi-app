@@ -90,7 +90,7 @@ export default function ActiveFilterBanner({
             style={styles.banner}
           >
             <Typography
-              variant="label"
+              variant="fieldLabel"
               tone="primary"
               numberOfLines={1}
               style={styles.text}
@@ -109,7 +109,7 @@ export default function ActiveFilterBanner({
               hitSlop={8}
               onPress={onReset}
             >
-              <Typography variant="label" tone="primary">
+              <Typography variant="fieldLabel" tone="primary">
                 {t('transaction.reset')}
               </Typography>
             </PressableScale>

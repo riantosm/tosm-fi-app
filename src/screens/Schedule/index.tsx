@@ -35,7 +35,12 @@ import Reveal from '@/components/atoms/Reveal';
 
 const useStyles = makeStyles(() => ({
   section: { gap: spacing.md },
-  sectionLabel: { paddingHorizontal: spacing.xs },
+  sectionLabel: {
+    paddingHorizontal: spacing.xs,
+    fontSize: 12,
+    lineHeight: 16,
+    letterSpacing: 0.72,
+  },
 }));
 
 /** Halaman Jadwal (pen `a0SVGi` · `go3lT`) — port SchedulePage web. */

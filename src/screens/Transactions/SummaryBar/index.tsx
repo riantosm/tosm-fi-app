@@ -23,7 +23,7 @@ const useStyles = makeStyles(({ colors }) => ({
     backgroundColor: colors.surface,
   },
   label: { fontSize: 11.5 },
-  value: { fontSize: 15 },
+  value: { fontSize: 16, lineHeight: 21 },
 }));
 
 /** Keluar / Masuk / Selisih bulan (pen `VKsHQ`). */

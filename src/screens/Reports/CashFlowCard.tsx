@@ -284,11 +284,11 @@ function CashFlowPlot({ data, hidden, colorOf }: PlotProps) {
           {geometry.ticks.map(tick => (
             <Typography
               key={tick}
-              variant="caption"
+              variant="axis"
               tone="subtle"
               align="right"
               numberOfLines={1}
-              style={[styles.axisLabel, { top: geometry.yAt(tick) - 8 }]}
+              style={[styles.axisLabel, { top: geometry.yAt(tick) - 7 }]}
             >
               {formatCompact(tick)}
             </Typography>
@@ -296,7 +296,7 @@ function CashFlowPlot({ data, hidden, colorOf }: PlotProps) {
           {geometry.labelIndexes.map(index => (
             <Typography
               key={index}
-              variant="caption"
+              variant="axis"
               tone="subtle"
               align="center"
               numberOfLines={1}
@@ -322,7 +322,7 @@ function CashFlowPlot({ data, hidden, colorOf }: PlotProps) {
               variant="fade"
               style={[styles.tooltip, { left: tooltipLeft }]}
             >
-              <Typography variant="captionStrong" numberOfLines={1}>
+              <Typography variant="caption" tone="subtle" numberOfLines={1}>
                 {selectedPoint.label}
               </Typography>
               {visible.map(series => (
@@ -334,14 +334,14 @@ function CashFlowPlot({ data, hidden, colorOf }: PlotProps) {
                     ]}
                   />
                   <Typography
-                    variant="caption"
+                    variant="tileLabel"
                     tone="muted"
                     numberOfLines={1}
                     style={styles.tooltipLabel}
                   >
                     {t(`reports.cashFlow.short.${series}`)}
                   </Typography>
-                  <Typography variant="captionStrong" tabular>
+                  <Typography variant="tileLabel" tabular>
                     {formatCompact(selectedPoint[series])}
                   </Typography>
                 </View>
@@ -452,6 +452,7 @@ export default function CashFlowCard({ data, isLoading }: CashFlowCardProps) {
       </View>
 
       <SegmentedControl<Mode>
+        size="sm"
         options={MODES.map(option => ({
           value: option,
           label: t(`reports.cashFlow.modes.${option}`),

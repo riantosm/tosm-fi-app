@@ -23,7 +23,8 @@ const useStyles = makeStyles(({ shadows }) => ({
   hexRow: { flexDirection: 'row', alignItems: 'flex-end', gap: spacing.md },
   swatch: { width: 52, height: 52, borderRadius: 14, ...shadows.card },
   hexField: { flex: 1 },
-  hexInput: { fontFamily: fonts.num, letterSpacing: 1 },
+  // Web: hex Outfit 400, tracking 0.06em.
+  hexInput: { fontFamily: fonts.numRegular, letterSpacing: 0.84 },
   footerButton: { flex: 1 },
 }));
 

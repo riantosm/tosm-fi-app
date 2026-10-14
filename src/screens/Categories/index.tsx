@@ -326,6 +326,7 @@ export default function CategoriesScreen(
               <View style={styles.tabs}>
                 <SegmentedControl<TypeFilter>
                   variant="compact"
+                  size="md"
                   value={typeFilter}
                   onChange={setTypeFilter}
                   options={[

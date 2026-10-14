@@ -4,6 +4,7 @@ import PressableScale from '@/components/atoms/PressableScale';
 import Typography from '@/components/atoms/Typography';
 import { makeStyles } from '@/theme/makeStyles';
 import { radius } from '@/theme/metrics';
+import { fonts } from '@/theme/typography';
 import { buildMonthWeeks, getWeekdayLabels, toIsoDate } from '@/utils/calendar';
 
 export interface CalendarGridProps {
@@ -41,6 +42,7 @@ const useStyles = makeStyles(({ colors }) => ({
   daySelected: { backgroundColor: colors.primary },
   dayToday: { borderWidth: 1, borderColor: colors.primarySoft },
   outside: { opacity: 0.45 },
+  dayMedium: { fontFamily: fonts.bodyMedium },
 }));
 
 /** Grid bulan (Senin dulu) untuk pemilih tanggal & rentang. */
@@ -66,7 +68,7 @@ export default function CalendarGrid({
       <View style={styles.row}>
         {labels.map((label, index) => (
           <View key={index} style={styles.weekday}>
-            <Typography variant="captionStrong" tone="subtle">
+            <Typography variant="captionMedium" tone="subtle">
               {label.replace('.', '')}
             </Typography>
           </View>
@@ -82,6 +84,9 @@ export default function CalendarGrid({
               : day.iso === selected;
             const inside = isRange && !!from && day.iso > from && day.iso < to;
             const showBand = isRange && !!from && !!rangeTo && from !== rangeTo;
+            const isToday = day.iso === today;
+            // Web: di dalam rentang 600 primary; hari biasa di bulan ini Inter 500.
+            const strong = isEdge || inside || isToday;
             return (
               <View
                 key={day.iso}
@@ -100,22 +105,23 @@ export default function CalendarGrid({
                   style={[
                     styles.day,
                     isEdge && styles.daySelected,
-                    !isEdge && day.iso === today && styles.dayToday,
+                    !isEdge && isToday && styles.dayToday,
                     !day.inMonth && styles.outside,
                   ]}
                 >
                   <Typography
-                    variant={isEdge || day.iso === today ? 'label' : 'body'}
+                    variant={strong ? 'label' : 'body'}
                     tone={
                       isEdge
                         ? 'inverse'
-                        : day.iso === today
+                        : inside || isToday
                         ? 'primary'
                         : day.inMonth
                         ? 'default'
                         : 'subtle'
                     }
                     tabular
+                    style={!strong && day.inMonth && styles.dayMedium}
                   >
                     {day.date.getDate()}
                   </Typography>
