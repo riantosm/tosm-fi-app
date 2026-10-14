@@ -46,6 +46,8 @@ Kategori tanpa isi boleh dihilangkan.
   sebelumnya, grafik cash flow (ketuk untuk detail, kumulatif atau per periode), pengeluaran per
   kategori, tren 12 bulan, top pengeluaran, dan dompet paling aktif. Periode hari, minggu, bulan,
   tahun, atau rentang tanggal sendiri.
+- Laporan: Export PDF, Excel, atau CSV untuk periode yang dipilih (ringkasan, kategori, dompet, top
+  pengeluaran, dan daftar transaksi), lalu simpan atau bagikan lewat menu bagikan Android.
 - Catat cepat (AI): ketik transaksi seperti chat biasa ("makan siang 25rb"), AI menanyakan yang
   kurang (dompet, tanggal), menampilkan pratinjau, dan baru menyimpan setelah kamu tekan Simpan atau
   ketik "catat". Bisa merevisi lewat chat, banyak transaksi sekaligus (termasuk transfer, koreksi

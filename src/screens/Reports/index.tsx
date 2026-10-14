@@ -1,6 +1,6 @@
 import { useCallback, useMemo, useState } from 'react';
 import { View } from 'react-native';
-import { CalendarRange } from 'lucide-react-native';
+import { CalendarRange, Download } from 'lucide-react-native';
 import { useTranslation } from 'react-i18next';
 import IconButton from '@/components/atoms/IconButton';
 import SegmentedControl from '@/components/molecules/SegmentedControl';
@@ -9,11 +9,13 @@ import DateRangeSheet from '@/components/organisms/DateRangeSheet';
 import MainLayout from '@/components/templates/MainLayout';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useLanguage } from '@/hooks/useLanguage';
+import { useReportExport } from '@/hooks/useReportExport';
 import { MONTHLY_TREND_MONTHS, useReports } from '@/hooks/useReports';
 import type { ROUTES } from '@/navigation/paths';
 import type { RootStackScreenProps } from '@/navigation/types';
 import CashFlowCard from '@/screens/Reports/CashFlowCard';
 import MonthlyTrendCard from '@/screens/Reports/MonthlyTrendCard';
+import ReportExportSheet from '@/screens/Reports/ReportExportSheet';
 import ReportSummaryCards from '@/screens/Reports/ReportSummaryCards';
 import TopSpendingCard from '@/screens/Reports/TopSpendingCard';
 import WalletUsageCard from '@/screens/Reports/WalletUsageCard';
@@ -45,7 +47,8 @@ const useStyles = makeStyles(({ colors, shadows }) => ({
 /**
  * Laporan (pen `S5YW9` / state `CaSg9`, port ReportsPage web): strip periode + custom range,
  * ringkasan 2 × 2, cash flow, pengeluaran per kategori, tren 12 bulan, top pengeluaran, dan
- * dompet paling aktif. Setiap kartu memuat endpoint-nya sendiri.
+ * dompet paling aktif, plus Export PDF/Excel/CSV (`ReportExportSheet`). Setiap kartu memuat
+ * endpoint-nya sendiri.
  */
 export default function ReportsScreen(
   _props: RootStackScreenProps<typeof ROUTES.REPORTS>,
@@ -57,6 +60,7 @@ export default function ReportsScreen(
   const locale = toIntlLocale(language);
   const [period, setPeriod] = useState<ReportPeriodFilter>(DEFAULT_PERIOD);
   const [rangeOpen, setRangeOpen] = useState(false);
+  const [exportOpen, setExportOpen] = useState(false);
   const [refreshKey, setRefreshKey] = useState(0);
 
   const report = useReports(period, refreshKey);
@@ -79,6 +83,8 @@ export default function ReportsScreen(
     period.preset,
     t,
   ]);
+
+  const { exportingFormat, exportReport } = useReportExport(report, subtitle);
 
   const slices = useMemo(
     () => buildCategoryBreakdown(report.categoryBreakdown),
@@ -133,6 +139,14 @@ export default function ReportsScreen(
         subtitle={subtitle}
         withTabBar
         onRefresh={handleRefresh}
+        headerRight={
+          <IconButton
+            label={t('reports.export.title')}
+            variant="primary"
+            onPress={() => setExportOpen(true)}
+            renderIcon={(color, size) => <Download size={size} color={color} />}
+          />
+        }
       >
         <View style={styles.periodBar}>
           <View style={styles.periodStrip}>
@@ -193,6 +207,16 @@ export default function ReportsScreen(
           )
         }
         onClose={() => setRangeOpen(false)}
+      />
+
+      <ReportExportSheet
+        visible={exportOpen}
+        exportingFormat={exportingFormat}
+        onExport={async format => {
+          await exportReport(format);
+          setExportOpen(false);
+        }}
+        onClose={() => setExportOpen(false)}
       />
     </>
   );

@@ -731,7 +731,7 @@ Sudah sesuai pen (2026-10-08):
   layar ditutup.
 - **Laporan** (2026-10-08): strip periode + custom range, ringkasan 2 × 2, cash flow (tooltip,
   legenda, kumulatif/per periode), pengeluaran per kategori, tren 12 bulan, top pengeluaran, dompet
-  paling aktif. Export PDF/Excel/CSV belum (butuh library native penyimpan file).
+  paling aktif, Export PDF/Excel/CSV (sheet `MVyzc`, dibagikan lewat share sheet Android).
 - **Investasi** (2026-10-08): tab (hero + grafik, instrumen, ledger), detail instrumen, form
   instrumen/akun, tarik dana, update nilai, transfer, edit transaksi.
 - **Budget** (2026-10-08): daftar, detail + atur limit per kategori/subkategori, form
@@ -748,7 +748,6 @@ Belum dikerjakan:
 | Area | Catatan |
 |---|---|
 | "Ingat saya" & "Lupa password?" (Login) | Ada di pen, tapi belum ada perilakunya (sesi selalu diingat, belum ada endpoint lupa password) |
-| Export laporan (PDF/Excel/CSV, pen `MVyzc`) | Butuh library native untuk menulis/membagikan file (+ rebuild) |
 | Badge "n baru" Log Error (pen `k0SKz`) | Web juga hanya menampilkan badge Permintaan Pengguna; jumlah error baru belum ada endpoint-nya |
 | Menu "Backend API" Pengaturan | Dokumentasi developer khusus web, sengaja tidak dibawa |
 
