@@ -15,6 +15,7 @@ import CategoryIcon from '@/components/atoms/CategoryIcon';
 import IconButton from '@/components/atoms/IconButton';
 import Skeleton from '@/components/atoms/Skeleton';
 import Typography from '@/components/atoms/Typography';
+import Badge from '@/components/atoms/Badge';
 import Card from '@/components/molecules/Card';
 import EmptyState from '@/components/molecules/EmptyState';
 import SegmentedControl from '@/components/molecules/SegmentedControl';
@@ -63,6 +64,7 @@ const useStyles = makeStyles(({ colors, shadows }) => ({
   },
   hintText: { flex: 1 },
   reorderName: { flex: 1 },
+  reorderBadge: { alignSelf: 'center' },
 }));
 
 /** Halaman Kategori (pen `auPuW` · `y0vxv` · `ZVCxG`) — port CategoriesPage web. */
@@ -302,6 +304,17 @@ export default function CategoriesScreen(
                     {category.nameCategory}
                   </Typography>
                 </>
+              )}
+              renderTrailing={category => (
+                <Badge
+                  style={styles.reorderBadge}
+                  tone={category.type === 'income' ? 'income' : 'expense'}
+                  label={t(
+                    category.type === 'income'
+                      ? 'category.income'
+                      : 'category.expense',
+                  )}
+                />
               )}
             />
           </Reveal>

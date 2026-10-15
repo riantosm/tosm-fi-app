@@ -1,6 +1,13 @@
 import { useState } from 'react';
 import { View } from 'react-native';
-import { ArrowUpDown, Check, Info, Plus, Target } from 'lucide-react-native';
+import {
+  ArrowUpDown,
+  Check,
+  Info,
+  Pin,
+  Plus,
+  Target,
+} from 'lucide-react-native';
 import { useTranslation } from 'react-i18next';
 import BudgetTile from '@/components/atoms/BudgetTile';
 import Button from '@/components/atoms/Button';
@@ -8,6 +15,7 @@ import IconButton from '@/components/atoms/IconButton';
 import PressableScale from '@/components/atoms/PressableScale';
 import Skeleton from '@/components/atoms/Skeleton';
 import Typography from '@/components/atoms/Typography';
+import { budgetScopeLabel } from '@/utils/budgetUi';
 import Card from '@/components/molecules/Card';
 import EmptyState from '@/components/molecules/EmptyState';
 import ReorderList from '@/components/organisms/ReorderList';
@@ -48,7 +56,9 @@ const useStyles = makeStyles(({ colors }) => ({
     backgroundColor: colors.primarySoft,
   },
   hintText: { flex: 1 },
-  reorderName: { flex: 1 },
+  reorderTexts: { flex: 1, gap: 1 },
+  reorderTitle: { flexDirection: 'row', alignItems: 'center', gap: 6 },
+  reorderName: { flexShrink: 1 },
 }));
 
 /** Halaman Budget (pen `Lu9SC` · `JqSyG`) — port BudgetsPage web (daftar). */
@@ -166,13 +176,28 @@ export default function BudgetsScreen({
             renderContent={budget => (
               <>
                 <BudgetTile budget={budget} categories={categories} />
-                <Typography
-                  variant="label"
-                  numberOfLines={1}
-                  style={styles.reorderName}
-                >
-                  {budget.name}
-                </Typography>
+                {/* Sama dengan web: nama + pin, cakupan kategori di bawahnya. */}
+                <View style={styles.reorderTexts}>
+                  <View style={styles.reorderTitle}>
+                    <Typography
+                      variant="label"
+                      numberOfLines={1}
+                      style={styles.reorderName}
+                    >
+                      {budget.name}
+                    </Typography>
+                    {budget.isPinned && (
+                      <Pin
+                        size={14}
+                        color={colors.investmentText}
+                        accessibilityLabel={t('budget.pinnedBadge')}
+                      />
+                    )}
+                  </View>
+                  <Typography variant="meta" tone="subtle" numberOfLines={1}>
+                    {budgetScopeLabel(budget, t)}
+                  </Typography>
+                </View>
               </>
             )}
           />

@@ -15,6 +15,7 @@ import IconButton from '@/components/atoms/IconButton';
 import PressableScale from '@/components/atoms/PressableScale';
 import Skeleton from '@/components/atoms/Skeleton';
 import Typography from '@/components/atoms/Typography';
+import Badge from '@/components/atoms/Badge';
 import WalletTile from '@/components/atoms/WalletTile';
 import Card from '@/components/molecules/Card';
 import EmptyState from '@/components/molecules/EmptyState';
@@ -22,6 +23,7 @@ import ReorderList from '@/components/organisms/ReorderList';
 import MainLayout from '@/components/templates/MainLayout';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useToast } from '@/contexts/ToastContext';
+import { useMoneyFormat } from '@/hooks/useMoneyFormat';
 import { useWallets } from '@/hooks/useWallets';
 import { ROUTES } from '@/navigation/paths';
 import type { RootStackScreenProps } from '@/navigation/types';
@@ -64,7 +66,10 @@ const useStyles = makeStyles(({ colors }) => ({
     backgroundColor: colors.primarySoft,
   },
   hintText: { flex: 1 },
-  reorderTexts: { flex: 1 },
+  reorderTexts: { flex: 1, gap: 1 },
+  reorderTitle: { flexDirection: 'row', alignItems: 'center', gap: 6 },
+  reorderName: { flexShrink: 1 },
+  reorderBadge: { alignSelf: 'center' },
 }));
 
 /** Halaman Dompet (pen `cnoOe` · `YYZ1Z` · `PWG8l` · `ZcRnk`) — port WalletPage web. */
@@ -74,6 +79,7 @@ export default function WalletScreen({
   const styles = useStyles();
   const { colors } = useTheme();
   const { t } = useTranslation();
+  const { format } = useMoneyFormat();
   const showToast = useToast();
   const dispatch = useAppDispatch();
   const viewMode =
@@ -187,14 +193,35 @@ export default function WalletScreen({
             renderContent={wallet => (
               <>
                 <WalletTile color={wallet.color} />
-                <Typography
-                  variant="label"
-                  numberOfLines={1}
-                  style={styles.reorderTexts}
-                >
-                  {wallet.nameWallet}
-                </Typography>
+                {/* Sama dengan web: nama + badge Utama, jumlah transaksi, saldo di kanan. */}
+                <View style={styles.reorderTexts}>
+                  <View style={styles.reorderTitle}>
+                    <Typography
+                      variant="label"
+                      numberOfLines={1}
+                      style={styles.reorderName}
+                    >
+                      {wallet.nameWallet}
+                    </Typography>
+                    {wallet.isPrimary && (
+                      <Badge
+                        label={t('wallet.primary')}
+                        style={styles.reorderBadge}
+                      />
+                    )}
+                  </View>
+                  <Typography variant="meta" tone="subtle" numberOfLines={1}>
+                    {t('wallet.transactionCount', {
+                      n: wallet.transactionCount,
+                    })}
+                  </Typography>
+                </View>
               </>
+            )}
+            renderTrailing={wallet => (
+              <Typography variant="numBody" tone="muted" tabular>
+                {format(wallet.balance)}
+              </Typography>
             )}
           />
         </Reveal>
