@@ -183,6 +183,7 @@ tulis ulang dengan komponen RN di sini. Desain: Mist, lihat `DESIGN_SYSTEM.md` (
   saat login). `setupGlobalErrorLogging()` di `App.tsx` memasang `ErrorUtils` global handler dan,
   di produksi saja, tracker promise rejection Hermes (di dev RN sudah memakainya untuk LogBox).
   `organisms/ErrorBoundary` membungkus `AppShell`: crash render → dilaporkan + layar "Coba Lagi".
+- **Orientasi**: dikunci potret (`android:screenOrientation="portrait"`; iPhone sudah potret saja).
 - **Export file** (`utils/reportExport.ts`): file dibuat di JS (versi library sama dengan web) lalu
   dibagikan sebagai data URI base64 lewat `react-native-share` (`filename` tanpa ekstensi; ekstensi
   dari mime). `metro.config.js` menjadikan `html2canvas`/`dompurify`/`canvg` modul kosong karena

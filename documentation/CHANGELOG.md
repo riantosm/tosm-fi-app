@@ -24,6 +24,7 @@ Kategori tanpa isi boleh dihilangkan.
 - Transaksi: ketuk ringkasan Keluar/Masuk/Selisih untuk membuka Laporan; selisih minus berwarna
   merah.
 - Atur urutan Dompet, Kategori, dan Budget kini menampilkan saldo, jenis, cakupan, dan pin.
+- Aplikasi dikunci ke tampilan potret.
 - Error yang tidak terduga kini dilaporkan ke Log Error admin, dengan layar "Coba Lagi".
 
 ## v1.1.0 (versionCode 2)
