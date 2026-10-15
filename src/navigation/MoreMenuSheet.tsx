@@ -4,6 +4,7 @@ import {
   ChartColumn,
   ChevronRight,
   Languages,
+  MonitorSmartphone,
   Moon,
   Settings,
   Sun,
@@ -24,11 +25,10 @@ import { useLanguage } from '@/hooks/useLanguage';
 import { useThemePreference } from '@/hooks/useThemePreference';
 import { ROUTES } from '@/navigation/paths';
 import { useAppSelector } from '@/store/hooks';
-import type { ColorScheme } from '@/theme/colors';
 import { makeStyles } from '@/theme/makeStyles';
 import { radius, spacing } from '@/theme/metrics';
 import type { Tone } from '@/theme/tones';
-import type { LanguageCode } from '@/types';
+import type { LanguageCode, ThemePreference } from '@/types';
 
 export type MoreRoute =
   | typeof ROUTES.WALLET
@@ -127,7 +127,7 @@ export default function MoreMenuSheet({
   const styles = useStyles();
   const { colors } = useTheme();
   const { language, setLanguage, options } = useLanguage();
-  const { scheme, setPreference } = useThemePreference();
+  const { preference, setPreference } = useThemePreference();
   const rows = [TILES.slice(0, 3), TILES.slice(3)];
 
   return (
@@ -173,9 +173,9 @@ export default function MoreMenuSheet({
         <View style={styles.prefBox}>
           <SunMoon size={18} color={colors.text2} />
           <View style={styles.prefControl}>
-            <SegmentedControl<ColorScheme>
+            <SegmentedControl<ThemePreference>
               variant="compact"
-              value={scheme}
+              value={preference}
               onChange={setPreference}
               options={[
                 {
@@ -187,6 +187,13 @@ export default function MoreMenuSheet({
                   value: 'dark',
                   label: t('theme.dark'),
                   renderIcon: color => <Moon size={16} color={color} />,
+                },
+                {
+                  value: 'system',
+                  label: t('theme.system'),
+                  renderIcon: color => (
+                    <MonitorSmartphone size={16} color={color} />
+                  ),
                 },
               ]}
             />
