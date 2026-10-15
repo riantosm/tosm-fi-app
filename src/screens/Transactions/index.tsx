@@ -244,6 +244,10 @@ export default function TransactionsScreen({
       })),
     [],
   );
+  const openReports = useCallback(
+    () => navigation.navigate(ROUTES.REPORTS),
+    [navigation],
+  );
   const payOccurrence = useCallback(
     (occurrence: ScheduleOccurrence) =>
       navigation.navigate(ROUTES.PAY_OCCURRENCE, { occurrence }),
@@ -375,6 +379,7 @@ export default function TransactionsScreen({
       <SummaryBar
         expense={summary?.expense ?? 0}
         income={summary?.income ?? 0}
+        onPress={openReports}
       />
 
       <ActiveFilterBanner

@@ -19,6 +19,8 @@ Kategori tanpa isi boleh dihilangkan.
 
 ### Ditingkatkan
 
+- Transaksi: ketuk ringkasan Keluar/Masuk/Selisih untuk membuka Laporan; selisih minus berwarna
+  merah.
 - Error yang tidak terduga kini dilaporkan ke Log Error admin, dengan layar "Coba Lagi".
 
 ## v1.1.0 (versionCode 2)
