@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { View } from 'react-native';
+import { Image, View } from 'react-native';
 import { MotiView } from 'moti';
 import { CircleAlert } from 'lucide-react-native';
 import { useTranslation } from 'react-i18next';
@@ -33,6 +33,14 @@ const useStyles = makeStyles(({ colors }) => ({
   // Android kadang melempar kata terakhir ke baris kedua yang lalu terpotong ("…pakai Gopay").
   bubbleText: { lineHeight: 20, paddingRight: 2 },
   userWrap: { alignItems: 'flex-end', gap: 6, paddingLeft: 40 },
+  // Thumbnail foto struk di atas bubble user.
+  photo: {
+    width: 148,
+    height: 196,
+    borderRadius: 18,
+    borderTopRightRadius: 6,
+    backgroundColor: colors.surface2,
+  },
   userBubble: {
     paddingHorizontal: 14,
     paddingVertical: 10,
@@ -89,15 +97,25 @@ export function AiBubble({ text }: { text: string }) {
 export function UserBubble({
   text,
   failed,
+  photoUri,
 }: {
   text: string;
   failed?: boolean;
+  photoUri?: string;
 }) {
   const styles = useStyles();
   const { colors } = useTheme();
   const { t } = useTranslation();
   return (
     <View style={styles.userWrap}>
+      {!!photoUri && (
+        <Image
+          source={{ uri: photoUri }}
+          resizeMode="cover"
+          accessibilityIgnoresInvertColors
+          style={styles.photo}
+        />
+      )}
       <View style={[styles.userBubble, failed && styles.failed]}>
         <Typography
           variant="body"

@@ -62,6 +62,12 @@ export interface AssistantReply {
 
 export type AssistantErrorKind = 'quota' | 'network';
 
+/** Foto (struk) untuk asisten: JPEG base64 tanpa awalan `data:`. */
+export interface AssistantImage {
+  mimeType: 'image/jpeg';
+  data: string;
+}
+
 export interface AssistantRequest {
   history: { role: 'user' | 'assistant'; text: string }[];
   /** Draft yang sedang pending (ditanyakan atau dipratinjau), sesuai respons terakhir. */
@@ -72,6 +78,8 @@ export interface AssistantRequest {
   language: string;
   /** True selama draft tampil sebagai pratinjau yang menunggu Simpan/Batal. */
   hasPreview: boolean;
+  /** Hanya dikirim bersama pesan pemiliknya; riwayat percakapan tetap teks saja. */
+  image?: AssistantImage;
 }
 
 /** Yang dibuat oleh `POST /assistant/commit`. */
@@ -90,6 +98,8 @@ export type AssistantMessage =
       /** Yang dikirim ke asisten kalau beda dari `text` (mis. tanggal terpilih). */
       payload?: string;
       failed?: boolean;
+      /** Foto struk: `uri` untuk thumbnail di bubble, `image` untuk dikirim (juga saat Coba lagi). */
+      photo?: { uri: string; image: AssistantImage };
     }
   | {
       id: string;

@@ -194,7 +194,11 @@ export default function QuickAddScreen({
     if (message.role === 'user') {
       return (
         <ChatEntry key={message.id}>
-          <UserBubble text={message.text} failed={message.failed} />
+          <UserBubble
+            text={message.text}
+            failed={message.failed}
+            photoUri={message.photo?.uri}
+          />
         </ChatEntry>
       );
     }
@@ -453,6 +457,7 @@ export default function QuickAddScreen({
 
         <ChatComposer
           onSend={text => chat.send(text)}
+          onScan={() => navigation.navigate(ROUTES.SCAN_RECEIPT)}
           disabled={chat.isThinking}
           bottomInset={composerPadding}
         />

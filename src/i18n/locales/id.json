@@ -1094,15 +1094,25 @@
     "example4": "Saldo GoPay sekarang 150rb",
     "example5": "Kopi 18rb kemarin",
     "today": "Hari ini",
-    "yesterday": "Kemarin"
+    "yesterday": "Kemarin",
+    "receiptMessage": "Catat dari foto struk ini",
+    "scanReceipt": "Scan struk"
+  },
+  "scan": {
+    "title": "Scan struk",
+    "hint": "Posisikan seluruh struk di dalam bingkai",
+    "capture": "Ambil foto",
+    "retake": "Ulangi",
+    "use": "Pakai foto",
+    "processing": "Menyiapkan foto…",
+    "permission": "Izinkan akses kamera untuk memindai struk.",
+    "allow": "Izinkan kamera",
+    "unavailable": "Kamera tidak tersedia di perangkat ini.",
+    "failed": "Foto gagal diambil, coba lagi."
   },
   "placeholder": {
     "title": "Halaman ini sedang disiapkan",
     "description": "Fitur ini akan hadir di versi aplikasi berikutnya.",
-    "scanTitle": "Pindai struk",
-    "cameraPermission": "Izinkan akses kamera untuk memindai struk.",
-    "cameraAllow": "Izinkan kamera",
-    "cameraUnavailable": "Kamera tidak tersedia di perangkat ini.",
     "profileTitle": "Profil"
   }
 }

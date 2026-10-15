@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { TextInput, View } from 'react-native';
-import { ArrowUp, Sparkles } from 'lucide-react-native';
+import { ArrowUp, ScanLine, Sparkles } from 'lucide-react-native';
 import { useTranslation } from 'react-i18next';
 import PressableScale from '@/components/atoms/PressableScale';
 import { useTheme } from '@/contexts/ThemeContext';
@@ -50,15 +50,26 @@ const useStyles = makeStyles(({ colors }) => ({
     backgroundColor: colors.surface2,
   },
   sendActive: { backgroundColor: colors.primary },
+  scan: {
+    width: 48,
+    height: 48,
+    borderRadius: radius.pill,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: colors.surface2,
+  },
 }));
 
 /** Input pill + tombol kirim bulat (pen V2/ChatInput). Multi-baris, tumbuh sampai 132. */
 export default function ChatComposer({
   onSend,
+  onScan,
   disabled,
   bottomInset,
 }: {
   onSend: (text: string) => void;
+  /** Buka Scan struk (foto struk → AI). */
+  onScan?: () => void;
   disabled?: boolean;
   /** Padding bawah (safe area / tinggi keyboard). */
   bottomInset: number;
@@ -79,6 +90,17 @@ export default function ChatComposer({
 
   return (
     <View style={[styles.bar, { paddingBottom: bottomInset }]}>
+      {onScan && (
+        <PressableScale
+          accessibilityRole="button"
+          accessibilityLabel={t('assistant.scanReceipt')}
+          disabled={disabled}
+          onPress={onScan}
+          style={styles.scan}
+        >
+          <ScanLine size={20} color={colors.text2} />
+        </PressableScale>
+      )}
       <View style={styles.field}>
         <Sparkles size={18} color={colors.primaryText} />
         <TextInput

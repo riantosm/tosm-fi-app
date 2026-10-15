@@ -1094,15 +1094,25 @@
     "example4": "GoPay balance is now 150k",
     "example5": "Coffee 18k yesterday",
     "today": "Today",
-    "yesterday": "Yesterday"
+    "yesterday": "Yesterday",
+    "receiptMessage": "Record this receipt",
+    "scanReceipt": "Scan receipt"
+  },
+  "scan": {
+    "title": "Scan receipt",
+    "hint": "Fit the whole receipt inside the frame",
+    "capture": "Take photo",
+    "retake": "Retake",
+    "use": "Use photo",
+    "processing": "Preparing photo…",
+    "permission": "Allow camera access to scan receipts.",
+    "allow": "Allow camera",
+    "unavailable": "No camera is available on this device.",
+    "failed": "Couldn’t take the photo, try again."
   },
   "placeholder": {
     "title": "This page is being prepared",
     "description": "This feature is coming in a future version of the app.",
-    "scanTitle": "Scan receipt",
-    "cameraPermission": "Allow camera access to scan receipts.",
-    "cameraAllow": "Allow camera",
-    "cameraUnavailable": "No camera available on this device.",
     "profileTitle": "Profile"
   }
 }

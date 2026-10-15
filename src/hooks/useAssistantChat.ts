@@ -18,6 +18,7 @@ import {
 } from '@/store/slices/transactionSlice';
 import type {
   AssistantDraft,
+  AssistantImage,
   AssistantMessage,
   AssistantReply,
   AssistantRequest,
@@ -289,6 +290,7 @@ export function useAssistantChat() {
     async (history: AssistantMessage[], userMessageId: string) => {
       const session = sessionRef.current;
       setIsThinking(true);
+      const owner = history.find(m => m.id === userMessageId);
       try {
         const reply = await sendAssistantChatApi({
           history: toHistory(history),
@@ -296,6 +298,7 @@ export function useAssistantChat() {
           tzOffsetMinutes: new Date().getTimezoneOffset(),
           language,
           hasPreview: Boolean(findPendingPreview(history)),
+          image: owner?.role === 'user' ? owner.photo?.image : undefined,
         });
         if (session !== sessionRef.current) {
           return;
@@ -335,7 +338,11 @@ export function useAssistantChat() {
   );
 
   const send = useCallback(
-    (text: string, payload?: string) => {
+    (
+      text: string,
+      payload?: string,
+      photo?: { uri: string; image: AssistantImage },
+    ) => {
       const clean = text.trim();
       if (!clean || isThinking) {
         return;
@@ -345,6 +352,7 @@ export function useAssistantChat() {
         role: 'user',
         text: clean,
         payload,
+        photo,
       };
       // Banner error bersifat sementara: pesan baru menggantikannya.
       const next = [
@@ -386,6 +394,13 @@ export function useAssistantChat() {
     [isThinking, request],
   );
 
+  /** Foto struk dari layar Scan struk: dikirim sebagai pesan user dengan thumbnail. */
+  const sendPhoto = useCallback(
+    (text: string, photo: { uri: string; image: AssistantImage }) =>
+      send(text, undefined, photo),
+    [send],
+  );
+
   /** Jawaban "Apakah transaksi ini hari ini?" lewat pemilih tanggal. */
   const pickDate = useCallback(
     (date: Date, label: string) => send(label, toLocalDateTime(date)),
@@ -417,6 +432,7 @@ export function useAssistantChat() {
     instruments,
     ensureData,
     send,
+    sendPhoto,
     retry,
     pickDate,
     save,

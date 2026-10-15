@@ -2,6 +2,7 @@ import { jsPDF } from 'jspdf';
 import { autoTable } from 'jspdf-autotable';
 import Share from 'react-native-share';
 import * as XLSX from 'xlsx';
+import { bytesToBase64, utf8Bytes } from '@/utils/base64';
 
 export type ReportExportFormat = 'pdf' | 'excel' | 'csv';
 
@@ -43,47 +44,6 @@ function escapeCsvField(value: string | number): string {
 const toCsvRow = (fields: (string | number)[]) =>
   fields.map(escapeCsvField).join(',');
 
-const BASE64_CHARS =
-  'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
-
-/* eslint-disable no-bitwise -- encoder byte murni */
-/** UTF-8 → base64 tanpa TextEncoder/btoa (tidak dijamin ada di semua runtime JS). */
-function utf8ToBase64(text: string): string {
-  const bytes: number[] = [];
-  for (const char of text) {
-    let code = char.codePointAt(0) ?? 0;
-    if (code < 0x80) {
-      bytes.push(code);
-    } else if (code < 0x800) {
-      bytes.push(0xc0 | (code >> 6), 0x80 | (code & 63));
-    } else if (code < 0x10000) {
-      bytes.push(
-        0xe0 | (code >> 12),
-        0x80 | ((code >> 6) & 63),
-        0x80 | (code & 63),
-      );
-    } else {
-      bytes.push(
-        0xf0 | (code >> 18),
-        0x80 | ((code >> 12) & 63),
-        0x80 | ((code >> 6) & 63),
-        0x80 | (code & 63),
-      );
-    }
-  }
-  let out = '';
-  for (let i = 0; i < bytes.length; i += 3) {
-    const [a, b = 0, c = 0] = [bytes[i], bytes[i + 1], bytes[i + 2]];
-    const triple = (a << 16) | (b << 8) | c;
-    out +=
-      BASE64_CHARS[(triple >> 18) & 63] + BASE64_CHARS[(triple >> 12) & 63];
-    out += i + 1 < bytes.length ? BASE64_CHARS[(triple >> 6) & 63] : '=';
-    out += i + 2 < bytes.length ? BASE64_CHARS[triple & 63] : '=';
-  }
-  return out;
-}
-/* eslint-enable no-bitwise */
-
 function csvBase64(doc: ExportDocument): string {
   const lines: string[] = [toCsvRow([doc.title])];
   if (doc.subtitle) {
@@ -96,7 +56,7 @@ function csvBase64(doc: ExportDocument): string {
     }
   }
   // BOM supaya Excel membaca UTF-8 dengan benar.
-  return utf8ToBase64(`﻿${lines.join('\r\n')}`);
+  return bytesToBase64(utf8Bytes(`﻿${lines.join('\r\n')}`));
 }
 
 // ---- Excel ---------------------------------------------------------------

@@ -175,8 +175,8 @@ tulis ulang dengan komponen RN di sini. Desain: Mist, lihat `DESIGN_SYSTEM.md` (
   dibatalkan). Alarm `SET_AND_ALLOW_WHILE_IDLE` (tanpa izin exact alarm). Izin notifikasi diminta
   saat jadwal pertama dibuat. `index.js` mendaftarkan `notifee.onBackgroundEvent` (no-op).
 - **Kamera**: `react-native-vision-camera` v5 (butuh `react-native-nitro-modules` +
-  `react-native-nitro-image`). API v5: `useCameraPermission()` +
-  `<Camera device="back" isActive />`. Dipakai di `ScanReceipt` (pratinjau saja). Izin:
+  `react-native-nitro-image`). API v5: `useCameraPermission()` + `usePhotoOutput()` +
+  `<Camera device="back" outputs={[photoOutput]} isActive />`. Dipakai di `ScanReceipt`. Izin:
   `CAMERA` di AndroidManifest, `NSCameraUsageDescription` di Info.plist.
 - **Ikon**: `lucide-react-native` (set ikon sama dengan web `react-icons/lu`).
 - **Log crash** (`utils/crashLogger.ts`, port web): `logCrash()` → console + `POST /errors` (hanya
@@ -214,7 +214,7 @@ tulis ulang dengan komponen RN di sini. Desain: Mist, lihat `DESIGN_SYSTEM.md` (
 | Sheet Lainnya | Fungsional (profil, grid 6 menu, tema Terang/Gelap/Ikuti sistem, bahasa ID/EN/JP; logout hanya di Profil) |
 | Profile (Edit Profil) | Fungsional (pen `S5xzK`/`eCXQt`): identitas bergradien (avatar, @username, peran), Informasi Akun (nama/username + konfirmasi simpan, `useAuth().updateProfile`), Ubah Password (validasi min 6 & konfirmasi, sukses → sesi dibersihkan & kembali ke Login, `changePassword`), tombol Keluar (satu-satunya tempat logout) |
 | Settings | Fungsional (pen `k0SKz`): Admin (Permintaan Pengguna + badge "n baru" dari `hooks/useUserApproval`, Log Error), Umum (Mata Uang + ringkasan), Zona Berbahaya Reset Data (konfirmasi → `resetAccountDataApi` + aksi `accountDataReset` yang mengosongkan semua slice data akun). "Backend API" web sengaja tidak dibawa |
-| ScanReceipt | Izin + pratinjau kamera. Belum ada pintu masuk (tombolnya dulu di placeholder QuickAdd; Catat cepat versi pen/web tidak punya scan struk) |
+| ScanReceipt (modal) | Scan struk dari tombol kamera di komposer Catat cepat: izin kamera, pratinjau + bingkai, jepret (`usePhotoOutput`), tinjau (Ulangi / Pakai foto). Foto diperkecil ke 1280px JPEG 70 (`Photo.toImageAsync` → nitro-image `resizeAsync`/`toEncodedImageDataAsync`, base64 lewat `utils/base64.ts`) lalu `chat.sendPhoto` mengirimnya sebagai `image` ke `POST /assistant/chat` (backend `a7ebb5b`); thumbnail tampil di bubble user, dan Coba lagi ikut mengirim fotonya |
 | Dashboard | Fungsional (pen `yHRM4`): hero (kekayaan bersih, sembunyikan saldo, cari, tema, avatar → sheet Lainnya), budget di-pin, ringkasan bulan (bar), kesehatan finansial, pengeluaran per kategori (donut + drill-down), dompet (tap → jadikan utama; tap dompet utama → koreksi saldo; Tambah dompet → form), transaksi bulan ini (infinite scroll), batalkan tagihan, pull-to-refresh. Tap baris → edit transaksi, Bayar tagihan, bar/kategori/cari → buka Transaksi dengan filter. |
 | Transactions | Fungsional (pen `PIoO4`): tab bulan, ringkasan, header hanya Cari + Filter; sheet Filter (`screens/Transactions/FilterSheet`: dompet, tipe, kategori → sub, rentang tanggal, urutan; draf diterapkan dengan "Terapkan", angka filter aktif di ikon) + banner aktif (`ActiveFilterBanner`), kalender bertitik (tap = filter hari), cari (debounce 1 dtk), daftar infinite scroll, bayar/batal tagihan, menerima filter awal lewat params `TransactionsParams` |
 | TransactionForm (route modal) | Catat/edit: 3 tipe (transfer + tukar dompet), subkategori cepat, kalkulator, kategori/subkategori, tanggal & jam, dompet, catat sebagai investasi, duplikat, hapus. Dibuka via `navigate(ROUTES.TRANSACTION_FORM, { transaction? })`; dari Catat cepat lewat "Catat manual". Pemilih kategori punya tile "Baru" dan pemilih subkategori punya "Subkategori baru" (langsung terpilih setelah dibuat) |

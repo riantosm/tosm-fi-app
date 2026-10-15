@@ -15,6 +15,8 @@ Kategori tanpa isi boleh dihilangkan.
 ### Baru
 
 - Tema: pilihan "Ikuti sistem" di sheet Lainnya, selain Terang dan Gelap.
+- Scan struk: foto struk dari Catat cepat, AI membaca toko, total, tanggal, dan item lalu
+  menampilkan pratinjau sebelum disimpan.
 - Masuk: akun yang masih menunggu persetujuan admin kini diberi tahu dengan jelas.
 
 ### Ditingkatkan

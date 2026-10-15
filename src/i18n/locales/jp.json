@@ -1094,15 +1094,25 @@
     "example4": "GoPayの残高は15万",
     "example5": "昨日コーヒー1.8万",
     "today": "今日",
-    "yesterday": "昨日"
+    "yesterday": "昨日",
+    "receiptMessage": "このレシートを記録して",
+    "scanReceipt": "レシートをスキャン"
+  },
+  "scan": {
+    "title": "レシートをスキャン",
+    "hint": "レシート全体を枠内に収めてください",
+    "capture": "撮影",
+    "retake": "撮り直す",
+    "use": "この写真を使う",
+    "processing": "写真を準備中…",
+    "permission": "レシートをスキャンするにはカメラへのアクセスを許可してください。",
+    "allow": "カメラを許可",
+    "unavailable": "この端末ではカメラを利用できません。",
+    "failed": "撮影できませんでした。もう一度お試しください。"
   },
   "placeholder": {
     "title": "このページは準備中です",
     "description": "この機能は今後のバージョンで追加されます。",
-    "scanTitle": "レシートをスキャン",
-    "cameraPermission": "レシートをスキャンするにはカメラへのアクセスを許可してください。",
-    "cameraAllow": "カメラを許可",
-    "cameraUnavailable": "この端末ではカメラを利用できません。",
     "profileTitle": "プロフィール"
   }
 }
