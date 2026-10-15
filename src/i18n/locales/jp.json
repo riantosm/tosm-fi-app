@@ -1118,5 +1118,73 @@
     "title": "このページは準備中です",
     "description": "この機能は今後のバージョンで追加されます。",
     "profileTitle": "プロフィール"
+  },
+  "appLock": {
+    "sectionSecurity": "セキュリティ",
+    "settingTitle": "アプリロック",
+    "settingDescription": "TosmFiを開くときにPINまたは指紋を求めます",
+    "biometricSettingTitle": "指紋でロック解除",
+    "biometricSettingDescription": "このスマホの指紋センサーを使います",
+    "biometricNotEnrolled": "先にスマホの設定で指紋を登録してください",
+    "changePinTitle": "PINを変更",
+    "changePinDescription": "新しい6桁のPINを設定",
+    "signIn": "ログイン",
+    "myWallets": "マイウォレット",
+    "lockedBanner": "クイックモード · ほかの機能はロック中",
+    "otherFeaturesLocked": "ほかの機能はロック中",
+    "greeting": "こんにちは、{{name}}さん",
+    "pinSubtitleUnlock": "PINを入力してTosmFiを開きます",
+    "pinSubtitleDisable": "PINを入力してアプリロックをオフにします",
+    "pinSubtitleChange": "続けるには現在のPINを入力してください",
+    "wrongPin": "PINが違います · 残り{{n}}回",
+    "tooManyAttempts": "PINを5回間違えました。安全のため、もう一度ログインしてください。",
+    "forgotPin": "PINをお忘れですか？",
+    "forgotPinAction": "ログアウトして再ログイン",
+    "useBiometric": "指紋でロック解除",
+    "usePin": "PINを使う",
+    "deleteDigit": "1桁削除",
+    "biometricTitle": "TosmFiのロック解除",
+    "biometricSubtitle": "指紋を使って続けます",
+    "biometricLockout": "試行回数が多すぎるため、指紋は一時的にロックされています。PINを使ってください。",
+    "setupTitle": "PINを作成",
+    "changeTitle": "PINを変更",
+    "step": "{{current}} / {{total}}",
+    "newPinTitle": "6桁のPINを作成",
+    "newPinSubtitle": "PINはTosmFiのロック解除に使い、指紋が使えないときの予備にもなります。",
+    "confirmPinTitle": "PINをもう一度",
+    "confirmPinSubtitle": "確認のため、同じ6桁をもう一度入力してください。",
+    "pinMismatch": "PINが一致しません · もう一度",
+    "pinWeakHint": "誕生日や連番は避けてください",
+    "pinStoredHint": "PINはこのスマホにのみ保存されます",
+    "enabledToast": "アプリロックをオンにしました",
+    "disabledToast": "アプリロックをオフにしました",
+    "pinChangedToast": "PINを変更しました",
+    "saveError": "PINを保存できませんでした。もう一度お試しください。",
+    "offerTitle": "TosmFiをロックしますか？",
+    "offerBody": "アプリを開くたびにPINまたは指紋を求めるので、スマホを貸したときもデータを守れます。",
+    "offerPoints": {
+      "biometric": {
+        "title": "指紋でロック解除",
+        "description": "入力不要ですばやく"
+      },
+      "pin": {
+        "title": "6桁のPIN",
+        "description": "指紋が使えないときの予備"
+      },
+      "settings": {
+        "title": "いつでも変更できます",
+        "description": "設定でオン・オフを切り替え"
+      }
+    },
+    "offerEnable": "今すぐオンにする",
+    "offerLater": "あとで",
+    "shortcutAiCaption": "AIで記録",
+    "shortcutWalletCaption": "残高を見る",
+    "shortcutRecentTitle": "取引",
+    "shortcutRecentCaption": "直近3日",
+    "recentTitle": "最近の取引",
+    "recentSubtitle": "直近3日 · {{range}}",
+    "recentListTitle": "直近3日",
+    "recentEmpty": "直近3日間の取引はありません。"
   }
 }

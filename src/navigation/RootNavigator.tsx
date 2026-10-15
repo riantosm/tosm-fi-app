@@ -1,8 +1,12 @@
-import { memo } from 'react';
+import { memo, useEffect, useRef } from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { ROUTES } from '@/navigation/paths';
 import type { RootStackParamList } from '@/navigation/types';
 import MainTabNavigator from '@/navigation/MainTabNavigator';
+import { navigationRef } from '@/navigation/navigationRef';
+import AppLockScreen from '@/screens/AppLock';
+import AppLockPinScreen from '@/screens/AppLockPin';
+import AppLockSetupScreen from '@/screens/AppLockSetup';
 import BalanceCorrectionScreen from '@/screens/BalanceCorrection';
 import BudgetDetailScreen from '@/screens/BudgetDetail';
 import BudgetFormScreen from '@/screens/BudgetForm';
@@ -19,6 +23,7 @@ import LoginScreen from '@/screens/Login';
 import PayOccurrenceScreen from '@/screens/PayOccurrence';
 import ProfileScreen from '@/screens/Profile';
 import QuickAddScreen from '@/screens/QuickAdd';
+import RecentTransactionsScreen from '@/screens/RecentTransactions';
 import RegisterScreen from '@/screens/Register';
 import ReportsScreen from '@/screens/Reports';
 import ScanReceiptScreen from '@/screens/ScanReceipt';
@@ -32,6 +37,7 @@ import TransactionFormScreen from '@/screens/TransactionForm';
 import WalletScreen from '@/screens/Wallet';
 import WalletFormScreen from '@/screens/WalletForm';
 import { useAppSelector } from '@/store/hooks';
+import { selectIsAppLocked } from '@/store/slices/appLockSlice';
 import { useTheme } from '@/contexts/ThemeContext';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -41,12 +47,42 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
  * jadi layar yang tidak sesuai tidak pernah ter-mount (tidak bisa di-navigate).
  * - RequireGuest: Login, Register (hanya saat belum login)
  * - RequireAuth: semua layar lain (hanya saat sudah login)
- * Login/logout otomatis berpindah grup tanpa navigate manual.
+ * - Locked: login tapi kunci aplikasi aktif & terkunci → Beranda kunci, PIN, dan pintasan
+ *   tanpa kunci (Catat cepat + Catat manual, Dompet saya, Transaksi terakhir).
+ * Login/logout/buka kunci otomatis berpindah grup tanpa navigate manual.
  */
 function RootNavigator() {
   const isLogin = useAppSelector(state => state.auth.isLogin);
   const isAdmin = useAppSelector(state => state.auth.user?.role === 'admin');
+  const isLocked = useAppSelector(selectIsAppLocked);
   const { colors } = useTheme();
+
+  // Terkunci ↔ terbuka: stack direset ke Beranda kunci / Dashboard. Tanpa ini NavigationContainer
+  // mempertahankan route lama yang terdaftar di kedua grup (AppLockPin, Wallet, QuickAdd, …),
+  // jadi setelah buka kunci user tertinggal di layar PIN tanpa tombol kembali.
+  const wasLocked = useRef(isLocked);
+  useEffect(() => {
+    if (wasLocked.current === isLocked) {
+      return;
+    }
+    wasLocked.current = isLocked;
+    if (isLogin && navigationRef.isReady()) {
+      navigationRef.reset({
+        index: 0,
+        routes: [{ name: isLocked ? ROUTES.APP_LOCK : ROUTES.MAIN_TABS }],
+      });
+    }
+  }, [isLocked, isLogin]);
+
+  const modalOptions = {
+    presentation: 'modal',
+    animation: 'slide_from_bottom',
+  } as const;
+  const sheetOptions = {
+    presentation: 'transparentModal',
+    animation: 'fade',
+    contentStyle: { backgroundColor: colors.transparent },
+  } as const;
 
   return (
     <Stack.Navigator
@@ -56,7 +92,38 @@ function RootNavigator() {
         animation: 'slide_from_right',
       }}
     >
-      {isLogin ? (
+      {isLogin && isLocked ? (
+        // Locked
+        <Stack.Group>
+          <Stack.Screen
+            name={ROUTES.APP_LOCK}
+            component={AppLockScreen}
+            options={{ animation: 'fade' }}
+          />
+          <Stack.Screen
+            name={ROUTES.APP_LOCK_PIN}
+            component={AppLockPinScreen}
+          />
+          <Stack.Screen name={ROUTES.WALLET} component={WalletScreen} />
+          <Stack.Screen
+            name={ROUTES.RECENT_TRANSACTIONS}
+            component={RecentTransactionsScreen}
+          />
+          <Stack.Group screenOptions={modalOptions}>
+            <Stack.Screen name={ROUTES.QUICK_ADD} component={QuickAddScreen} />
+            <Stack.Screen
+              name={ROUTES.SCAN_RECEIPT}
+              component={ScanReceiptScreen}
+            />
+          </Stack.Group>
+          <Stack.Group screenOptions={sheetOptions}>
+            <Stack.Screen
+              name={ROUTES.TRANSACTION_FORM}
+              component={TransactionFormScreen}
+            />
+          </Stack.Group>
+        </Stack.Group>
+      ) : isLogin ? (
         // RequireAuth
         <Stack.Group>
           <Stack.Screen name={ROUTES.MAIN_TABS} component={MainTabNavigator} />
@@ -79,6 +146,14 @@ function RootNavigator() {
             name={ROUTES.SETTINGS_CURRENCY}
             component={SettingsCurrencyScreen}
           />
+          <Stack.Screen
+            name={ROUTES.APP_LOCK_PIN}
+            component={AppLockPinScreen}
+          />
+          <Stack.Screen
+            name={ROUTES.APP_LOCK_SETUP}
+            component={AppLockSetupScreen}
+          />
           {isAdmin && (
             // Admin saja (setara gate role di web)
             <Stack.Group>
@@ -92,12 +167,7 @@ function RootNavigator() {
               />
             </Stack.Group>
           )}
-          <Stack.Group
-            screenOptions={{
-              presentation: 'modal',
-              animation: 'slide_from_bottom',
-            }}
-          >
+          <Stack.Group screenOptions={modalOptions}>
             <Stack.Screen name={ROUTES.QUICK_ADD} component={QuickAddScreen} />
             <Stack.Screen
               name={ROUTES.SCAN_RECEIPT}
@@ -105,13 +175,7 @@ function RootNavigator() {
             />
           </Stack.Group>
           {/* Sheet form: modal transparan, layar di belakang tetap terlihat di balik scrim. */}
-          <Stack.Group
-            screenOptions={{
-              presentation: 'transparentModal',
-              animation: 'fade',
-              contentStyle: { backgroundColor: colors.transparent },
-            }}
-          >
+          <Stack.Group screenOptions={sheetOptions}>
             <Stack.Screen
               name={ROUTES.TRANSACTION_FORM}
               component={TransactionFormScreen}

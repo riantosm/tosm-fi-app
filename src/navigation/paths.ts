@@ -4,6 +4,13 @@ export const ROUTES = {
   LOGIN: 'Login',
   REGISTER: 'Register',
 
+  // Kunci aplikasi (Android): Beranda kunci + PIN saat terkunci, Buat/Ubah PIN dari Pengaturan
+  APP_LOCK: 'AppLock',
+  APP_LOCK_PIN: 'AppLockPin',
+  APP_LOCK_SETUP: 'AppLockSetup',
+  /** Pintasan tanpa kunci: transaksi 3 hari terakhir (hanya lihat). */
+  RECENT_TRANSACTIONS: 'RecentTransactions',
+
   // Tab (di dalam MAIN_TABS)
   MAIN_TABS: 'MainTabs',
   DASHBOARD: 'Dashboard',
@@ -58,10 +65,14 @@ export const MORE_ROUTES: readonly RouteName[] = [
   ROUTES.PROFILE,
 ];
 
-/** Layar tanpa bottom nav (guest + modal). */
+/** Layar tanpa bottom nav (guest + kunci aplikasi + modal). */
 export const ROUTES_WITHOUT_NAV: readonly RouteName[] = [
   ROUTES.LOGIN,
   ROUTES.REGISTER,
+  ROUTES.APP_LOCK,
+  ROUTES.APP_LOCK_PIN,
+  ROUTES.APP_LOCK_SETUP,
+  ROUTES.RECENT_TRANSACTIONS,
   ROUTES.QUICK_ADD,
   ROUTES.SCAN_RECEIPT,
   ROUTES.TRANSACTION_FORM,

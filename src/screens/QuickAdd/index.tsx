@@ -26,9 +26,11 @@ import AiMark from '@/components/atoms/AiMark';
 import IconButton from '@/components/atoms/IconButton';
 import PressableScale from '@/components/atoms/PressableScale';
 import Typography from '@/components/atoms/Typography';
+import LockedBanner from '@/components/molecules/LockedBanner';
 import DateTimePickerSheet from '@/components/organisms/DateTimePickerSheet';
 import { useAssistantChatContext } from '@/contexts/AssistantChatContext';
 import { useTheme } from '@/contexts/ThemeContext';
+import { useAppLock } from '@/hooks/useAppLock';
 import { useHistoryExamples } from '@/hooks/useHistoryExamples';
 import { useKeyboardHeight } from '@/hooks/useKeyboardHeight';
 import { useLanguage } from '@/hooks/useLanguage';
@@ -46,6 +48,7 @@ import {
 import ChatComposer from '@/screens/QuickAdd/ChatComposer';
 import QuickReplyButton from '@/screens/QuickAdd/QuickReplyButton';
 import { useAppSelector } from '@/store/hooks';
+import { selectIsAppLocked } from '@/store/slices/appLockSlice';
 import { makeStyles } from '@/theme/makeStyles';
 import { radius, spacing } from '@/theme/metrics';
 import type {
@@ -148,6 +151,9 @@ export default function QuickAddScreen({
   const chat = useAssistantChatContext();
   const { ensureData } = chat;
   const user = useAppSelector(state => state.auth.user);
+  // Dibuka dari Beranda kunci (pintasan tanpa kunci): tanpa tautan ke halaman lain.
+  const isLocked = useAppSelector(selectIsAppLocked);
+  const { startUnlock } = useAppLock();
   const [datePickerOpen, setDatePickerOpen] = useState(false);
 
   const scrollRef = useRef<ComponentRef<typeof ScrollView>>(null);
@@ -286,21 +292,23 @@ export default function QuickAddScreen({
                     {t('assistant.savedReply', { count: message.count })}
                   </Typography>
                 </View>
-                <PressableScale
-                  accessibilityRole="link"
-                  hitSlop={8}
-                  onPress={() =>
-                    navigation.popTo(ROUTES.MAIN_TABS, {
-                      screen: ROUTES.TRANSACTIONS,
-                    })
-                  }
-                  style={styles.link}
-                >
-                  <Typography variant="fieldLabel" tone="primary">
-                    {t('assistant.viewInTransactions')}
-                  </Typography>
-                  <ArrowRight size={14} color={colors.primaryText} />
-                </PressableScale>
+                {!isLocked && (
+                  <PressableScale
+                    accessibilityRole="link"
+                    hitSlop={8}
+                    onPress={() =>
+                      navigation.popTo(ROUTES.MAIN_TABS, {
+                        screen: ROUTES.TRANSACTIONS,
+                      })
+                    }
+                    style={styles.link}
+                  >
+                    <Typography variant="fieldLabel" tone="primary">
+                      {t('assistant.viewInTransactions')}
+                    </Typography>
+                    <ArrowRight size={14} color={colors.primaryText} />
+                  </PressableScale>
+                )}
               </View>
             </AiRow>
           </ChatEntry>
@@ -368,6 +376,13 @@ export default function QuickAddScreen({
             )}
           />
         </View>
+        {isLocked && (
+          <LockedBanner
+            message={t('appLock.lockedBanner')}
+            actionLabel={t('appLock.signIn')}
+            onAction={startUnlock}
+          />
+        )}
 
         <ScrollView
           ref={scrollRef}

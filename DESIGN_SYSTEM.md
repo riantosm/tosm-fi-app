@@ -623,6 +623,25 @@ Tombol **Keluar** sengaja tidak ada di sheet ini; logout hanya di halaman Profil
   Urutkan) berisi chip wrap; rentang tanggal = PickerField tanpa label → DateRangeSheet; footer
   Reset (outline) / Terapkan (primary). Ikon Filter aktif: latar `primarySoft` + badge angka 16.
 
+### 6.24 Kunci aplikasi (Android)
+
+- **Beranda kunci**: latar `surface`; pill bahasa ID/EN/JP kanan atas (`surface2`, aktif `surface` +
+  `shadows.thumb`, teks `primaryText`); LogoMark md + wordmark Outfit 28; tagline `text2`; ilustrasi
+  `assets/images/app-lock-hero.webp` maks 300 persegi; tiga kartu pintasan (garis 1 `border`, radius
+  20, judul 13.5 + keterangan caption: AiMark md / tile dompet `incomeSoft` / tile riwayat `investmentSoft`) di atas Button xl "Masuk" (ikon sidik jari bila aktif).
+- **PinLayout** (`templates/PinLayout`): latar gradien hero, header 64 (kembali `hero`), badge
+  (avatar 68 bercincin `heroControl` + badge gembok `primary` / tile ikon 64 `surface`), judul
+  headline `heroFg`, subjudul `heroFg2`, **PinDots** (6 × 14, jarak 18; kosong `heroControl` + garis
+  `borderStrong`, terisi `primary`, salah semua `expense` + goyang), pill error `expenseSoft`
+  (ruangnya dicadangkan), sheet `surface` radius 32 berisi **PinPad** (tombol bulat 72 `surface2`,
+  angka Outfit 26; kiri bawah sidik jari `primary` atau kosong, kanan bawah hapus `text2`).
+- **Switch** (`atoms/Switch`): track 46 × 28 `primary` / `text3`, knob 22 putih. Di MenuRow pakai
+  `showChevron={false}` dan baris yang menangani tap.
+- **LockedBanner**: strip `primarySoft` selebar layar di bawah app bar (gembok + teks `meta`
+  `primaryText` + "Masuk →"); Dompet saya menambah bar mengambang `surface` (`shadows.nav`, pill 60).
+- **Popup aktivasi**: bottom sheet tanpa tombol tutup: ikon 64 `primarySoft`, judul sheetTitle,
+  daftar 3 poin dalam kotak `surface2`, Button "Aktifkan sekarang" + teks "Nanti saja".
+
 ---
 
 ## 7. Pola layar (template)
@@ -814,6 +833,21 @@ Backend API (`y12zG`) khusus web, jadi tidak di-port.
 | Investasi | Edit instrumen `WTcV3`, Tambah akun `o12ZPM`, Tarik dana `p6ZH8`, Transfer antar akun `JdZov`, Update nilai `pJ1a2`, Edit transaksi `ngkTb`, Pilih instrumen `Scg3T`, Pilih akun `Iyrbl`, Urutkan `CNNda` |
 | Laporan | Export `MVyzc`, Custom range `xBWFe` |
 | Profil & pengaturan | Simpan profil `eCXQt`, Keluar `PlMkh`, Reset data `H9Gnu`, Hapus log `PdN9s` |
+
+### Kunci aplikasi HP (02 Authentication & 12 Pengaturan)
+
+| State | Frame |
+|---|---|
+| Beranda kunci | `nkX2f` |
+| Sidik jari (prompt sistem) | `wE7uB` |
+| PIN | `CHqWr` |
+| PIN salah | `VPr9F` |
+| Popup aktivasi | `P3wMf1` (komponen `NjN7h`) |
+| Buat PIN / Konfirmasi / Tidak cocok | `DFKKP` / `Eb2QA` / `BP2Ay` |
+| Pintasan · Catat cepat / Dompet saya / Transaksi terakhir | `Gwm6J` / `rsM0q` / `CAwfl` |
+| Pengaturan · Kunci aktif / mati | `Ufnt7` / `eE5d3` |
+
+Komponen: PinPad `MApjG`, PinDots `KX3fj`, Switch On `D9LQ5` / Off `ql8Sd`, LockedBanner `KC1Ia`.
 
 ### Catat Cepat (AI) HP
 

@@ -75,5 +75,13 @@
       "react-dom": "19.2.3",
       "react": "$react"
     }
+  },
+  "codegenConfig": {
+    "name": "TosmFiAppSpecs",
+    "type": "modules",
+    "jsSrcsDir": "src/specs",
+    "android": {
+      "javaPackageName": "com.tosm.finance.specs"
+    }
   }
 }

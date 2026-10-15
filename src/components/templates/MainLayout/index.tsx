@@ -39,6 +39,8 @@ export interface MainLayoutProps {
    * Diberi `insetTop` untuk padding atasnya sendiri.
    */
   renderHero?: (insetTop: number) => ReactNode;
+  /** Strip selebar layar di antara app bar dan konten (mis. LockedBanner), tidak ikut scroll. */
+  topBanner?: ReactNode;
   /** Beri ruang bawah untuk bottom nav mengambang. */
   withTabBar?: boolean;
   /** Tarik untuk muat ulang. */
@@ -70,6 +72,7 @@ const useStyles = makeStyles(({ colors }) => ({
     paddingBottom: spacing.xxl,
   },
   contentWithHero: { paddingTop: spacing.xl },
+  contentWithBanner: { paddingTop: spacing.lg },
   contentWithTabBar: { paddingBottom: layout.bottomNavSpace },
   hero: { marginHorizontal: -layout.gutter, marginTop: -spacing.xl },
   statusBar: {
@@ -89,6 +92,7 @@ export default function MainLayout({
   backLabel,
   headerRight,
   renderHero,
+  topBanner,
   withTabBar = false,
   onRefresh,
   onEndReached,
@@ -173,11 +177,13 @@ export default function MainLayout({
       ]}
     >
       {!renderHero && appBar}
+      {topBanner}
       <Animated.ScrollView
         ref={scrollRef}
         contentContainerStyle={[
           styles.content,
           !!renderHero && styles.contentWithHero,
+          !!topBanner && styles.contentWithBanner,
           withTabBar && styles.contentWithTabBar,
         ]}
         keyboardShouldPersistTaps="handled"

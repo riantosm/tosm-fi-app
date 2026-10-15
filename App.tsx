@@ -12,21 +12,28 @@ import {
 import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
 import '@/i18n';
+import AppLockOfferSheet from '@/components/organisms/AppLockOfferSheet';
 import ErrorBoundary from '@/components/organisms/ErrorBoundary';
 import { AssistantChatProvider } from '@/contexts/AssistantChatContext';
 import { MoreSheetProvider } from '@/contexts/MoreSheetContext';
 import { ThemeProvider, useTheme } from '@/contexts/ThemeContext';
 import { ToastHost, ToastProvider } from '@/contexts/ToastContext';
+import { useAppLockLifecycle } from '@/hooks/useAppLockLifecycle';
 import { useBackToExit } from '@/hooks/useBackToExit';
 import { useLanguageSync } from '@/hooks/useLanguageSync';
 import { useScheduleReminders } from '@/hooks/useScheduleReminders';
 import { useSessionBootstrap } from '@/hooks/useSessionBootstrap';
 import AppBottomNav from '@/navigation/AppBottomNav';
 import { navigationRef } from '@/navigation/navigationRef';
-import { ROUTES_WITHOUT_NAV } from '@/navigation/paths';
+import { ROUTES, ROUTES_WITHOUT_NAV } from '@/navigation/paths';
 import RootNavigator from '@/navigation/RootNavigator';
+import { isAppLockSupported } from '@/services/native/appLock';
 import { persistor, store } from '@/store';
-import { useAppSelector } from '@/store/hooks';
+import { useAppDispatch, useAppSelector } from '@/store/hooks';
+import {
+  dismissAppLockOffer,
+  selectIsAppLocked,
+} from '@/store/slices/appLockSlice';
 import { layout, spacing } from '@/theme/metrics';
 import { setupGlobalErrorLogging } from '@/utils/crashLogger';
 
@@ -46,12 +53,17 @@ function AppShell() {
   useSessionBootstrap();
   useBackToExit();
   useScheduleReminders();
+  useAppLockLifecycle();
+  const dispatch = useAppDispatch();
   const insets = useSafeAreaInsets();
   const { colors, isDark } = useTheme();
   const isLogin = useAppSelector(state => state.auth.isLogin);
+  const isLocked = useAppSelector(selectIsAppLocked);
+  const offerPending = useAppSelector(state => state.appLock.offerPending);
   const [currentRoute, setCurrentRoute] = useState<string>();
+  const showNav = isLogin && !isLocked;
   const navVisible =
-    isLogin &&
+    showNav &&
     !!currentRoute &&
     !(ROUTES_WITHOUT_NAV as readonly string[]).includes(currentRoute);
   const syncRoute = () =>
@@ -82,8 +94,22 @@ function AppShell() {
         onStateChange={syncRoute}
       >
         <RootNavigator />
-        {isLogin && <AppBottomNav currentRoute={currentRoute} />}
+        {showNav && <AppBottomNav currentRoute={currentRoute} />}
       </NavigationContainer>
+      {/* Tawaran kunci aplikasi sekali setelah login, muncul di Dashboard. */}
+      <AppLockOfferSheet
+        visible={
+          isAppLockSupported &&
+          offerPending &&
+          showNav &&
+          currentRoute === ROUTES.DASHBOARD
+        }
+        onLater={() => dispatch(dismissAppLockOffer())}
+        onEnable={() => {
+          dispatch(dismissAppLockOffer());
+          navigationRef.navigate(ROUTES.APP_LOCK_SETUP, { mode: 'enable' });
+        }}
+      />
       <ToastHost
         offset={
           Math.max(insets.bottom, spacing.xl) +

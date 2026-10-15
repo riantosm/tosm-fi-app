@@ -1118,5 +1118,73 @@
     "title": "This page is being prepared",
     "description": "This feature is coming in a future version of the app.",
     "profileTitle": "Profile"
+  },
+  "appLock": {
+    "sectionSecurity": "Security",
+    "settingTitle": "App lock",
+    "settingDescription": "Ask for a PIN or fingerprint when TosmFi opens",
+    "biometricSettingTitle": "Unlock with fingerprint",
+    "biometricSettingDescription": "Use this phone's fingerprint sensor",
+    "biometricNotEnrolled": "Add a fingerprint in your phone settings first",
+    "changePinTitle": "Change PIN",
+    "changePinDescription": "Set a new 6-digit PIN",
+    "signIn": "Sign in",
+    "myWallets": "My wallets",
+    "lockedBanner": "Quick mode · other features are locked",
+    "otherFeaturesLocked": "Other features are locked",
+    "greeting": "Hi, {{name}}",
+    "pinSubtitleUnlock": "Enter your PIN to open TosmFi",
+    "pinSubtitleDisable": "Enter your PIN to turn off app lock",
+    "pinSubtitleChange": "Enter your current PIN to continue",
+    "wrongPin": "Wrong PIN · {{n}} attempts left",
+    "tooManyAttempts": "Wrong PIN 5 times. For your security, please sign in again.",
+    "forgotPin": "Forgot PIN?",
+    "forgotPinAction": "Sign out & sign in again",
+    "useBiometric": "Unlock with fingerprint",
+    "usePin": "Use PIN",
+    "deleteDigit": "Delete digit",
+    "biometricTitle": "Unlock TosmFi",
+    "biometricSubtitle": "Use your fingerprint to continue",
+    "biometricLockout": "Fingerprint is temporarily locked after too many attempts. Use your PIN.",
+    "setupTitle": "Create PIN",
+    "changeTitle": "Change PIN",
+    "step": "{{current}} / {{total}}",
+    "newPinTitle": "Create a 6-digit PIN",
+    "newPinSubtitle": "Your PIN unlocks TosmFi and works as a backup when your fingerprint fails.",
+    "confirmPinTitle": "Repeat PIN",
+    "confirmPinSubtitle": "Enter the same 6 digits again to confirm.",
+    "pinMismatch": "PINs don't match · try again",
+    "pinWeakHint": "Avoid birthdays or sequential numbers",
+    "pinStoredHint": "Your PIN is stored on this phone only",
+    "enabledToast": "App lock is on",
+    "disabledToast": "App lock is off",
+    "pinChangedToast": "PIN changed",
+    "saveError": "Couldn't save the PIN. Please try again.",
+    "offerTitle": "Lock TosmFi?",
+    "offerBody": "Ask for a PIN or fingerprint every time the app opens, so your data stays safe when someone borrows your phone.",
+    "offerPoints": {
+      "biometric": {
+        "title": "Unlock with fingerprint",
+        "description": "Fast, nothing to type"
+      },
+      "pin": {
+        "title": "6-digit PIN",
+        "description": "Backup when your fingerprint fails"
+      },
+      "settings": {
+        "title": "Change it anytime",
+        "description": "Turn it on or off in Settings"
+      }
+    },
+    "offerEnable": "Turn on now",
+    "offerLater": "Maybe later",
+    "shortcutAiCaption": "Use AI",
+    "shortcutWalletCaption": "See balances",
+    "shortcutRecentTitle": "Transactions",
+    "shortcutRecentCaption": "Last 3 days",
+    "recentTitle": "Recent transactions",
+    "recentSubtitle": "Last 3 days · {{range}}",
+    "recentListTitle": "Last 3 days",
+    "recentEmpty": "No transactions in the last 3 days."
   }
 }

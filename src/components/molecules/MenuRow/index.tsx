@@ -16,8 +16,10 @@ export interface MenuRowProps extends Omit<PressableScaleProps, 'children'> {
   tone?: Tone;
   title: string;
   description?: string;
-  /** Elemen di kanan sebelum chevron, misalnya Badge. */
+  /** Elemen di kanan sebelum chevron, misalnya Badge atau Switch. */
   trailing?: ReactNode;
+  /** false = tanpa chevron (baris dengan Switch). */
+  showChevron?: boolean;
 }
 
 const useStyles = makeStyles(() => ({
@@ -45,6 +47,7 @@ export default function MenuRow({
   title,
   description,
   trailing,
+  showChevron = true,
   style,
   ...rest
 }: MenuRowProps) {
@@ -72,7 +75,7 @@ export default function MenuRow({
         )}
       </View>
       {trailing}
-      <ChevronRight size={16} color={colors.text3} />
+      {showChevron && <ChevronRight size={16} color={colors.text3} />}
     </PressableScale>
   );
 }

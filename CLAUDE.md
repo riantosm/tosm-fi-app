@@ -99,7 +99,8 @@ tulis ulang dengan komponen RN di sini. Desain: Mist, lihat `DESIGN_SYSTEM.md` (
   `RootNavigator` → `screens/<Nama>/index.tsx`.
 - **State**: Redux Toolkit + redux-persist (AsyncStorage). Persist whitelist hanya `auth`
   (token + user + flag `sessionExpired`) dan `settings` (currency, decimalPlaces, language;
-  `language: null` = ikuti bahasa perangkat). Data domain tidak di-persist; buat slice hanya kalau
+  `language: null` = ikuti bahasa perangkat), ditambah `appLock` yang punya persistReducer sendiri
+  (lihat Kunci aplikasi). Data domain tidak di-persist; buat slice hanya kalau
   dipakai lintas layar, selain itu state lokal + panggil service langsung.
 - **API** (`src/services/api/`): satu `axiosInstance` (Bearer token dari store, `tzOffsetMinutes`
   otomatis di setiap GET, 401 saat sedang login → `onSessionExpired`). Envelope backend
@@ -108,6 +109,29 @@ tulis ulang dengan komponen RN di sini. Desain: Mist, lihat `DESIGN_SYSTEM.md` (
   Semua domain web sudah di-port (tipe + service): auth, wallet, category, transaction,
   instrument, investmentTransaction, report, schedule, scheduleOccurrence, budget, assistant,
   account, clientError, userApproval. Settings murni lokal (tidak ada service).
+- **Kunci aplikasi (Android saja)**: TurboModule milik app `NativeAppLock` (spec `src/specs/NativeAppLock.ts`,
+  `codegenConfig` di `package.json` → `com.tosm.finance.specs`, implementasi
+  `android/app/.../applock/AppLockModule.kt` + `AppLockPackage` yang didaftarkan manual di
+  `MainApplication`, dependensi `androidx.biometric`): BiometricPrompt (`BIOMETRIC_WEAK`, tombol negatif
+  "Pakai PIN") + hash PIN PBKDF2 (salt acak, 120k iterasi; PIN tidak disimpan). Dibungkus
+  `services/native/appLock.ts` (`isAppLockSupported` false di iOS/build lama → fitur disembunyikan).
+  - State `appLock` (persist sendiri dengan `blacklist: ['isLocked']`, jadi setiap app dibuka
+    terkunci): `enabled`, `biometricEnabled`, `pinHash/pinSalt`, `failedAttempts`, `offerPending`.
+    Direset ke mati saat logout/sesi berakhir; `onLogin` menyalakan `offerPending`.
+  - `selectIsAppLocked` → `RootNavigator` memakai grup **Locked** (Beranda kunci `AppLock`,
+    `AppLockPin`, pintasan tanpa kunci `Wallet` view-only, `RecentTransactions` (3 hari, hanya lihat) +
+    `QuickAdd`/`ScanReceipt`/`TransactionForm`)
+    lalu `navigationRef.reset` saat status kunci berubah (Beranda kunci / Dashboard). Tanpa reset,
+    NavigationContainer mempertahankan route yang ada di kedua grup (mis. `AppLockPin`) dan user
+    tertahan di sana; mengganti `key` navigator tidak cukup. Bottom nav disembunyikan.
+  - `hooks/useAppLock`: `startUnlock` (sidik jari kalau aktif, selain itu layar PIN), `attemptPin`
+    (salah ke-5 di mode apa pun → logout), `promptBiometric`. `hooks/useAppLockLifecycle` mengunci
+    lagi setelah app ≥ 30 detik di latar belakang.
+  - Pengaturan → Keamanan: nyalakan = `AppLockSetup` (buat + konfirmasi PIN), matikan = `AppLockPin`
+    mode `disable`, Ubah PIN = `AppLockPin` mode `change` → `AppLockSetup` mode `change`. Popup
+    `organisms/AppLockOfferSheet` muncul di Dashboard sekali setelah login.
+  - Layar Wallet & QuickAdd membaca `selectIsAppLocked` untuk mode pintasan (LockedBanner, tanpa
+    tautan ke halaman yang tidak terdaftar di grup Locked). Navigasi baru dari layar itu harus dijaga.
 - **Auth** (`hooks/useAuth.ts`): `login` = `loginApi` lalu `getMeApi(token)`; baru dispatch
   `onLogin` kalau keduanya sukses (user `pending` ditolak oleh /user/me 403, sama dengan web).
   `logout` memanggil `/auth/logout` best-effort dan selalu membersihkan state + membatalkan
@@ -215,7 +239,8 @@ tulis ulang dengan komponen RN di sini. Desain: Mist, lihat `DESIGN_SYSTEM.md` (
 | Login, Register | Fungsional (API asli, validasi, StatusModal, info sesi berakhir, banner "Akun belum aktif" saat /user/me 403) |
 | Sheet Lainnya | Fungsional (profil, grid 6 menu, tema Terang/Gelap/Ikuti sistem, bahasa ID/EN/JP; logout hanya di Profil) |
 | Profile (Edit Profil) | Fungsional (pen `S5xzK`/`eCXQt`): identitas bergradien (avatar, @username, peran), Informasi Akun (nama/username + konfirmasi simpan, `useAuth().updateProfile`), Ubah Password (validasi min 6 & konfirmasi, sukses → sesi dibersihkan & kembali ke Login, `changePassword`), tombol Keluar (satu-satunya tempat logout) |
-| Settings | Fungsional (pen `k0SKz`): Admin (Permintaan Pengguna + badge "n baru" dari `hooks/useUserApproval`, Log Error), Umum (Mata Uang + ringkasan), Zona Berbahaya Reset Data (konfirmasi → `resetAccountDataApi` + aksi `accountDataReset` yang mengosongkan semua slice data akun). "Backend API" web sengaja tidak dibawa |
+| AppLock / AppLockPin / AppLockSetup | Fungsional, Android (pen `nkX2f`, `CHqWr`, `VPr9F`, `DFKKP`, `Eb2QA`, `BP2Ay`): Beranda kunci (bahasa, pintasan Catat cepat, Dompet saya & Transaksi 3 hari tanpa kunci, Masuk → sidik jari/PIN; `RecentTransactions` pen `CAwfl`: SummaryBar + TransactionList `dateFrom/dateTo` 3 hari, `molecules/LockedUnlockBar` dipakai bersama Dompet saya), PIN 6 digit (salah 5× → logout, lupa PIN → keluar), buat/konfirmasi/ubah PIN, popup aktivasi setelah login |
+| Settings | Fungsional (pen `k0SKz`, Keamanan `Ufnt7`/`eE5d3`): Keamanan (kunci aplikasi + sidik jari + Ubah PIN, Android saja), Admin (Permintaan Pengguna + badge "n baru" dari `hooks/useUserApproval`, Log Error), Umum (Mata Uang + ringkasan), Zona Berbahaya Reset Data (konfirmasi → `resetAccountDataApi` + aksi `accountDataReset` yang mengosongkan semua slice data akun). "Backend API" web sengaja tidak dibawa |
 | ScanReceipt (modal) | Scan struk dari tombol kamera di komposer Catat cepat: izin kamera, pratinjau + bingkai, jepret (`usePhotoOutput`), tinjau (Ulangi / Pakai foto). Foto diperkecil ke 1280px JPEG 70 (`Photo.toImageAsync` → nitro-image `resizeAsync`/`toEncodedImageDataAsync`, base64 lewat `utils/base64.ts`) lalu `chat.sendPhoto` mengirimnya sebagai `image` ke `POST /assistant/chat` (backend `a7ebb5b`); thumbnail tampil di bubble user, dan Coba lagi ikut mengirim fotonya |
 | Dashboard | Fungsional (pen `yHRM4`): hero (kekayaan bersih, sembunyikan saldo, cari, tema, avatar → sheet Lainnya), budget di-pin, ringkasan bulan (bar), kesehatan finansial, pengeluaran per kategori (donut + drill-down), dompet (tap → jadikan utama; tap dompet utama → koreksi saldo; Tambah dompet → form), transaksi bulan ini (infinite scroll), batalkan tagihan, pull-to-refresh. Tap baris → edit transaksi, Bayar tagihan, bar/kategori/cari → buka Transaksi dengan filter. |
 | Transactions | Fungsional (pen `PIoO4`): tab bulan, ringkasan, header hanya Cari + Filter; sheet Filter (`screens/Transactions/FilterSheet`: dompet, tipe, kategori → sub, rentang tanggal, urutan; draf diterapkan dengan "Terapkan", angka filter aktif di ikon) + banner aktif (`ActiveFilterBanner`), kalender bertitik (tap = filter hari), cari (debounce 1 dtk), daftar infinite scroll, bayar/batal tagihan, menerima filter awal lewat params `TransactionsParams` |

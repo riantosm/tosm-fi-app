@@ -18,7 +18,8 @@ export interface WalletCardProps {
   variant?: 'card' | 'row';
   /** Baris list: tampilkan garis pemisah di atas. */
   divider?: boolean;
-  onPress: () => void;
+  /** Tidak ada → kartu hanya tampilan (Dompet saya saat app terkunci). */
+  onPress?: () => void;
 }
 
 const useStyles = makeStyles(({ colors, shadows }) => ({
@@ -79,6 +80,7 @@ export default function WalletCard({
           wallet.balance,
         )}`}
         scaleTo={0.98}
+        disabled={!onPress}
         onPress={onPress}
         style={[styles.row, divider && styles.divider]}
       >
@@ -103,6 +105,7 @@ export default function WalletCard({
         wallet.balance,
       )}`}
       scaleTo={0.98}
+      disabled={!onPress}
       onPress={onPress}
       style={[styles.card, wallet.isPrimary && styles.cardPrimary]}
     >

@@ -10,6 +10,7 @@ import {
   REGISTER,
   REHYDRATE,
 } from 'redux-persist';
+import appLock from '@/store/slices/appLockSlice';
 import auth from '@/store/slices/authSlice';
 import budget from '@/store/slices/budgetSlice';
 import category from '@/store/slices/categorySlice';
@@ -22,6 +23,12 @@ import wallet from '@/store/slices/walletSlice';
 
 const rootReducer = combineReducers({
   auth,
+  // Persist sendiri (bukan lewat whitelist root) supaya `isLocked` tidak ikut tersimpan:
+  // setiap app dibuka state awalnya terkunci.
+  appLock: persistReducer(
+    { key: 'appLock', storage: AsyncStorage, blacklist: ['isLocked'] },
+    appLock,
+  ),
   settings,
   wallet,
   category,

@@ -25,6 +25,15 @@ export interface TransactionsParams {
   focusSearch?: boolean;
 }
 
+/**
+ * Layar PIN: `unlock` = buka app yang terkunci, `disable` = konfirmasi mematikan kunci,
+ * `change` = verifikasi PIN lama sebelum Ubah PIN.
+ */
+export type AppLockPinMode = 'unlock' | 'disable' | 'change';
+
+/** Buat PIN: `enable` = mengaktifkan kunci aplikasi, `change` = ganti PIN. */
+export type AppLockSetupMode = 'enable' | 'change';
+
 export type MainTabParamList = {
   [ROUTES.DASHBOARD]: undefined;
   [ROUTES.TRANSACTIONS]: TransactionsParams | undefined;
@@ -34,6 +43,11 @@ export type MainTabParamList = {
 export type RootStackParamList = {
   [ROUTES.LOGIN]: undefined;
   [ROUTES.REGISTER]: undefined;
+
+  [ROUTES.APP_LOCK]: undefined;
+  [ROUTES.APP_LOCK_PIN]: { mode: AppLockPinMode };
+  [ROUTES.APP_LOCK_SETUP]: { mode: AppLockSetupMode };
+  [ROUTES.RECENT_TRANSACTIONS]: undefined;
 
   [ROUTES.MAIN_TABS]: NavigatorScreenParams<MainTabParamList>;
   [ROUTES.WALLET]: undefined;

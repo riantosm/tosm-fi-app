@@ -1118,5 +1118,73 @@
     "title": "Halaman ini sedang disiapkan",
     "description": "Fitur ini akan hadir di versi aplikasi berikutnya.",
     "profileTitle": "Profil"
+  },
+  "appLock": {
+    "sectionSecurity": "Keamanan",
+    "settingTitle": "Kunci aplikasi",
+    "settingDescription": "Minta PIN atau sidik jari saat TosmFi dibuka",
+    "biometricSettingTitle": "Buka dengan sidik jari",
+    "biometricSettingDescription": "Pakai sensor sidik jari di HP ini",
+    "biometricNotEnrolled": "Daftarkan sidik jari di pengaturan HP dulu",
+    "changePinTitle": "Ubah PIN",
+    "changePinDescription": "Ganti PIN 6 digit",
+    "signIn": "Masuk",
+    "myWallets": "Dompet saya",
+    "lockedBanner": "Mode cepat · fitur lain terkunci",
+    "otherFeaturesLocked": "Fitur lain terkunci",
+    "greeting": "Hai, {{name}}",
+    "pinSubtitleUnlock": "Masukkan PIN untuk membuka TosmFi",
+    "pinSubtitleDisable": "Masukkan PIN untuk mematikan kunci aplikasi",
+    "pinSubtitleChange": "Masukkan PIN lama untuk melanjutkan",
+    "wrongPin": "PIN salah · sisa {{n}} percobaan lagi",
+    "tooManyAttempts": "PIN salah 5 kali. Demi keamanan, silakan masuk lagi.",
+    "forgotPin": "Lupa PIN?",
+    "forgotPinAction": "Keluar & masuk ulang",
+    "useBiometric": "Buka dengan sidik jari",
+    "usePin": "Pakai PIN",
+    "deleteDigit": "Hapus digit",
+    "biometricTitle": "Buka TosmFi",
+    "biometricSubtitle": "Gunakan sidik jari untuk melanjutkan",
+    "biometricLockout": "Sidik jari terkunci sementara karena terlalu banyak percobaan. Pakai PIN.",
+    "setupTitle": "Buat PIN",
+    "changeTitle": "Ubah PIN",
+    "step": "{{current}} / {{total}}",
+    "newPinTitle": "Buat PIN 6 digit",
+    "newPinSubtitle": "PIN dipakai untuk membuka TosmFi, juga sebagai cadangan kalau sidik jari gagal.",
+    "confirmPinTitle": "Ulangi PIN",
+    "confirmPinSubtitle": "Masukkan lagi 6 digit yang sama untuk memastikan.",
+    "pinMismatch": "PIN tidak cocok · coba lagi",
+    "pinWeakHint": "Hindari tanggal lahir atau angka berurutan",
+    "pinStoredHint": "PIN tersimpan hanya di HP ini",
+    "enabledToast": "Kunci aplikasi aktif",
+    "disabledToast": "Kunci aplikasi dimatikan",
+    "pinChangedToast": "PIN berhasil diubah",
+    "saveError": "Gagal menyimpan PIN. Coba lagi.",
+    "offerTitle": "Kunci TosmFi?",
+    "offerBody": "Minta PIN atau sidik jari setiap kali aplikasi dibuka, supaya datamu tetap aman kalau HP dipinjam orang lain.",
+    "offerPoints": {
+      "biometric": {
+        "title": "Buka dengan sidik jari",
+        "description": "Cepat, tanpa mengetik apa pun"
+      },
+      "pin": {
+        "title": "PIN 6 digit",
+        "description": "Cadangan kalau sidik jari gagal"
+      },
+      "settings": {
+        "title": "Bisa diubah kapan saja",
+        "description": "Nyalakan/matikan di Pengaturan"
+      }
+    },
+    "offerEnable": "Aktifkan sekarang",
+    "offerLater": "Nanti saja",
+    "shortcutAiCaption": "Pakai AI",
+    "shortcutWalletCaption": "Lihat saldo",
+    "shortcutRecentTitle": "Transaksi",
+    "shortcutRecentCaption": "3 hari terakhir",
+    "recentTitle": "Transaksi terakhir",
+    "recentSubtitle": "3 hari terakhir · {{range}}",
+    "recentListTitle": "3 hari terakhir",
+    "recentEmpty": "Belum ada transaksi dalam 3 hari terakhir."
   }
 }
