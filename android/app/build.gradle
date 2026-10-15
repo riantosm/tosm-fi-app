@@ -83,8 +83,8 @@ android {
         applicationId "com.tosm.finance"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 2          // naik +1 tiap rilis
-        versionName "1.1.0"    // semver
+        versionCode 3          // naik +1 tiap rilis
+        versionName "1.2.0"    // semver
         resValue "string", "build_config_package", "com.tosm.finance"
     }
     // Hanya terjemahan bawaan library untuk bahasa app (en, id = "in", jp = "ja"). Teks UI app

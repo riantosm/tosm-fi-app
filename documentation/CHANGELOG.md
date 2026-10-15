@@ -12,6 +12,10 @@ Kategori tanpa isi boleh dihilangkan.
 
 ## Belum dirilis
 
+## v1.2.0 (versionCode 3)
+
+_2026-10-15_
+
 ### Baru
 
 - Tema: pilihan "Ikuti sistem" di sheet Lainnya, selain Terang dan Gelap.
