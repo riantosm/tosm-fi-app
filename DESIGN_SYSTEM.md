@@ -66,7 +66,7 @@ terlihat. Pakai keduanya hanya untuk keperluan itu.
 
 | Pen | `colors.` | Light | Dark | Dipakai untuk |
 |---|---|---|---|---|
-| `primary` | `primary` | `#6A6DCD` | `#A3A6F5` | Tombol utama, LogoMark, tombol AI tengah, checkbox aktif |
+| `primary` | `primary` | `#6A6DCD` | `#A3A6F5` | Tombol utama, tombol AI tengah, checkbox aktif |
 | `primary-fg` | `primaryFg` | `#FFFFFF` | `#1E1F38` | Teks/ikon di atas `primary` |
 | `primary-soft` | `primarySoft` | `#E8E9FA` | `#3C3F66` | Tombol soft, chip aktif, badge, slot tab aktif |
 | `primary-text` | `primaryText` | `#5357B8` | `#B4B6F8` | Teks/ikon di atas `primary-soft`, tautan |
@@ -169,7 +169,7 @@ sekaligus). Jangan menulis `fontSize`/`fontWeight` bebas di layar.
 | `radius-card` | **20** | Kartu, AmountCard, zona bahaya |
 | — | **28** | Bottom sheet (sudut atas), dialog |
 | — | **32** | Hero band Dashboard (sudut bawah), sheet form Login (sudut atas) |
-| pill | **999** | Tombol teks, chip, badge, segmented, tombol ikon bulat, bottom nav, avatar, LogoMark |
+| pill | **999** | Tombol teks, chip, badge, segmented, tombol ikon bulat, bottom nav, avatar |
 
 ### Bayangan (`shadows.ts`)
 
@@ -363,9 +363,11 @@ pertama kali dibutuhkan, mengikuti spesifikasinya di sini.
 
 ### 6.8 LogoMark & Avatar
 
-- **LogoMark**: lingkaran `primary` dengan ikon lucide **`sprout`** berwarna `primaryFg`. Ukuran
-  32 (ikon 16) dipakai di app bar dan auth. Ukuran lain: 20/11, 42/20, 56/28. Ini satu-satunya bentuk
-  logo di dalam app; PNG logo hanya untuk ikon launcher dan splash.
+- **LogoMark**: ikon app yang digambar dengan `react-native-svg`: tile gradien lilac
+  (`#C8CBFD` → `#9297F7` → `#5F62D6`, radius ±25%) berisi "TF" putih dengan daun atas peach dan daun
+  bawah lilac. Ukuran 32 dipakai di app bar dan auth; ukuran lain 20, 42, 56. Ini satu-satunya bentuk
+  logo di dalam app. Geometrinya sama dengan web dan file master di `../design/brand/`; PNG hanya
+  untuk ikon launcher (Android adaptif + monokrom, iOS AppIcon) dan `LaunchLogo` di LaunchScreen iOS.
 - **Avatar**: lingkaran berisi inisial Outfit 15/600. Ukuran 36 di app bar Dashboard (latar `primary`,
   teks `primaryFg`) dan 44 di sheet Lainnya (latar `primarySoft`, teks `primaryText`).
 
@@ -716,7 +718,7 @@ Sudah sesuai pen (2026-10-08):
   Slot Lainnya membuka **sheet** (`navigation/MoreMenuSheet.tsx`) dan tetap aktif di halaman
   turunannya.
 - **Login/Register**: header gradien + sheet form, Banner untuk error/info, dan pemilih bahasa.
-- **Logo**: `atoms/LogoMark` (sprout). PNG logo sudah dihapus dari app.
+- **Logo**: `atoms/LogoMark` (ikon app "TF" via react-native-svg). PNG logo hanya untuk ikon launcher & LaunchScreen.
 - **Komponen baru**:
   - atoms: `IconButton`, `LogoMark`, `Avatar`, `Badge`, `Gradient`;
   - molecules: `Card`, `Banner`, `MenuGroup`, `MenuTile`, `SegmentedControl`, `LanguagePill`;

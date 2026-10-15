@@ -26,6 +26,8 @@ Kategori tanpa isi boleh dihilangkan.
 - Atur urutan Dompet, Kategori, dan Budget kini menampilkan saldo, jenis, cakupan, dan pin.
 - Aplikasi dikunci ke tampilan potret.
 - Error yang tidak terduga kini dilaporkan ke Log Error admin, dengan layar "Coba Lagi".
+- Logo baru TosmFi di dalam aplikasi, ikon launcher Android (termasuk ikon bertema Android 13), ikon
+  iOS, dan layar pembuka iOS.
 
 ## v1.1.0 (versionCode 2)
 
