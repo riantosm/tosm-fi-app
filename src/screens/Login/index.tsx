@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState, type ComponentRef } from 'react';
 import { type TextInput } from 'react-native';
+import axios from 'axios';
 import { LockKeyhole, LogIn, UserRound } from 'lucide-react-native';
 import { useTranslation } from 'react-i18next';
 import Button from '@/components/atoms/Button';
@@ -21,6 +22,12 @@ interface Notice {
   tone: BannerTone;
   title: string;
   message: string;
+}
+
+/** `/user/me` menjawab 403 selama akun masih menunggu persetujuan admin (sama dengan web). */
+function isPendingApproval(error: unknown): boolean {
+  const cause = error instanceof Error ? error.cause : undefined;
+  return axios.isAxiosError(cause) && cause.response?.status === 403;
 }
 
 export default function LoginScreen({
@@ -64,12 +71,20 @@ export default function LoginScreen({
       // Sukses → RootNavigator otomatis pindah ke grup RequireAuth.
       await login({ username: username.trim(), password });
     } catch (error) {
-      setNotice({
-        tone: 'error',
-        title: t('auth.loginErrorTitle'),
-        message:
-          error instanceof Error ? error.message : t('auth.genericError'),
-      });
+      setNotice(
+        isPendingApproval(error)
+          ? {
+              tone: 'warning',
+              title: t('auth.pendingTitle'),
+              message: t('auth.pendingDescription'),
+            }
+          : {
+              tone: 'error',
+              title: t('auth.loginErrorTitle'),
+              message:
+                error instanceof Error ? error.message : t('auth.genericError'),
+            },
+      );
       setLoading(false);
     }
   };

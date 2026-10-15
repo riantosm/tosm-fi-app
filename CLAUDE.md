@@ -206,7 +206,7 @@ tulis ulang dengan komponen RN di sini. Desain: Mist, lihat `DESIGN_SYSTEM.md` (
 
 | Layar | Status |
 |---|---|
-| Login, Register | Fungsional (API asli, validasi, StatusModal, info sesi berakhir) |
+| Login, Register | Fungsional (API asli, validasi, StatusModal, info sesi berakhir, banner "Akun belum aktif" saat /user/me 403) |
 | Sheet Lainnya | Fungsional (profil, grid 6 menu, tema Terang/Gelap/Ikuti sistem, bahasa ID/EN/JP; logout hanya di Profil) |
 | Profile (Edit Profil) | Fungsional (pen `S5xzK`/`eCXQt`): identitas bergradien (avatar, @username, peran), Informasi Akun (nama/username + konfirmasi simpan, `useAuth().updateProfile`), Ubah Password (validasi min 6 & konfirmasi, sukses → sesi dibersihkan & kembali ke Login, `changePassword`), tombol Keluar (satu-satunya tempat logout) |
 | Settings | Fungsional (pen `k0SKz`): Admin (Permintaan Pengguna + badge "n baru" dari `hooks/useUserApproval`, Log Error), Umum (Mata Uang + ringkasan), Zona Berbahaya Reset Data (konfirmasi → `resetAccountDataApi` + aksi `accountDataReset` yang mengosongkan semua slice data akun). "Backend API" web sengaja tidak dibawa |

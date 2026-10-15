@@ -15,6 +15,7 @@ Kategori tanpa isi boleh dihilangkan.
 ### Baru
 
 - Tema: pilihan "Ikuti sistem" di sheet Lainnya, selain Terang dan Gelap.
+- Masuk: akun yang masih menunggu persetujuan admin kini diberi tahu dengan jelas.
 
 ## v1.1.0 (versionCode 2)
 
