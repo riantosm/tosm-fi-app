@@ -17,6 +17,10 @@ Kategori tanpa isi boleh dihilangkan.
 - Tema: pilihan "Ikuti sistem" di sheet Lainnya, selain Terang dan Gelap.
 - Masuk: akun yang masih menunggu persetujuan admin kini diberi tahu dengan jelas.
 
+### Ditingkatkan
+
+- Error yang tidak terduga kini dilaporkan ke Log Error admin, dengan layar "Coba Lagi".
+
 ## v1.1.0 (versionCode 2)
 
 _2026-10-14_

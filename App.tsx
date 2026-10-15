@@ -12,6 +12,7 @@ import {
 import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
 import '@/i18n';
+import ErrorBoundary from '@/components/organisms/ErrorBoundary';
 import { AssistantChatProvider } from '@/contexts/AssistantChatContext';
 import { MoreSheetProvider } from '@/contexts/MoreSheetContext';
 import { ThemeProvider, useTheme } from '@/contexts/ThemeContext';
@@ -27,9 +28,13 @@ import RootNavigator from '@/navigation/RootNavigator';
 import { persistor, store } from '@/store';
 import { useAppSelector } from '@/store/hooks';
 import { layout, spacing } from '@/theme/metrics';
+import { setupGlobalErrorLogging } from '@/utils/crashLogger';
 
 // Warning dev dari moti 0.30 (bukan kode app): moti mengimpor SafeAreaView lama milik RN dan
 // mengirim dependency array ke Reanimated. Aman diabaikan; hapus saat moti diperbarui.
+// Crash di luar render (handler, timer, promise) → Log Error admin, sama dengan web.
+setupGlobalErrorLogging();
+
 LogBox.ignoreLogs([
   'SafeAreaView has been deprecated',
   '[Reanimated] Dependencies should only be used on the web',
@@ -98,7 +103,9 @@ export default function App() {
             <ToastProvider>
               <MoreSheetProvider>
                 <AssistantChatProvider>
-                  <AppShell />
+                  <ErrorBoundary>
+                    <AppShell />
+                  </ErrorBoundary>
                 </AssistantChatProvider>
               </MoreSheetProvider>
             </ToastProvider>
