@@ -29,6 +29,7 @@ import Typography from '@/components/atoms/Typography';
 import DateTimePickerSheet from '@/components/organisms/DateTimePickerSheet';
 import { useAssistantChatContext } from '@/contexts/AssistantChatContext';
 import { useTheme } from '@/contexts/ThemeContext';
+import { useHistoryExamples } from '@/hooks/useHistoryExamples';
 import { useKeyboardHeight } from '@/hooks/useKeyboardHeight';
 import { useLanguage } from '@/hooks/useLanguage';
 import { ROUTES } from '@/navigation/paths';
@@ -57,6 +58,7 @@ import { transitions, withDelay } from '@/utils/motion';
 import { dateTimeFormat } from '@/utils/intl';
 import Reveal from '@/components/atoms/Reveal';
 
+/** Contoh bawaan saat riwayat belum punya transaksi berulang. */
 const EXAMPLE_KEYS = [
   'example1',
   'example2',
@@ -183,6 +185,15 @@ export default function QuickAddScreen({
     }
     chat.send(reply.label, reply.value);
   };
+
+  // Contoh dari transaksi berulang di riwayat; belum ada pola → contoh bawaan.
+  const historyExamples = useHistoryExamples();
+  const examples =
+    historyExamples === null
+      ? null
+      : historyExamples.length > 0
+      ? historyExamples
+      : EXAMPLE_KEYS.map(key => t(`assistant.${key}`));
 
   const firstName = user?.nameUser?.trim().split(/\s+/)[0] ?? '';
   const composerPadding =
@@ -386,24 +397,26 @@ export default function QuickAddScreen({
                 transition={transitions.fade}
                 style={styles.intro}
               >
-                <View style={styles.examples}>
-                  <Typography variant="caption" tone="subtle">
-                    {t('assistant.examplesLabel')}
-                  </Typography>
-                  {EXAMPLE_KEYS.map((key, i) => (
-                    <MotiView
-                      key={key}
-                      from={{ opacity: 0, translateX: -6 }}
-                      animate={{ opacity: 1, translateX: 0 }}
-                      transition={withDelay(transitions.enter, 100 + i * 50)}
-                    >
-                      <QuickReplyButton
-                        reply={{ label: t(`assistant.${key}`) }}
-                        onSelect={reply => chat.send(reply.label)}
-                      />
-                    </MotiView>
-                  ))}
-                </View>
+                {examples && (
+                  <View style={styles.examples}>
+                    <Typography variant="caption" tone="subtle">
+                      {t('assistant.examplesLabel')}
+                    </Typography>
+                    {examples.map((label, i) => (
+                      <MotiView
+                        key={label}
+                        from={{ opacity: 0, translateX: -6 }}
+                        animate={{ opacity: 1, translateX: 0 }}
+                        transition={withDelay(transitions.enter, 100 + i * 50)}
+                      >
+                        <QuickReplyButton
+                          reply={{ label }}
+                          onSelect={reply => chat.send(reply.label)}
+                        />
+                      </MotiView>
+                    ))}
+                  </View>
+                )}
                 <View style={styles.info}>
                   <Info size={15} color={colors.text3} />
                   <Typography

@@ -109,6 +109,8 @@ android {
     }
     buildTypes {
         debug {
+            // Debug terpasang berdampingan dengan release: com.tosm.finance.debug
+            applicationIdSuffix ".debug"
             signingConfig signingConfigs.debug
         }
         release {
