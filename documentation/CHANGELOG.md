@@ -32,6 +32,7 @@ Kategori tanpa isi boleh dihilangkan.
 
 - Android: komponen yang menempel di atas keyboard (komposer Catat cepat, tombol bawah sheet)
   kini punya jarak yang cukup; sebelumnya sedikit tertutup keyboard setinggi navigation bar.
+- iOS 27: aplikasi tidak lagi langsung tertutup setelah splash screen.
 
 ## v1.2.0 (versionCode 3)
 
