@@ -22,6 +22,8 @@ Kategori tanpa isi boleh dihilangkan.
 
 ### Ditingkatkan
 
+- Akun demo: Reset Data, ganti username, dan ganti password dinonaktifkan, karena akun demo dipakai
+  bersama.
 - Catat cepat: "Contoh, tinggal tap" kini diambil dari transaksi yang berulang dalam 30 hari
   terakhir (judul, nominal, dan dompet yang paling sering dipakai). Kalau belum ada pola, tetap
   memakai contoh bawaan.

@@ -29,6 +29,8 @@ export interface AuthUser {
   role: UserRole;
   status: UserStatus;
   createdAt: string;
+  /** Akun demo bersama: backend menolak reset data dan ganti username. */
+  isDemo?: boolean;
 }
 
 export interface LoginResponse {
