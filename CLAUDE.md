@@ -208,6 +208,14 @@ tulis ulang dengan komponen RN di sini. Desain: Mist, lihat `DESIGN_SYSTEM.md` (
   di produksi saja, tracker promise rejection Hermes (di dev RN sudah memakainya untuk LogBox).
   `organisms/ErrorBoundary` membungkus `AppShell`: crash render → dilaporkan + layar "Coba Lagi".
 - **Orientasi**: dikunci potret (`android:screenOrientation="portrait"`; iPhone sudah potret saja).
+- **iOS UIScene lifecycle (WAJIB)**: SDK iOS 27 menghentikan app tanpa scene lifecycle (SIGTRAP di
+  `_UIApplicationEvaluateRuntimeIssueForNoSceneLifecycleAdoption`). `Info.plist` punya
+  `UIApplicationSceneManifest` → `$(PRODUCT_MODULE_NAME).SceneDelegate`. `AppDelegate` hanya membuat
+  `RCTReactNativeFactory`; `SceneDelegate` (di file `AppDelegate.swift` yang sama, jadi tanpa ubah
+  pbxproj) membuat `UIWindow(windowScene:)`, mengisi `appDelegate.window`, lalu `startReactNative`.
+- **Xcode 27 + Pods lama**: beberapa pod (RNSVG, AsyncStorage) masih men-set
+  `IPHONEOS_DEPLOYMENT_TARGET` 12.4/13.0, yang ditolak Xcode 27 (minimal 15.0). Untuk build CLI
+  bisa ditimpa dengan argumen `xcodebuild ... IPHONEOS_DEPLOYMENT_TARGET=16.0`.
 - **Export file** (`utils/reportExport.ts`): file dibuat di JS (versi library sama dengan web) lalu
   dibagikan sebagai data URI base64 lewat `react-native-share` (`filename` tanpa ekstensi; ekstensi
   dari mime). `metro.config.js` menjadikan `html2canvas`/`dompurify`/`canvg` modul kosong karena
