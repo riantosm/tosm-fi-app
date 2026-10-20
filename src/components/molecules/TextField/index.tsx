@@ -46,6 +46,7 @@ const useStyles = makeStyles(({ colors }) => ({
   filled: { backgroundColor: colors.surface2, borderColor: colors.surface2 },
   focused: { borderColor: colors.primary },
   error: { borderColor: colors.expense },
+  readOnly: { opacity: 0.55 },
   input: {
     ...textStyles.body,
     flex: 1,
@@ -92,6 +93,7 @@ const TextField = forwardRef<ComponentRef<typeof TextInput>, TextFieldProps>(
             variant === 'filled' ? styles.filled : styles.outlined,
             focused && styles.focused,
             !!error && styles.error,
+            rest.editable === false && styles.readOnly,
           ]}
         >
           {renderLeadingIcon?.(colors.text3)}
