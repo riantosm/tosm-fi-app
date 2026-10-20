@@ -125,6 +125,7 @@ function AccountInfoForm() {
   const [username, setUsername] = useState(user?.username ?? '');
   const [confirmOpen, setConfirmOpen] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const isDemo = user?.isDemo === true;
   const isUnchanged =
     name.trim() === (user?.nameUser ?? '') &&
     username.trim() === (user?.username ?? '');
@@ -172,6 +173,8 @@ function AccountInfoForm() {
         onChangeText={setUsername}
         autoCapitalize="none"
         autoComplete="username"
+        editable={!isDemo}
+        helper={isDemo ? t('profile.demoUsernameLocked') : undefined}
         renderLeadingIcon={color => <AtSign size={18} color={color} />}
       />
       <Button
@@ -201,7 +204,9 @@ function ChangePasswordForm() {
   const { colors } = useTheme();
   const { t } = useTranslation();
   const showToast = useToast();
-  const { changePassword } = useAuth();
+  const { user, changePassword } = useAuth();
+  // Akun demo bersama: backend menolak ganti password, jadi field dikunci.
+  const isDemo = user?.isDemo === true;
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -251,6 +256,7 @@ function ChangePasswordForm() {
         onChangeText={setCurrentPassword}
         secureToggle
         toggleLabels={toggleLabels}
+        editable={!isDemo}
         autoComplete="current-password"
         renderLeadingIcon={color => <LockKeyhole size={18} color={color} />}
       />
@@ -261,6 +267,7 @@ function ChangePasswordForm() {
         onChangeText={setNewPassword}
         secureToggle
         toggleLabels={toggleLabels}
+        editable={!isDemo}
         autoComplete="new-password"
         renderLeadingIcon={color => <LockKeyhole size={18} color={color} />}
       />
@@ -271,6 +278,7 @@ function ChangePasswordForm() {
         onChangeText={setConfirmPassword}
         secureToggle
         toggleLabels={toggleLabels}
+        editable={!isDemo}
         autoComplete="new-password"
         error={isMismatch ? t('profile.passwordMismatchError') : undefined}
         renderLeadingIcon={color => <LockKeyhole size={18} color={color} />}
@@ -281,17 +289,23 @@ function ChangePasswordForm() {
         </View>
         <View style={styles.hintTexts}>
           <Typography variant="label" tone="primary">
-            {t('profile.changePasswordHintTitle')}
+            {isDemo
+              ? t('profile.demoLockedTitle')
+              : t('profile.changePasswordHintTitle')}
           </Typography>
           <Typography variant="meta" tone="muted">
-            {t('profile.changePasswordHint')}
+            {isDemo
+              ? t('profile.demoPasswordLocked')
+              : t('profile.changePasswordHint')}
           </Typography>
         </View>
       </View>
       <Button
         label={t('profile.changePasswordAction')}
         loading={submitting}
-        disabled={!currentPassword || !newPassword || !confirmPassword}
+        disabled={
+          isDemo || !currentPassword || !newPassword || !confirmPassword
+        }
         onPress={handleSubmit}
         renderIcon={color => <KeyRound size={18} color={color} />}
       />

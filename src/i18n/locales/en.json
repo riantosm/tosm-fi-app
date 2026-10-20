@@ -210,6 +210,9 @@
     "updateSuccess": "Profile updated successfully",
     "changePasswordTitle": "Change Password",
     "changePasswordHint": "You'll be asked to log in again after your password is changed.",
+    "demoLockedTitle": "Demo account",
+    "demoUsernameLocked": "The demo account's username can't be changed.",
+    "demoPasswordLocked": "The demo account's password can't be changed, so everyone can keep using it.",
     "currentPasswordLabel": "Current Password",
     "newPasswordLabel": "New Password",
     "confirmPasswordLabel": "Confirm New Password",
@@ -286,6 +289,7 @@
   "settingsDanger": {
     "title": "Danger Zone",
     "description": "For testing only — permanently deletes all your wallets, categories, transactions, and investments from the server.",
+    "demoLocked": "The demo account is shared, so its data can't be reset.",
     "resetButton": "Reset Data",
     "resetConfirmTitle": "Reset all data?",
     "resetConfirmDescription": "All wallets, categories, transactions, and investments will be permanently deleted from the server. This action cannot be undone.",

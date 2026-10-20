@@ -65,6 +65,7 @@ export default function SettingsScreen({
   const showToast = useToast();
   const dispatch = useAppDispatch();
   const isAdmin = useAppSelector(state => state.auth.user?.role === 'admin');
+  const isDemo = useAppSelector(state => state.auth.user?.isDemo === true);
   const { currency, decimalPlaces } = useAppSelector(state => state.settings);
   const { pendingCount, loadUsers } = useUserApproval();
   const appLock = useAppSelector(state => state.appLock);
@@ -224,7 +225,7 @@ export default function SettingsScreen({
         </Typography>
       </View>
       <Typography variant="secondary" tone="muted" style={styles.dangerText}>
-        {t('settingsDanger.description')}
+        {t(isDemo ? 'settingsDanger.demoLocked' : 'settingsDanger.description')}
       </Typography>
       <Button
         variant="danger"
@@ -232,6 +233,7 @@ export default function SettingsScreen({
         label={t('settingsDanger.resetButton')}
         renderIcon={color => <RotateCcw size={18} color={color} />}
         onPress={() => setConfirmReset(true)}
+        disabled={isDemo}
       />
     </View>,
   ].filter(Boolean);

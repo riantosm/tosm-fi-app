@@ -210,6 +210,9 @@
     "updateSuccess": "Profil berhasil diperbarui",
     "changePasswordTitle": "Ubah Password",
     "changePasswordHint": "Kamu akan diminta login kembali setelah password berhasil diubah.",
+    "demoLockedTitle": "Akun demo",
+    "demoUsernameLocked": "Username akun demo tidak bisa diubah.",
+    "demoPasswordLocked": "Password akun demo tidak bisa diubah supaya tetap bisa dipakai semua orang.",
     "currentPasswordLabel": "Password Lama",
     "newPasswordLabel": "Password Baru",
     "confirmPasswordLabel": "Konfirmasi Password Baru",
@@ -286,6 +289,7 @@
   "settingsDanger": {
     "title": "Zona Berbahaya",
     "description": "Hanya untuk testing — menghapus semua wallet, kategori, transaksi, dan investasi milikmu secara permanen dari server.",
+    "demoLocked": "Akun demo dipakai bersama, jadi datanya tidak bisa direset.",
     "resetButton": "Reset Data",
     "resetConfirmTitle": "Reset semua data?",
     "resetConfirmDescription": "Semua wallet, kategori, transaksi, dan investasi akan dihapus permanen dari server. Tindakan ini tidak bisa dibatalkan.",

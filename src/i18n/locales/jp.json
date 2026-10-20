@@ -210,6 +210,9 @@
     "updateSuccess": "プロフィールを更新しました",
     "changePasswordTitle": "パスワードを変更",
     "changePasswordHint": "パスワード変更後は再度ログインが必要です。",
+    "demoLockedTitle": "デモアカウント",
+    "demoUsernameLocked": "デモアカウントのユーザー名は変更できません。",
+    "demoPasswordLocked": "デモアカウントは誰でも使えるよう、パスワードを変更できません。",
     "currentPasswordLabel": "現在のパスワード",
     "newPasswordLabel": "新しいパスワード",
     "confirmPasswordLabel": "新しいパスワード（確認）",
@@ -286,6 +289,7 @@
   "settingsDanger": {
     "title": "危険な操作",
     "description": "テスト用の機能です — サーバー上のウォレット、カテゴリ、取引、投資がすべて完全に削除されます。",
+    "demoLocked": "デモアカウントは共有のため、データをリセットできません。",
     "resetButton": "データをリセット",
     "resetConfirmTitle": "すべてのデータをリセットしますか?",
     "resetConfirmDescription": "サーバー上のウォレット、カテゴリ、取引、投資がすべて完全に削除されます。この操作は取り消せません。",
