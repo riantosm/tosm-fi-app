@@ -12,38 +12,31 @@ Kategori tanpa isi boleh dihilangkan.
 
 ## Belum dirilis
 
+## v1.3.0 (versionCode 4)
+
+_2026-10-26_
+
 ### Baru
 
-- Kunci aplikasi (Android, opsional): setelah login, setiap TosmFi dibuka akan menampilkan
-  Beranda kunci, lalu "Masuk" dengan sidik jari atau PIN 6 digit. Bisa dinyalakan/dimatikan di
-  Pengaturan → Keamanan (mematikan dan mengubah PIN wajib memasukkan PIN), dan ditawarkan lewat
-  popup sekali setelah login. Pintasan Catat cepat, Dompet saya, dan Transaksi 3 hari terakhir
-  (keduanya hanya lihat) tetap bisa dibuka tanpa kunci. Salah PIN 5 kali → keluar otomatis; setelah logout pengaturannya kembali mati.
-- Notifikasi saldo dompet (Android): total saldo dan daftar dompet selalu tampil di bilah
-  notifikasi, diperbarui setiap kamu memakai aplikasi dan otomatis tiap jam saat aplikasi tidak
-  dibuka. Tombolnya: Catat (buka Catat cepat), Sembunyikan/Tampilkan nominal tanpa membuka
-  aplikasi, dan Buka dompet. Isinya tertutup di layar kunci. Atur di Pengaturan → Umum →
-  Notifikasi saldo (nyala/mati, sembunyikan nominal, isi: total, total + dompet utama, atau semua
-  dompet). Ketuk "Tetap update saat Hemat daya" supaya update tiap jam tetap jalan walau Hemat daya
-  aktif.
+- Kunci aplikasi (Android, opsional): TosmFi dibuka dengan sidik jari atau PIN 6 digit. Atur di
+  Pengaturan → Keamanan. Catat cepat, Dompet saya, dan Transaksi 3 hari terakhir tetap bisa dibuka
+  tanpa kunci. Salah PIN 5 kali → keluar otomatis.
+- Notifikasi saldo (Android): total saldo dan daftar dompet selalu tampil di bilah notifikasi,
+  diperbarui saat aplikasi dipakai dan tiap jam di latar belakang. Ada tombol Catat,
+  Sembunyikan/Tampilkan nominal, dan Buka dompet; isinya tertutup di layar kunci. Atur di
+  Pengaturan → Umum → Notifikasi saldo, termasuk "Tetap update saat Hemat daya".
 
 ### Ditingkatkan
 
-- Akun demo: Reset Data, ganti username, dan ganti password dinonaktifkan, karena akun demo dipakai
-  bersama.
-- Catat cepat: "Contoh, tinggal tap" kini diambil dari transaksi yang berulang dalam 30 hari
-  terakhir (judul, nominal, dan dompet yang paling sering dipakai). Kalau belum ada pola, tetap
-  memakai contoh bawaan.
-- Build debug kini berpackage `com.tosm.finance.debug` (nama "TosmFi Dev"), jadi bisa terpasang
-  berdampingan dengan versi release.
+- Akun demo: Reset Data, ganti username, dan ganti password dinonaktifkan.
+- Catat cepat: "Contoh, tinggal tap" diambil dari transaksi yang sering berulang dalam 30 hari
+  terakhir.
 
 ### Perbaikan
 
-- Android: komponen yang menempel di atas keyboard (komposer Catat cepat, tombol bawah sheet)
-  kini punya jarak yang cukup; sebelumnya sedikit tertutup keyboard setinggi navigation bar.
+- Android: komposer Catat cepat dan tombol bawah sheet tidak lagi tertutup keyboard.
 - iOS 27: aplikasi tidak lagi langsung tertutup setelah splash screen.
-- Android: aplikasi tidak lagi crash saat dibuka kembali (misalnya lewat notifikasi) setelah
-  ditutup sistem di latar belakang.
+- Android: aplikasi tidak lagi crash saat dibuka kembali setelah ditutup sistem.
 
 ## v1.2.0 (versionCode 3)
 
