@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 import { View } from 'react-native';
 import { AnimatePresence, MotiView } from 'moti';
 import { Check } from 'lucide-react-native';
@@ -10,7 +11,9 @@ import { transitions } from '@/utils/motion';
 
 export interface OptionRowProps {
   /** Teks di tile depan ("Rp", "$", "0"). */
-  leading: string;
+  leading?: string;
+  /** Ikon di tile depan (ukuran 18) sebagai ganti `leading`, dengan warna sesuai status pilih. */
+  renderLeading?: (color: string) => ReactNode;
   title: string;
   subtitle?: string;
   selected: boolean;
@@ -59,9 +62,10 @@ const useStyles = makeStyles(({ colors }) => ({
   },
 }));
 
-/** Baris pilihan tunggal (kartu radio, port OptionRow web): mata uang & format desimal. */
+/** Baris pilihan tunggal (kartu radio, port OptionRow web): mata uang, format desimal, isi notifikasi saldo. */
 export default function OptionRow({
   leading,
+  renderLeading,
   title,
   subtitle,
   selected,
@@ -78,15 +82,19 @@ export default function OptionRow({
       style={[styles.row, selected && styles.rowSelected]}
     >
       <View style={styles.tile}>
-        <Typography
-          variant="cardTitle"
-          style={[
-            styles.tileText,
-            { color: selected ? colors.primaryText : colors.text2 },
-          ]}
-        >
-          {leading}
-        </Typography>
+        {renderLeading ? (
+          renderLeading(selected ? colors.primaryText : colors.text2)
+        ) : (
+          <Typography
+            variant="cardTitle"
+            style={[
+              styles.tileText,
+              { color: selected ? colors.primaryText : colors.text2 },
+            ]}
+          >
+            {leading}
+          </Typography>
+        )}
       </View>
       <View style={styles.texts}>
         <Typography variant="label" numberOfLines={1}>

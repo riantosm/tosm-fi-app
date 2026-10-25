@@ -254,7 +254,12 @@
     "sectionGeneral": "General",
     "adminBadge": "Admin",
     "newCount": "{{n}} new",
-    "decimalCount": "{{n}} decimals"
+    "decimalCount": "{{n}} decimals",
+    "walletNotification": {
+      "title": "Balance notification",
+      "description": "Keep wallet balances visible in the notification shade",
+      "off": "Off"
+    }
   },
   "userApproval": {
     "title": "User Requests",
@@ -1190,5 +1195,50 @@
     "recentSubtitle": "Last 3 days · {{range}}",
     "recentListTitle": "Last 3 days",
     "recentEmpty": "No transactions in the last 3 days."
+  },
+  "walletNotification": {
+    "channelName": "Wallet balance",
+    "subtitle": "Wallets",
+    "walletCount": "{{count}} wallets",
+    "bodyPrimary": "Primary {{name}} {{amount}} · {{count}}",
+    "bodyHidden": "Balance hidden · {{count}}",
+    "primaryTag": "Primary",
+    "moreWallets": "+{{n}} more wallets",
+    "actionAdd": "Record",
+    "actionHide": "Hide",
+    "actionShow": "Show",
+    "actionOpenWallet": "Open wallets"
+  },
+  "walletNotificationSettings": {
+    "title": "Balance notification",
+    "subtitle": "Keep wallet balances visible in the notification shade.",
+    "enableTitle": "Show in notifications",
+    "enableDescription": "Updated every hour and whenever you use the app",
+    "hideTitle": "Hide amounts",
+    "hideDescription": "Shown as •••• until you tap Show",
+    "preview": "Preview",
+    "contentTitle": "Notification content",
+    "contentSubtitle": "What appears in the notification shade",
+    "content": {
+      "total": {
+        "title": "Total balance",
+        "subtitle": "Sum of all wallets"
+      },
+      "primary": {
+        "title": "Total + primary wallet",
+        "subtitle": "Plus the primary wallet balance"
+      },
+      "all": {
+        "title": "All wallets",
+        "subtitle": "Expanded: up to 5 wallets"
+      }
+    },
+    "backgroundTitle": "Keep updating in Power saving",
+    "backgroundDescription": "Let TosmFi run in the background so balances still update every hour",
+    "backgroundAllowed": "Allowed: balances update every hour even in Power saving",
+    "backgroundAction": "Allow",
+    "backgroundOn": "On",
+    "backgroundError": "Couldn't open battery settings. Use App info → Battery → Unrestricted.",
+    "permissionDenied": "Notification permission not granted. Turn it on in your phone settings."
   }
 }

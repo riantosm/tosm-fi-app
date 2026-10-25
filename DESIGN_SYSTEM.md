@@ -642,6 +642,23 @@ Tombol **Keluar** sengaja tidak ada di sheet ini; logout hanya di halaman Profil
 - **Popup aktivasi**: bottom sheet tanpa tombol tutup: ikon 64 `primarySoft`, judul sheetTitle,
   daftar 3 poin dalam kotak `surface2`, Button "Aktifkan sekarang" + teks "Nanti saja".
 
+### 6.25 Notifikasi saldo dompet (Android)
+
+- Sumber desain: Artifact kanvas "Notifikasi Saldo Dompet" (bukan pen). Notifikasinya digambar
+  sistem Android (Roboto, warna shade), jadi token Mist hanya berlaku untuk `color` aksen
+  (`primary` light) dan layar Pengaturan-nya.
+- **Notifikasi**: ikon kecil/status bar `ic_stat_tosmfi` (logo TF monokrom, sama dengan ikon launcher
+  monokrom); header "TosmFi · Dompet ·
+  jam sinkron" (diperluas: "n dompet"); judul total saldo; body dompet utama + jumlah dompet; diperluas
+  = baris "**Nama** · IDR …" (utama di atas + "· Utama", maks 5, sisanya "+n dompet lainnya");
+  tombol Catat · Sembunyikan/Tampilkan · Buka dompet. Nominal tersembunyi = `IDR ••••••••`.
+- **Pengaturan → Notifikasi saldo**: MenuGroup dua Switch (Tampilkan, Sembunyikan nominal) + baris
+  "Tetap update saat Hemat daya" (`battery-charging`, nada investment + Badge "Izinkan" / nada income +
+  Badge "Aktif"), pratinjau
+  (bingkai `surface2` radius 20, kartu `surface` radius 20, lingkaran ikon 22 `primary`, aksi
+  `secondaryMedium` `primaryText`), SettingsPanel "Isi notifikasi" dengan OptionRow berikon
+  (`wallet`/`star`/`list`). Saat mati: pratinjau & isi redup 0.55.
+
 ---
 
 ## 7. Pola layar (template)

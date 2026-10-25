@@ -1,6 +1,7 @@
 import { useCallback, useState } from 'react';
 import { View } from 'react-native';
 import {
+  BellRing,
   Bug,
   Coins,
   FingerprintPattern,
@@ -29,9 +30,11 @@ import { ROUTES } from '@/navigation/paths';
 import type { RootStackScreenProps } from '@/navigation/types';
 import { resetAccountDataApi } from '@/services/api/account.service';
 import { isAppLockSupported } from '@/services/native/appLock';
+import { isWalletRefreshSupported } from '@/services/native/walletRefresh';
 import { cancelAllReminders } from '@/services/notification/scheduleReminder';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { setBiometricEnabled } from '@/store/slices/appLockSlice';
+import { selectWalletNotificationPrefs } from '@/store/slices/settingsSlice';
 import { accountDataReset } from '@/store/slices/resetOnSignOut';
 import { makeStyles } from '@/theme/makeStyles';
 import { radius, spacing } from '@/theme/metrics';
@@ -67,6 +70,7 @@ export default function SettingsScreen({
   const isAdmin = useAppSelector(state => state.auth.user?.role === 'admin');
   const isDemo = useAppSelector(state => state.auth.user?.isDemo === true);
   const { currency, decimalPlaces } = useAppSelector(state => state.settings);
+  const walletNotification = useAppSelector(selectWalletNotificationPrefs);
   const { pendingCount, loadUsers } = useUserApproval();
   const appLock = useAppSelector(state => state.appLock);
   const biometricStatus = useBiometricStatus();
@@ -216,6 +220,22 @@ export default function SettingsScreen({
         })}`}
         onPress={() => navigation.navigate(ROUTES.SETTINGS_CURRENCY)}
       />
+      {isWalletRefreshSupported && (
+        <MenuRow
+          renderIcon={color => <BellRing size={18} color={color} />}
+          title={t('settingsMenu.walletNotification.title')}
+          description={
+            walletNotification.enabled
+              ? t(
+                  `walletNotificationSettings.content.${walletNotification.content}.title`,
+                )
+              : t('settingsMenu.walletNotification.off')
+          }
+          onPress={() =>
+            navigation.navigate(ROUTES.SETTINGS_WALLET_NOTIFICATION)
+          }
+        />
+      )}
     </MenuGroup>,
     <View key="danger" style={styles.danger}>
       <View style={styles.dangerHead}>

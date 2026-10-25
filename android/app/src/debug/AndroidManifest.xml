@@ -1,0 +1,11 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <application>
+        <!-- Uji notifikasi saldo di latar belakang (lihat DebugWalletRefreshReceiver.kt). Hanya debug;
+             exported supaya bisa dipicu adb shell (shell punya izin DUMP, app lain tidak). -->
+        <receiver
+            android:name="com.tosm.finance.walletrefresh.DebugWalletRefreshReceiver"
+            android:exported="true"
+            android:permission="android.permission.DUMP" />
+    </application>
+</manifest>

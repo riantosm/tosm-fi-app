@@ -60,6 +60,7 @@ export type RootStackParamList = {
   [ROUTES.PROFILE]: undefined;
   [ROUTES.SETTINGS]: undefined;
   [ROUTES.SETTINGS_CURRENCY]: undefined;
+  [ROUTES.SETTINGS_WALLET_NOTIFICATION]: undefined;
   [ROUTES.SETTINGS_USER_APPROVAL]: undefined;
   [ROUTES.SETTINGS_ERROR_LOG]: undefined;
 

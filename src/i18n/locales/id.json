@@ -254,7 +254,12 @@
     "sectionGeneral": "Umum",
     "adminBadge": "Admin",
     "newCount": "{{n}} baru",
-    "decimalCount": "{{n}} desimal"
+    "decimalCount": "{{n}} desimal",
+    "walletNotification": {
+      "title": "Notifikasi saldo",
+      "description": "Saldo dompet selalu terlihat di bilah notifikasi",
+      "off": "Nonaktif"
+    }
   },
   "userApproval": {
     "title": "Permintaan Pengguna",
@@ -1190,5 +1195,50 @@
     "recentSubtitle": "3 hari terakhir · {{range}}",
     "recentListTitle": "3 hari terakhir",
     "recentEmpty": "Belum ada transaksi dalam 3 hari terakhir."
+  },
+  "walletNotification": {
+    "channelName": "Saldo dompet",
+    "subtitle": "Dompet",
+    "walletCount": "{{count}} dompet",
+    "bodyPrimary": "Utama {{name}} {{amount}} · {{count}}",
+    "bodyHidden": "Saldo disembunyikan · {{count}}",
+    "primaryTag": "Utama",
+    "moreWallets": "+{{n}} dompet lainnya",
+    "actionAdd": "Catat",
+    "actionHide": "Sembunyikan",
+    "actionShow": "Tampilkan",
+    "actionOpenWallet": "Buka dompet"
+  },
+  "walletNotificationSettings": {
+    "title": "Notifikasi saldo",
+    "subtitle": "Saldo dompet selalu terlihat di bilah notifikasi.",
+    "enableTitle": "Tampilkan di notifikasi",
+    "enableDescription": "Diperbarui tiap jam dan setiap kamu memakai aplikasi",
+    "hideTitle": "Sembunyikan nominal",
+    "hideDescription": "Tampil •••• sampai kamu ketuk Tampilkan",
+    "preview": "Pratinjau",
+    "contentTitle": "Isi notifikasi",
+    "contentSubtitle": "Yang terlihat di bilah notifikasi",
+    "content": {
+      "total": {
+        "title": "Total saldo",
+        "subtitle": "Jumlah semua dompet"
+      },
+      "primary": {
+        "title": "Total + dompet utama",
+        "subtitle": "Ditambah saldo dompet utama"
+      },
+      "all": {
+        "title": "Semua dompet",
+        "subtitle": "Diperluas: maks 5 dompet"
+      }
+    },
+    "backgroundTitle": "Tetap update saat Hemat daya",
+    "backgroundDescription": "Izinkan TosmFi berjalan di latar belakang supaya saldo tetap diperbarui tiap jam",
+    "backgroundAllowed": "Diizinkan: saldo tetap diperbarui tiap jam walau Hemat daya aktif",
+    "backgroundAction": "Izinkan",
+    "backgroundOn": "Aktif",
+    "backgroundError": "Pengaturan baterai tidak bisa dibuka. Atur lewat Info aplikasi → Baterai → Tidak dibatasi.",
+    "permissionDenied": "Izin notifikasi belum diberikan. Aktifkan lewat pengaturan HP."
   }
 }

@@ -254,7 +254,12 @@
     "sectionGeneral": "一般",
     "adminBadge": "管理者",
     "newCount": "新着 {{n}}",
-    "decimalCount": "小数 {{n}} 桁"
+    "decimalCount": "小数 {{n}} 桁",
+    "walletNotification": {
+      "title": "残高通知",
+      "description": "ウォレット残高を通知欄に常に表示",
+      "off": "オフ"
+    }
   },
   "userApproval": {
     "title": "ユーザー申請",
@@ -1190,5 +1195,50 @@
     "recentSubtitle": "直近3日 · {{range}}",
     "recentListTitle": "直近3日",
     "recentEmpty": "直近3日間の取引はありません。"
+  },
+  "walletNotification": {
+    "channelName": "ウォレット残高",
+    "subtitle": "ウォレット",
+    "walletCount": "{{count}}個のウォレット",
+    "bodyPrimary": "メイン {{name}} {{amount}} · {{count}}",
+    "bodyHidden": "残高非表示 · {{count}}",
+    "primaryTag": "メイン",
+    "moreWallets": "他{{n}}個のウォレット",
+    "actionAdd": "記録",
+    "actionHide": "隠す",
+    "actionShow": "表示",
+    "actionOpenWallet": "ウォレットを開く"
+  },
+  "walletNotificationSettings": {
+    "title": "残高通知",
+    "subtitle": "ウォレット残高を通知欄に常に表示します。",
+    "enableTitle": "通知に表示",
+    "enableDescription": "1時間ごと、またアプリを使うたびに更新",
+    "hideTitle": "金額を隠す",
+    "hideDescription": "「表示」をタップするまで •••• で表示",
+    "preview": "プレビュー",
+    "contentTitle": "通知の内容",
+    "contentSubtitle": "通知欄に表示される内容",
+    "content": {
+      "total": {
+        "title": "合計残高",
+        "subtitle": "全ウォレットの合計"
+      },
+      "primary": {
+        "title": "合計 + メインウォレット",
+        "subtitle": "メインウォレットの残高も表示"
+      },
+      "all": {
+        "title": "すべてのウォレット",
+        "subtitle": "展開時：最大5個"
+      }
+    },
+    "backgroundTitle": "省電力モードでも更新",
+    "backgroundDescription": "バックグラウンドでの実行を許可すると、残高が1時間ごとに更新されます",
+    "backgroundAllowed": "許可済み：省電力モードでも1時間ごとに更新",
+    "backgroundAction": "許可",
+    "backgroundOn": "オン",
+    "backgroundError": "バッテリー設定を開けませんでした。アプリ情報 → バッテリー → 制限なし から設定してください。",
+    "permissionDenied": "通知が許可されていません。端末の設定でオンにしてください。"
   }
 }

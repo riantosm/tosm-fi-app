@@ -135,6 +135,9 @@ dependencies {
     implementation("com.facebook.react:react-android")
     // Kunci aplikasi: BiometricPrompt (modul applock/AppLockModule.kt).
     implementation("androidx.biometric:biometric:1.1.0")
+    // Notifikasi saldo: pembaruan periodik di latar belakang (walletrefresh/WalletRefreshWorker.kt).
+    // Versi sama dengan yang dipakai @notifee/react-native.
+    implementation("androidx.work:work-runtime:2.8.0")
 
     if (hermesEnabled.toBoolean()) {
         implementation("com.facebook.react:hermes-android")

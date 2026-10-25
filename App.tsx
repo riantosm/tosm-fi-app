@@ -23,6 +23,7 @@ import { useBackToExit } from '@/hooks/useBackToExit';
 import { useLanguageSync } from '@/hooks/useLanguageSync';
 import { useScheduleReminders } from '@/hooks/useScheduleReminders';
 import { useSessionBootstrap } from '@/hooks/useSessionBootstrap';
+import { useWalletNotification } from '@/hooks/useWalletNotification';
 import AppBottomNav from '@/navigation/AppBottomNav';
 import { navigationRef } from '@/navigation/navigationRef';
 import { ROUTES, ROUTES_WITHOUT_NAV } from '@/navigation/paths';
@@ -53,6 +54,7 @@ function AppShell() {
   useSessionBootstrap();
   useBackToExit();
   useScheduleReminders();
+  useWalletNotification();
   useAppLockLifecycle();
   const dispatch = useAppDispatch();
   const insets = useSafeAreaInsets();

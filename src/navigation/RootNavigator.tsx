@@ -31,6 +31,7 @@ import ScheduleScreen from '@/screens/Schedule';
 import ScheduleFormScreen from '@/screens/ScheduleForm';
 import SettingsScreen from '@/screens/Settings';
 import SettingsCurrencyScreen from '@/screens/SettingsCurrency';
+import SettingsWalletNotificationScreen from '@/screens/SettingsWalletNotification';
 import SettingsErrorLogScreen from '@/screens/SettingsErrorLog';
 import SettingsUserApprovalScreen from '@/screens/SettingsUserApproval';
 import TransactionFormScreen from '@/screens/TransactionForm';
@@ -145,6 +146,10 @@ function RootNavigator() {
           <Stack.Screen
             name={ROUTES.SETTINGS_CURRENCY}
             component={SettingsCurrencyScreen}
+          />
+          <Stack.Screen
+            name={ROUTES.SETTINGS_WALLET_NOTIFICATION}
+            component={SettingsWalletNotificationScreen}
           />
           <Stack.Screen
             name={ROUTES.APP_LOCK_PIN}

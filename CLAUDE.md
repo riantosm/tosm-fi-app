@@ -197,7 +197,43 @@ tulis ulang dengan komponen RN di sini. Desain: Mist, lihat `DESIGN_SYSTEM.md` (
   (dipanggil di AppShell) memuat jadwal saat login dan memasang satu pengingat jam 08.00 di jatuh
   tempo berikutnya untuk tiap jadwal aktif (id `schedule-<idSchedule>`; yang dijeda/dihapus
   dibatalkan). Alarm `SET_AND_ALLOW_WHILE_IDLE` (tanpa izin exact alarm). Izin notifikasi diminta
-  saat jadwal pertama dibuat. `index.js` mendaftarkan `notifee.onBackgroundEvent` (no-op).
+  saat jadwal pertama dibuat. `index.js` mendaftarkan `notifee.onBackgroundEvent` (pengingat: no-op;
+  event notifikasi saldo diteruskan ke `handleWalletNotificationEvent`).
+- **Notifikasi saldo dompet (Android saja)**: `services/notification/walletNotification.ts` (id &
+  channel `wallet-balance`, importance LOW, `ongoing`, `onlyAlertOnce`, `visibility: PRIVATE`,
+  ikon status bar `res/drawable-*dpi/ic_stat_tosmfi.png` = logo TF monokrom dari
+  `mipmap-*/ic_launcher_monochrome.png` (putih + alpha, area 22/24), InboxStyle maks 5 baris). Isi dibangun oleh
+  `buildWalletNotificationContent` (dipakai juga pratinjau di Pengaturan). Snapshot dompet terakhir
+  disimpan di `data.snapshot` notifikasi, jadi tombol Sembunyikan/Tampilkan dan tampil-ulang saat
+  digeser (Android 14+, event `DISMISSED`) tidak butuh API.
+  - Preferensi `settings.walletNotification` (`enabled`/`content` `total|primary|all`/`hideAmounts`,
+    persisted; opsional di state lama, baca selalu lewat `selectWalletNotificationPrefs`).
+  - `hooks/useWalletNotification` (AppShell): tampil/perbarui saat dompet/pengaturan/mata uang/
+    bahasa berubah (transaksi menyinkronkan dompet → notifikasi ikut), muat ulang saldo saat app
+    dibuka lagi (> 1 menit), minta izin, pasang/batalkan jadwal, logout → batal. Tap/tombol Catat &
+    Buka dompet → `QuickAdd`/`Wallet` (keduanya ada juga di grup Locked).
+  - Tiap jam saat app tidak dipakai: TurboModule `NativeWalletRefresh` (spec
+    `src/specs/NativeWalletRefresh.ts`, `android/.../walletrefresh/`, `WalletRefreshPackage` di
+    `MainApplication`, dependensi `androidx.work:work-runtime`) memasang WorkManager periodik 60
+    menit + butuh koneksi (`KEEP`). `WalletRefreshWorker` menyalakan ReactHost bila perlu lalu
+    menjalankan task headless `WalletNotificationRefresh` lewat `HeadlessJsTaskContext` langsung
+    (bukan HeadlessJsTaskService: Android 8+ melarang start service dari latar belakang). Task
+    (`refreshWalletNotification`, didaftarkan di `index.js`) menunggu rehydrate redux-persist,
+    menyamakan bahasa, `getWalletsApi` → `setWallets` → tampilkan. Offline: notifikasi lama dibiarkan.
+  - Hemat daya (Battery Saver) / Doze menahan job dan memblokir internet app latar belakang
+    (`dumpsys netpolicy`: `blocked=BATTERY_SAVER|APP_BACKGROUND`), kecuali app yang dikecualikan dari
+    optimasi baterai. `NativeWalletRefresh.isIgnoringBatteryOptimizations` /
+    `requestIgnoreBatteryOptimizations` (izin `REQUEST_IGNORE_BATTERY_OPTIMIZATIONS`, dialog sistem;
+    cadangan daftar optimasi baterai) dipakai baris "Tetap update saat Hemat daya" di
+    SettingsWalletNotification (status dicek ulang saat app aktif lagi). Catatan Google Play: izin ini
+    termasuk kebijakan terbatas; kalau rilis ke Play Store, ganti ke
+    `ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS` tanpa izin.
+  - Uji worker (build debug): `adb shell am broadcast -n
+    com.tosm.finance.debug/com.tosm.finance.walletrefresh.DebugWalletRefreshReceiver` → satu
+    `WalletRefreshWorker` sekali jalan (`src/debug/`, receiver dijaga izin `DUMP`). Jangan pakai
+    `cmd jobscheduler run -f`: WorkManager menolak worker periodik yang dipaksa sebelum jadwalnya.
+    Teruji 2026-10-25 di Samsung A54 (Android 16): app dimatikan + Hemat daya aktif + pengecualian
+    baterai → worker SUCCESS, waktu notifikasi ikut diperbarui.
 - **Kamera**: `react-native-vision-camera` v5 (butuh `react-native-nitro-modules` +
   `react-native-nitro-image`). API v5: `useCameraPermission()` + `usePhotoOutput()` +
   `<Camera device="back" outputs={[photoOutput]} isActive />`. Dipakai di `ScanReceipt`. Izin:
@@ -268,6 +304,7 @@ tulis ulang dengan komponen RN di sini. Desain: Mist, lihat `DESIGN_SYSTEM.md` (
 | Form investasi (route modal) | InstrumentForm (tambah → langsung buka detail; hapus), InvestmentAccountForm (instrumen terkunci; hapus = soft delete), InvestmentWithdraw (opsional setor ke dompet = transaksi pemasukan), InvestmentProfitLoss (nilai baru → profit/rugi), InvestmentTransfer (dari/ke via `InvestmentTargetSheet` + `excludeAccountId`, pratinjau saldo; picker punya tile "+ Baru" & "Akun baru" yang membuat lalu langsung memilih; isi form dibagi `organisms/InstrumentFields` & `InvestmentAccountFields` dengan layar form), InvestmentTransactionEdit (nominal, perubahan negatif untuk P/L, tanggal/jam, catatan untuk tarik; hapus). Tarik/Transfer/Update nilai/Edit punya Tanggal & Jam (`organisms/InvestmentDateTimeField`) untuk entri bertanggal mundur; Update nilai membandingkan dengan nilai akun per tanggal itu (`timelineValueAt`, sama dengan backend `198866f`) |
 | Reports | Fungsional (pen `S5YW9`/`CaSg9`): strip periode Hari/Minggu/Bulan/Tahun + custom range (`DateRangeSheet`), ringkasan 2 × 2 + perubahan vs periode lalu, Cash Flow (tap = tooltip, legenda sembunyikan seri, kumulatif/per periode), pengeluaran per kategori, Tren Bulanan 12 bulan (tap batang), Top Pengeluaran, Dompet Paling Aktif, pull-to-refresh. Data: `hooks/useReports` (satu endpoint per kartu, muat ulang saat `transaction.version` berubah), periode `utils/reportPeriod.ts`. Export (tombol unduh di header → `screens/Reports/ReportExportSheet`, pen `MVyzc`): `hooks/useReportExport` menyusun dokumen yang sama dengan web (daftar transaksi periode dimuat saat export), `utils/reportExport.ts` membuat PDF (jsPDF + autotable) / Excel (SheetJS `xlsx`) / CSV sebagai base64 lalu `react-native-share` membuka share sheet |
 | QuickAdd (Catat cepat AI, modal) | Fungsional (pen `E5vp0` dkk.): chat ke `POST /assistant/chat` → pratinjau draft per hari (`screens/QuickAdd/AssistantPreviewCard`, tampilan TxRow sama dengan Transaksi/ledger investasi) → Simpan (`POST /assistant/commit`, satu batch) / Batal, juga lewat chat ("ok, catat"). Jawaban cepat (dompet bertitik warna, "Pilih tanggal" → `DateTimePickerSheet`), revisi dengan chip "lama → baru", validasi per baris, banner kuota/koneksi + Coba lagi, Mulai baru, Catat manual (ganti ke TransactionForm). "Contoh, tinggal tap" dari transaksi berulang 30 hari terakhir (`hooks/useHistoryExamples` + `utils/assistantExamples.ts`: judul/subkategori sama atau transfer antar dompet sama ≥ 2×, nominal & dompet terbanyak; kosong → contoh bawaan `example1–5`). State di `contexts/AssistantChatContext` (`hooks/useAssistantChat`, port web) supaya chat bertahan saat layar ditutup; direset saat logout |
+| SettingsWalletNotification (Android) | Fungsional (kanvas "Notifikasi Saldo Dompet"): nyala/mati (minta izin notifikasi), sembunyikan nominal, pratinjau notifikasi, isi Total saldo / Total + dompet utama / Semua dompet (`OptionRow` + `renderLeading`). baris "Tetap update saat Hemat daya" (pengecualian optimasi baterai, badge Izinkan/Aktif). Dibuka dari Pengaturan → Umum |
 | SettingsCurrency | Fungsional (pen `TPJ9e`): pilih mata uang (IDR/USD/JPY) + format desimal 0/1/2 dengan contoh per opsi & pratinjau (`molecules/OptionRow`, `organisms/SettingsPanel`), disimpan di `settings` |
 | SettingsUserApproval (admin) | Fungsional (pen `DaxsW`): jumlah menunggu/aktif, daftar pendaftaran (menunggu di atas) + Aktifkan, pull-to-refresh |
 | SettingsErrorLog (admin) | Fungsional (pen `IMPbc`): cari (debounce 400 ms), filter environment, kartu error (Baru/environment, pesan mono, meta, stack trace bisa dibuka), hapus + konfirmasi. GET /errors menandai sudah dibaca, jadi kueri sama tidak diulang |

@@ -19,6 +19,13 @@ Kategori tanpa isi boleh dihilangkan.
   Pengaturan → Keamanan (mematikan dan mengubah PIN wajib memasukkan PIN), dan ditawarkan lewat
   popup sekali setelah login. Pintasan Catat cepat, Dompet saya, dan Transaksi 3 hari terakhir
   (keduanya hanya lihat) tetap bisa dibuka tanpa kunci. Salah PIN 5 kali → keluar otomatis; setelah logout pengaturannya kembali mati.
+- Notifikasi saldo dompet (Android): total saldo dan daftar dompet selalu tampil di bilah
+  notifikasi, diperbarui setiap kamu memakai aplikasi dan otomatis tiap jam saat aplikasi tidak
+  dibuka. Tombolnya: Catat (buka Catat cepat), Sembunyikan/Tampilkan nominal tanpa membuka
+  aplikasi, dan Buka dompet. Isinya tertutup di layar kunci. Atur di Pengaturan → Umum →
+  Notifikasi saldo (nyala/mati, sembunyikan nominal, isi: total, total + dompet utama, atau semua
+  dompet). Ketuk "Tetap update saat Hemat daya" supaya update tiap jam tetap jalan walau Hemat daya
+  aktif.
 
 ### Ditingkatkan
 
