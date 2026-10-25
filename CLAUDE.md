@@ -323,8 +323,11 @@ APK release 123,7 MB → 24,1 MB (2026-10-08) tanpa membuang fitur. Konfigurasin
   - `com.margelo.nitro.**` (vision-camera v5: implementasi Hybrid dipanggil dari C++ lewat JNI). Ongkosnya hanya ~40 KB.
   - Target `Class.forName` milik Fresco (`*MemoryChunkPool`, `nativecode`, `animated`, `webpsupport`).
     Tanpa ini **semua `<Image>` kosong di release tanpa error apa pun**. Gejalanya kotak logo di Login kosong.
-- `res/raw/keep_tosmfi.xml`: `tools:keep` untuk `string/build_config_package`, karena dibaca
-  react-native-config lewat `getIdentifier`. Jangan menamai file ini `keep.xml`.
+- `res/raw/keep_tosmfi.xml`: `tools:keep` untuk resource yang dirujuk lewat NAMA (`getIdentifier`):
+  `string/build_config_package` (react-native-config) dan `drawable/ic_stat_tosmfi` (`smallIcon`
+  Notifee dari JS; tanpa ini notifikasi saldo ditolak di release, "no valid small icon"). Setiap
+  resource baru yang namanya dikirim dari JS wajib ditambahkan di sini. Jangan menamai file ini
+  `keep.xml`.
 - Library native baru → cek rule ProGuard di README-nya dan uji **release** (debug tidak menjalankan
   R8). Verifikasi dengan `/resize-rn` (`apk_size.py check/breakdown/manifest-diff`). Saat build untuk
   mengukur: `./gradlew assembleRelease -x copyReleaseApkToChangelog` supaya `documentation/` tidak tertimpa.

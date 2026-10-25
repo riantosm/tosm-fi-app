@@ -2,7 +2,9 @@
 <!--
   Resource yang dirujuk lewat NAMA (getIdentifier), tidak terlihat oleh resource shrinker.
   - string/build_config_package: dibaca react-native-config untuk mencari class BuildConfig.
+  - drawable/ic_stat_tosmfi: ikon kecil notifikasi saldo, dikirim sebagai nama dari JS ke Notifee
+    (`smallIcon`). Tanpa ini notifikasi ditolak di release: "no valid small icon".
   Jangan menamai file ini keep.xml (ditimpa keep.xml buatan bundler RN).
 -->
 <resources xmlns:tools="http://schemas.android.com/tools"
-    tools:keep="@string/build_config_package" />
+    tools:keep="@string/build_config_package,@drawable/ic_stat_tosmfi" />
