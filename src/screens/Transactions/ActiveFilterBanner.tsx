@@ -10,6 +10,7 @@ import {
   DEFAULT_FILTERS,
   TYPE_OPTIONS,
   formatRangeLabel,
+  getSubCategoryParent,
   type TransactionFilters,
 } from '@/screens/Transactions/FilterSheet';
 
@@ -55,17 +56,48 @@ export default function ActiveFilterBanner({
 }: ActiveFilterBannerProps) {
   const styles = useStyles();
   const { t } = useTranslation();
-  const wallet = wallets.find(w => w.idWallet === filters.walletId);
   const typeItem = TYPE_OPTIONS.find(item => item.value === filters.type);
-  const category = categories.find(c => c.idCategory === filters.categoryId);
-  const sub = category?.subCategories.find(
-    s => s.idSubCategory === filters.subCategoryId,
+  const subParent = categories.find(
+    c => c.idCategory === getSubCategoryParent(filters),
   );
+
+  // "GoPay, BCA +2", diawali "Kecuali …" pada mode exclude.
+  const formatSelection = (
+    names: string[],
+    mode: TransactionFilters['walletMode'],
+  ): string | null => {
+    if (names.length === 0) {
+      return null;
+    }
+    const shown = names.slice(0, 2).join(', ');
+    const label =
+      names.length > 2
+        ? `${shown} ${t('transaction.moreCount', { count: names.length - 2 })}`
+        : shown;
+    return mode === 'exclude'
+      ? t('transaction.excludeLabel', { names: label })
+      : label;
+  };
   const labels = [
-    wallet?.nameWallet,
+    formatSelection(
+      wallets
+        .filter(w => filters.walletIds.includes(w.idWallet))
+        .map(w => w.nameWallet),
+      filters.walletMode,
+    ),
     typeItem ? t(typeItem.labelKey) : null,
-    category?.nameCategory,
-    sub?.nameSubCategory,
+    formatSelection(
+      categories
+        .filter(c => filters.categoryIds.includes(c.idCategory))
+        .map(c => c.nameCategory),
+      filters.categoryMode,
+    ),
+    formatSelection(
+      (subParent?.subCategories ?? [])
+        .filter(s => filters.subCategoryIds.includes(s.idSubCategory))
+        .map(s => s.nameSubCategory),
+      filters.subCategoryMode,
+    ),
     search ? `“${search}”` : null,
     formatRangeLabel(filters.range, locale) || null,
     filters.sort !== DEFAULT_FILTERS.sort

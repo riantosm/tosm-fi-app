@@ -9,10 +9,25 @@ export interface OccurrenceViewFilter {
   dateFrom?: string; // "YYYY-MM-DD"
   dateTo?: string; // "YYYY-MM-DD"
   type?: string;
-  idWallet?: string;
-  idCategory?: string;
-  idSubCategory?: string;
+  idWallet?: string; // satu id atau daftar dipisah koma
+  walletMode?: 'include' | 'exclude';
+  idCategory?: string; // satu id atau daftar dipisah koma
+  categoryMode?: 'include' | 'exclude';
+  idSubCategory?: string; // satu id atau daftar dipisah koma
+  subCategoryMode?: 'include' | 'exclude';
   search?: string;
+}
+
+// Sama dengan filter daftar di backend: include hanya menyisakan id di daftar,
+// exclude membuangnya (id null tetap lolos, seperti $nin di Mongo).
+function matchesIdList(
+  id: string | null,
+  list: string | undefined,
+  mode: 'include' | 'exclude' = 'include',
+): boolean {
+  if (!list) return true;
+  const isListed = id !== null && list.split(',').includes(id);
+  return mode === 'exclude' ? !isListed : isListed;
 }
 
 export function filterOccurrencesForView(
@@ -29,13 +44,22 @@ export function filterOccurrencesForView(
     if (filter.dateFrom && dueDateKey < filter.dateFrom) return false;
     if (filter.dateTo && dueDateKey > filter.dateTo) return false;
     if (filter.type && occurrence.type !== filter.type) return false;
-    if (filter.idWallet && occurrence.idWallet !== filter.idWallet)
-      return false;
-    if (filter.idCategory && occurrence.idCategory !== filter.idCategory)
+    if (!matchesIdList(occurrence.idWallet, filter.idWallet, filter.walletMode))
       return false;
     if (
-      filter.idSubCategory &&
-      occurrence.idSubCategory !== filter.idSubCategory
+      !matchesIdList(
+        occurrence.idCategory,
+        filter.idCategory,
+        filter.categoryMode,
+      )
+    )
+      return false;
+    if (
+      !matchesIdList(
+        occurrence.idSubCategory,
+        filter.idSubCategory,
+        filter.subCategoryMode,
+      )
     )
       return false;
     if (

@@ -12,6 +12,11 @@ Kategori tanpa isi boleh dihilangkan.
 
 ## Belum dirilis
 
+### Ditingkatkan
+
+- Filter Transaksi: dompet, kategori, dan subkategori sekarang bisa dipilih lebih dari satu, dengan
+  pilihan Termasuk (hanya tampilkan yang dipilih) atau Kecuali (sembunyikan yang dipilih).
+
 ## v1.3.0 (versionCode 4)
 
 _2026-10-26_

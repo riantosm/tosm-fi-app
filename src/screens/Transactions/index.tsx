@@ -41,6 +41,7 @@ import ActiveFilterBanner from '@/screens/Transactions/ActiveFilterBanner';
 import FilterSheet, {
   DEFAULT_FILTERS,
   EMPTY_RANGE,
+  buildIdFilterParams,
   countActiveFilters,
   type TransactionFilters,
 } from '@/screens/Transactions/FilterSheet';
@@ -109,7 +110,7 @@ export default function TransactionsScreen({
   const months = useMemo(() => generateMonthRange(new Date(), 24, 12), []);
   const [month, setMonth] = useState(() => startOfMonth(new Date()));
   const [filters, setFilters] = useState<TransactionFilters>(DEFAULT_FILTERS);
-  const { type, walletId, categoryId, subCategoryId, range, sort } = filters;
+  const { type, range, sort } = filters;
   const [search, setSearch] = useState('');
   const [debouncedSearch, setDebouncedSearch] = useState('');
   const [searchOpen, setSearchOpen] = useState(false);
@@ -126,9 +127,12 @@ export default function TransactionsScreen({
     setFilters(current => ({
       ...current,
       type: params.type ?? 'all',
-      categoryId: params.idCategory ?? 'all',
-      subCategoryId: params.idSubCategory ?? 'all',
-      walletId: 'all',
+      categoryIds: params.idCategory ? [params.idCategory] : [],
+      categoryMode: 'include',
+      subCategoryIds: params.idSubCategory ? [params.idSubCategory] : [],
+      subCategoryMode: 'include',
+      walletIds: [],
+      walletMode: 'include',
       range: EMPTY_RANGE,
     }));
     if (params.focusSearch) {
@@ -148,9 +152,7 @@ export default function TransactionsScreen({
   const filterParams: Omit<TransactionListParams, 'page' | 'limit'> = {
     month: formatMonthParam(month),
     type: type !== 'all' ? type : undefined,
-    idWallet: walletId !== 'all' ? walletId : undefined,
-    idCategory: categoryId !== 'all' ? categoryId : undefined,
-    idSubCategory: subCategoryId !== 'all' ? subCategoryId : undefined,
+    ...buildIdFilterParams(filters),
     dateFrom: range.from || undefined,
     dateTo: range.to || undefined,
     search: debouncedSearch || undefined,
@@ -203,8 +205,11 @@ export default function TransactionsScreen({
     month: filterParams.month,
     type: filterParams.type,
     idWallet: filterParams.idWallet,
+    walletMode: filterParams.walletMode,
     idCategory: filterParams.idCategory,
+    categoryMode: filterParams.categoryMode,
     idSubCategory: filterParams.idSubCategory,
+    subCategoryMode: filterParams.subCategoryMode,
     search: filterParams.search,
   });
   const [calendarItems, setCalendarItems] = useState<Transaction[]>([]);
@@ -261,9 +266,9 @@ export default function TransactionsScreen({
   const selectedDay = range.from && range.from === range.to ? range.from : null;
   const hasActiveFilter =
     type !== 'all' ||
-    walletId !== 'all' ||
-    categoryId !== 'all' ||
-    subCategoryId !== 'all' ||
+    filters.walletIds.length > 0 ||
+    filters.categoryIds.length > 0 ||
+    filters.subCategoryIds.length > 0 ||
     !!search ||
     !!(range.from || range.to);
   const resetFilters = () => {
