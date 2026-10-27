@@ -12,24 +12,24 @@ Kategori tanpa isi boleh dihilangkan.
 
 ## Belum dirilis
 
+## v1.4.0 (versionCode 5)
+
+_2026-10-27_
+
+### Baru
+
+- Transaksi: tampilan Tahun. Tombol Bulan / Tahun menampilkan 12 bulan sekaligus (selisih + bar
+  pengeluaran per kategori); ketuk bulan untuk menyaring daftar, lalu "Buka kalender" untuk
+  melihat kalender hariannya.
+
 ### Ditingkatkan
 
-- Transaksi: tombol Bulan / Tahun di sebelah strip bulan. Tampilan Tahun menampilkan 12 bulan
-  sekaligus (selisih per bulan + bar pengeluaran per kategori); ketuk bulan untuk menyaring daftar,
-  lalu "Buka kalender" untuk melihat kalender hariannya.
-- Kalender Transaksi: tanggal terpilih kini lingkaran ungu penuh, sedangkan hari ini hanya
-  bercincin, supaya keduanya tidak tertukar.
-- Filter Transaksi: dompet, kategori, dan subkategori sekarang bisa dipilih lebih dari satu, dengan
-  pilihan Termasuk (hanya tampilkan yang dipilih) atau Kecuali (sembunyikan yang dipilih).
-- Kalender Transaksi: minggu dimulai hari Minggu (M S S R K J S), label akhir pekan lebih redup,
-  dan tiap hari kini menampilkan nominal bersih kecil di bawah titik warna (sama dengan web).
-- Laporan: ketuk kategori di "Pengeluaran per kategori" sekarang membuka halaman rincian
-  sendiri (total kategori + pengeluaran per subkategori), tidak lagi terbuka di dalam kartu.
-  Ketuk subkategori di halaman itu untuk membuka Transaksi yang sudah terfilter (kategori,
-  subkategori, dan periode laporan), atau "Lihat detail" untuk semua transaksi kategori itu;
-  tombol kembali membawa lagi ke halaman rincian.
-- Tile kategori/subkategori yang bisa diketuk (Laporan dan Beranda) kini selalu punya ikon panah
-  kanan.
+- Filter Transaksi: dompet, kategori, dan subkategori bisa dipilih lebih dari satu, dengan
+  pilihan Termasuk atau Kecuali.
+- Kalender Transaksi: minggu dimulai hari Minggu, tiap hari menampilkan nominal bersih, dan
+  tanggal terpilih (lingkaran penuh) kini jelas beda dari hari ini (cincin).
+- Laporan: ketuk kategori membuka halaman rincian per subkategori, lalu langsung ke Transaksi
+  yang sudah terfilter. Tile yang bisa diketuk kini punya ikon panah.
 
 ## v1.3.0 (versionCode 4)
 
