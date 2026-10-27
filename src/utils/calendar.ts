@@ -1,8 +1,11 @@
 import { dateTimeFormat } from '@/utils/intl';
 /**
  * Calendar helpers shared by every month grid (transaction calendar, date
- * pickers, range picker). Weeks start on Monday, matching the Mist design.
+ * pickers, range picker). Weeks start on Monday (the Mist design) unless a
+ * grid asks for Sunday, like the Transactions calendar.
  */
+
+export type WeekStart = 'monday' | 'sunday';
 
 export interface CalendarDay {
   date: Date;
@@ -33,19 +36,20 @@ export function isSameDay(a: Date, b: Date): boolean {
   );
 }
 
-/** Monday-first index (0 = Monday … 6 = Sunday). */
-function mondayIndex(date: Date): number {
-  return (date.getDay() + 6) % 7;
+/** Column of `date` in a week starting on `weekStart` (0 = first column). */
+function weekdayColumn(date: Date, weekStart: WeekStart): number {
+  return weekStart === 'sunday' ? date.getDay() : (date.getDay() + 6) % 7;
 }
 
-/** Full weeks (Monday-first) covering the month, padded with adjacent-month days. */
+/** Full weeks covering the month, padded with adjacent-month days. */
 export function buildMonthWeeks(
   year: number,
   monthIndex: number,
+  weekStart: WeekStart = 'monday',
 ): CalendarDay[][] {
   const first = new Date(year, monthIndex, 1);
   const daysInMonth = new Date(year, monthIndex + 1, 0).getDate();
-  const leading = mondayIndex(first);
+  const leading = weekdayColumn(first, weekStart);
   const total = Math.ceil((leading + daysInMonth) / 7) * 7;
 
   const weeks: CalendarDay[][] = [];
@@ -62,22 +66,28 @@ export function buildMonthWeeks(
 }
 
 const REFERENCE_MONDAY = new Date(2023, 0, 2);
+const REFERENCE_SUNDAY = new Date(2023, 0, 1);
 
 export function getWeekdayLabels(
   locale: string,
   style: 'short' | 'narrow' = 'short',
+  weekStart: WeekStart = 'monday',
 ): string[] {
+  const reference =
+    weekStart === 'sunday' ? REFERENCE_SUNDAY : REFERENCE_MONDAY;
   try {
     const formatter = dateTimeFormat(locale, { weekday: style });
     return Array.from({ length: 7 }, (_, index) => {
-      const date = new Date(REFERENCE_MONDAY);
-      date.setDate(REFERENCE_MONDAY.getDate() + index);
+      const date = new Date(reference);
+      date.setDate(reference.getDate() + index);
       return formatter.format(date);
     });
   } catch {
-    return style === 'narrow'
-      ? ['M', 'T', 'W', 'T', 'F', 'S', 'S']
-      : ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+    const labels =
+      style === 'narrow'
+        ? ['M', 'T', 'W', 'T', 'F', 'S', 'S']
+        : ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+    return weekStart === 'sunday' ? [labels[6], ...labels.slice(0, 6)] : labels;
   }
 }
 

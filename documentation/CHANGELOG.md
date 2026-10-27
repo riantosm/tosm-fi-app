@@ -16,6 +16,8 @@ Kategori tanpa isi boleh dihilangkan.
 
 - Filter Transaksi: dompet, kategori, dan subkategori sekarang bisa dipilih lebih dari satu, dengan
   pilihan Termasuk (hanya tampilkan yang dipilih) atau Kecuali (sembunyikan yang dipilih).
+- Kalender Transaksi: minggu dimulai hari Minggu (M S S R K J S), label akhir pekan lebih redup,
+  dan tiap hari kini menampilkan nominal bersih kecil di bawah titik warna (sama dengan web).
 
 ## v1.3.0 (versionCode 4)
 
