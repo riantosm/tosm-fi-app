@@ -1,5 +1,5 @@
 import { memo, useMemo } from 'react';
-import { View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import PressableScale from '@/components/atoms/PressableScale';
 import Typography from '@/components/atoms/Typography';
 import Card from '@/components/molecules/Card';
@@ -34,13 +34,16 @@ const useStyles = makeStyles(({ colors }) => ({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  today: { backgroundColor: colors.primary },
-  selected: {
-    backgroundColor: colors.primarySoft,
-    borderWidth: 2,
-    borderColor: colors.primary,
+  // Terpilih = lingkaran primary penuh; hari ini = cincin primary saja (sama dengan web).
+  // Lingkaran terpilih = view sendiri yang dipasang saat dipilih: di Android (Fabric), background
+  // yang ditambahkan ke view yang sudah ada tidak ikut borderRadius-nya, jadi tampil kotak.
+  selectedFill: {
+    ...StyleSheet.absoluteFill,
+    borderRadius: radius.pill,
+    backgroundColor: colors.primary,
   },
-  // Hari ini yang sedang dipilih: cincin di luar lingkaran "hari ini" (margin negatif → tata letak tetap).
+  today: { borderWidth: 2, borderColor: colors.primary },
+  // Hari ini yang sedang dipilih: cincin di luar lingkaran terpilih (margin negatif → tata letak tetap).
   todayRing: {
     width: 38,
     height: 38,
@@ -175,17 +178,17 @@ function TransactionCalendar({
                   <View
                     style={[
                       styles.day,
-                      isToday && styles.today,
-                      isSelected && !isToday && styles.selected,
+                      !isSelected && isToday && styles.today,
                     ]}
                   >
+                    {isSelected && <View style={styles.selectedFill} />}
                     <Typography
                       style={[
                         styles.dayNum,
                         (isToday || isSelected) && styles.dayNumStrong,
                       ]}
                       tone={
-                        isToday ? 'inverse' : isSelected ? 'primary' : 'default'
+                        isSelected ? 'inverse' : isToday ? 'primary' : 'default'
                       }
                       tabular
                     >

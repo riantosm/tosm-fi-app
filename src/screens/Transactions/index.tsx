@@ -9,6 +9,7 @@ import Typography from '@/components/atoms/Typography';
 import Card from '@/components/molecules/Card';
 import SearchField from '@/components/molecules/SearchField';
 import SectionHead from '@/components/molecules/SectionHead';
+import SegmentedControl from '@/components/molecules/SegmentedControl';
 import ConfirmDialog from '@/components/organisms/ConfirmDialog';
 import TransactionList from '@/components/organisms/TransactionList';
 import MainLayout from '@/components/templates/MainLayout';
@@ -55,10 +56,35 @@ import FilterSheet, {
 import MonthTabs from '@/screens/Transactions/MonthTabs';
 import SummaryBar from '@/screens/Transactions/SummaryBar';
 import TransactionCalendar from '@/screens/Transactions/TransactionCalendar';
+import TransactionYearCalendar, {
+  type YearMonthSummary,
+} from '@/screens/Transactions/TransactionYearCalendar';
 import { dateTimeFormat } from '@/utils/intl';
 
 const PAGE_SIZE = 20;
 const SEARCH_DEBOUNCE_MS = 1000;
+
+type CalendarViewMode = 'month' | 'year';
+
+/** "YYYY-MM" kalau rentang tepat satu bulan penuh, selain itu null. */
+function wholeMonthOf(range: { from: string; to: string }): string | null {
+  if (!range.from || !range.to || !range.from.endsWith('-01')) {
+    return null;
+  }
+  const start = parseIsoDate(range.from);
+  const end = toIsoDateString(
+    new Date(start.getFullYear(), start.getMonth() + 1, 0),
+  );
+  return range.to === end ? range.from.slice(0, 7) : null;
+}
+
+function monthRangeOf(monthKey: string): { from: string; to: string } {
+  const start = parseIsoDate(`${monthKey}-01`);
+  return {
+    from: toIsoDateString(start),
+    to: toIsoDateString(new Date(start.getFullYear(), start.getMonth() + 1, 0)),
+  };
+}
 
 const SORT_DISPLAY: Record<
   TransactionSortOption,
@@ -75,6 +101,9 @@ const SORT_DISPLAY: Record<
 
 const useStyles = makeStyles(({ colors }) => ({
   activeAction: { backgroundColor: colors.primarySoft },
+  periodRow: { flexDirection: 'row', alignItems: 'center', gap: spacing.sm },
+  viewToggle: { width: 124 },
+  periodTabs: { flex: 1 },
   filterBadge: {
     position: 'absolute',
     top: -2,
@@ -156,8 +185,18 @@ export default function TransactionsScreen({
   const { version, queryTransactions } = useTransactions();
 
   const months = useMemo(() => generateMonthRange(new Date(), 24, 12), []);
+  const years = useMemo(() => {
+    const currentYear = new Date().getFullYear();
+    return Array.from(
+      { length: 7 },
+      (_, index) => new Date(currentYear - 5 + index, 0, 1),
+    );
+  }, []);
   const isStacked = route.name === ROUTES.REPORT_TRANSACTIONS;
+  const [viewMode, setViewMode] = useState<CalendarViewMode>('month');
+  const isYearView = viewMode === 'year';
   const [month, setMonth] = useState(() => monthForRange(route.params));
+  const year = month.getFullYear();
   const [filters, setFilters] = useState<TransactionFilters>(() =>
     route.params
       ? filtersFromParams(DEFAULT_FILTERS, route.params)
@@ -180,6 +219,7 @@ export default function TransactionsScreen({
     setFilters(current => filtersFromParams(current, params));
     if (params.dateFrom) {
       setMonth(monthForRange(params));
+      setViewMode('month');
     }
     if (params.focusSearch) {
       setSearchOpen(true);
@@ -201,12 +241,13 @@ export default function TransactionsScreen({
     !!range.from &&
     !!range.to &&
     range.from.slice(0, 7) !== range.to.slice(0, 7);
+  // Tampilan Tahun: daftar mencakup setahun penuh sampai bulan (atau rentang) dipilih.
   const filterParams: Omit<TransactionListParams, 'page' | 'limit'> = {
-    month: rangeSpansMonths ? undefined : formatMonthParam(month),
+    month: isYearView || rangeSpansMonths ? undefined : formatMonthParam(month),
     type: type !== 'all' ? type : undefined,
     ...buildIdFilterParams(filters),
-    dateFrom: range.from || undefined,
-    dateTo: range.to || undefined,
+    dateFrom: range.from || (isYearView ? `${year}-01-01` : undefined),
+    dateTo: range.to || (isYearView ? `${year}-12-31` : undefined),
     search: debouncedSearch || undefined,
     sort,
   };
@@ -254,7 +295,7 @@ export default function TransactionsScreen({
 
   // Titik kalender: semua transaksi bulan ini dengan filter yang sama (tanpa tanggal/urutan).
   const calendarKey = JSON.stringify({
-    month: filterParams.month,
+    month: formatMonthParam(month),
     type: filterParams.type,
     idWallet: filterParams.idWallet,
     walletMode: filterParams.walletMode,
@@ -265,10 +306,37 @@ export default function TransactionsScreen({
     search: filterParams.search,
   });
   const [calendarItems, setCalendarItems] = useState<Transaction[]>([]);
+  const [yearMonths, setYearMonths] = useState<YearMonthSummary[]>([]);
   const [calendarLoading, setCalendarLoading] = useState(true);
   useEffect(() => {
     let cancelled = false;
     setCalendarLoading(true);
+    if (isYearView) {
+      // Grid tahun hanya butuh total per bulan: satu kueri `limit: 1` per bulan memberi `summary`
+      // (+ `total`) dari server tanpa mengunduh transaksi setahun.
+      const base = JSON.parse(calendarKey);
+      Promise.all(
+        Array.from({ length: 12 }, (_, index) => {
+          const item = new Date(year, index, 1);
+          return queryTransactions({
+            ...base,
+            month: formatMonthParam(item),
+            page: 1,
+            limit: 1,
+          }).then(result => ({
+            month: item,
+            summary: result.summary,
+            count: result.total ?? 0,
+          }));
+        }),
+      )
+        .then(results => !cancelled && setYearMonths(results))
+        .catch(() => {})
+        .finally(() => !cancelled && setCalendarLoading(false));
+      return () => {
+        cancelled = true;
+      };
+    }
     queryTransactions(JSON.parse(calendarKey))
       .then(result => !cancelled && setCalendarItems(result.transactions))
       .catch(() => {})
@@ -276,7 +344,7 @@ export default function TransactionsScreen({
     return () => {
       cancelled = true;
     };
-  }, [calendarKey, version, refreshKey, queryTransactions]);
+  }, [calendarKey, isYearView, year, version, refreshKey, queryTransactions]);
 
   const hasMore = page < totalPages;
   const loadMore = useCallback(() => {
@@ -291,6 +359,31 @@ export default function TransactionsScreen({
   }, []);
   const goToCurrentMonth = useCallback(
     () => selectMonth(startOfMonth(new Date())),
+    [selectMonth],
+  );
+  // Pindah tahun mempertahankan bulannya, supaya kembali ke tampilan Bulan di bulan yang sama.
+  const selectYear = useCallback(
+    (next: Date) =>
+      selectMonth(new Date(next.getFullYear(), month.getMonth(), 1)),
+    [selectMonth, month],
+  );
+  const goToCurrentYear = useCallback(
+    () => selectYear(new Date()),
+    [selectYear],
+  );
+  const selectYearMonth = useCallback(
+    (monthKey: string | null) =>
+      setFilters(current => ({
+        ...current,
+        range: monthKey ? monthRangeOf(monthKey) : EMPTY_RANGE,
+      })),
+    [],
+  );
+  const openMonth = useCallback(
+    (next: Date) => {
+      setViewMode('month');
+      selectMonth(next);
+    },
     [selectMonth],
   );
   const selectDay = useCallback(
@@ -316,6 +409,17 @@ export default function TransactionsScreen({
     [occurrences, filterKey],
   );
   const selectedDay = range.from && range.from === range.to ? range.from : null;
+  // Sama satu tingkat di atas: grid tahun menandai bulan saat rentang = bulan itu.
+  const selectedYearMonth = wholeMonthOf(range);
+  // Keluar dari tampilan Tahun dengan bulan terpilih = buka kalender bulan itu.
+  const changeViewMode = (next: CalendarViewMode) => {
+    setViewMode(next);
+    if (next === 'month' && selectedYearMonth) {
+      selectMonth(parseIsoDate(`${selectedYearMonth}-01`));
+    } else {
+      setFilters(current => ({ ...current, range: EMPTY_RANGE }));
+    }
+  };
   const hasActiveFilter =
     type !== 'all' ||
     filters.walletIds.length > 0 ||
@@ -426,14 +530,43 @@ export default function TransactionsScreen({
         )}
       </AnimatePresence>
 
-      <MonthTabs
-        months={months}
-        selected={month}
-        locale={locale}
-        goToCurrentLabel={t('transaction.goToCurrentMonth')}
-        onSelect={selectMonth}
-        onGoToCurrent={goToCurrentMonth}
-      />
+      <View style={styles.periodRow}>
+        <View style={styles.viewToggle}>
+          <SegmentedControl<CalendarViewMode>
+            variant="compact"
+            options={[
+              { value: 'month', label: t('transaction.viewMonth') },
+              { value: 'year', label: t('transaction.viewYear') },
+            ]}
+            value={viewMode}
+            onChange={changeViewMode}
+          />
+        </View>
+        {isYearView ? (
+          <MonthTabs
+            key="year"
+            unit="year"
+            months={years}
+            selected={month}
+            locale={locale}
+            goToCurrentLabel={t('transaction.goToCurrentYear')}
+            onSelect={selectYear}
+            onGoToCurrent={goToCurrentYear}
+            style={styles.periodTabs}
+          />
+        ) : (
+          <MonthTabs
+            key="month"
+            months={months}
+            selected={month}
+            locale={locale}
+            goToCurrentLabel={t('transaction.goToCurrentMonth')}
+            onSelect={selectMonth}
+            onGoToCurrent={goToCurrentMonth}
+            style={styles.periodTabs}
+          />
+        )}
+      </View>
 
       <SummaryBar
         expense={summary?.expense ?? 0}
@@ -452,15 +585,27 @@ export default function TransactionsScreen({
         onReset={resetFilters}
       />
 
-      <TransactionCalendar
-        month={month}
-        locale={locale}
-        transactions={calendarItems}
-        categories={categories}
-        selectedDay={selectedDay}
-        onSelectDay={selectDay}
-        isLoading={calendarLoading}
-      />
+      {isYearView ? (
+        <TransactionYearCalendar
+          year={year}
+          locale={locale}
+          months={yearMonths}
+          selectedMonth={selectedYearMonth}
+          onSelectMonth={selectYearMonth}
+          onOpenMonth={openMonth}
+          isLoading={calendarLoading}
+        />
+      ) : (
+        <TransactionCalendar
+          month={month}
+          locale={locale}
+          transactions={calendarItems}
+          categories={categories}
+          selectedDay={selectedDay}
+          onSelectDay={selectDay}
+          isLoading={calendarLoading}
+        />
+      )}
 
       <Card>
         <SectionHead

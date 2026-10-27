@@ -1,5 +1,11 @@
 import { memo, useEffect, useRef, useState, type ComponentRef } from 'react';
-import { ScrollView, View, type LayoutChangeEvent } from 'react-native';
+import {
+  ScrollView,
+  View,
+  type LayoutChangeEvent,
+  type StyleProp,
+  type ViewStyle,
+} from 'react-native';
 import { CalendarCheck } from 'lucide-react-native';
 import PressableScale from '@/components/atoms/PressableScale';
 import Chip from '@/components/atoms/Chip';
@@ -16,6 +22,9 @@ export interface MonthTabsProps {
   goToCurrentLabel: string;
   onSelect: (month: Date) => void;
   onGoToCurrent: () => void;
+  /** "year" = strip tahun (satu tab per tahun, `months` = 1 Januari tiap tahun). */
+  unit?: 'month' | 'year';
+  style?: StyleProp<ViewStyle>;
 }
 
 const SLOT = 72;
@@ -40,6 +49,10 @@ const useStyles = makeStyles(({ colors, shadows }) => ({
   label: { fontSize: 12.5 },
 }));
 
+function isSameYearAs(a: Date, b: Date) {
+  return a.getFullYear() === b.getFullYear();
+}
+
 function monthLabel(date: Date, locale: string, withYear: boolean) {
   const label = dateTimeFormat(locale, { month: 'short' })
     .format(date)
@@ -47,7 +60,7 @@ function monthLabel(date: Date, locale: string, withYear: boolean) {
   return withYear ? `${label} ${date.getFullYear()}` : label;
 }
 
-/** Strip bulan (pen `t5Sqc`): pill surface, bulan aktif primary, otomatis ke tengah. */
+/** Strip bulan/tahun (pen `t5Sqc`): pill surface, tab aktif primary, otomatis ke tengah. */
 function MonthTabs({
   months,
   selected,
@@ -55,13 +68,16 @@ function MonthTabs({
   goToCurrentLabel,
   onSelect,
   onGoToCurrent,
+  unit = 'month',
+  style,
 }: MonthTabsProps) {
   const styles = useStyles();
   const scrollRef = useRef<ComponentRef<typeof ScrollView>>(null);
   const [width, setWidth] = useState(0);
   const currentYear = new Date().getFullYear();
-  const isCurrent = isSameMonthAs(selected, new Date());
-  const index = months.findIndex(month => isSameMonthAs(month, selected));
+  const isSame = unit === 'year' ? isSameYearAs : isSameMonthAs;
+  const isCurrent = isSame(selected, new Date());
+  const index = months.findIndex(month => isSame(month, selected));
 
   const [contentWidth, setContentWidth] = useState(0);
   const centeredOnce = useRef(false);
@@ -79,7 +95,7 @@ function MonthTabs({
   }, [index, width, contentWidth]);
 
   return (
-    <View style={styles.row}>
+    <View style={[styles.row, style]}>
       <View
         style={styles.strip}
         onLayout={(event: LayoutChangeEvent) =>
@@ -94,7 +110,7 @@ function MonthTabs({
           onContentSizeChange={contentW => setContentWidth(contentW)}
         >
           {months.map(month => {
-            const active = isSameMonthAs(month, selected);
+            const active = isSame(month, selected);
             return (
               <PressableScale
                 key={month.toISOString()}
@@ -109,11 +125,13 @@ function MonthTabs({
                   numberOfLines={1}
                   style={styles.label}
                 >
-                  {monthLabel(
-                    month,
-                    locale,
-                    active || month.getFullYear() !== currentYear,
-                  )}
+                  {unit === 'year'
+                    ? month.getFullYear()
+                    : monthLabel(
+                        month,
+                        locale,
+                        active || month.getFullYear() !== currentYear,
+                      )}
                 </Typography>
               </PressableScale>
             );

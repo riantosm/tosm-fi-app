@@ -14,6 +14,11 @@ Kategori tanpa isi boleh dihilangkan.
 
 ### Ditingkatkan
 
+- Transaksi: tombol Bulan / Tahun di sebelah strip bulan. Tampilan Tahun menampilkan 12 bulan
+  sekaligus (selisih per bulan + bar pengeluaran per kategori); ketuk bulan untuk menyaring daftar,
+  lalu "Buka kalender" untuk melihat kalender hariannya.
+- Kalender Transaksi: tanggal terpilih kini lingkaran ungu penuh, sedangkan hari ini hanya
+  bercincin, supaya keduanya tidak tertukar.
 - Filter Transaksi: dompet, kategori, dan subkategori sekarang bisa dipilih lebih dari satu, dengan
   pilihan Termasuk (hanya tampilkan yang dipilih) atau Kecuali (sembunyikan yang dipilih).
 - Kalender Transaksi: minggu dimulai hari Minggu (M S S R K J S), label akhir pekan lebih redup,

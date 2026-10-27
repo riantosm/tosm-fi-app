@@ -74,3 +74,9 @@ export function generateShades(baseHex: string, count: number): string[] {
     ),
   );
 }
+
+/** "#RRGGBB" + alpha 0–1 → "#RRGGBBAA" (RN menerima hex 8 digit). */
+export function withAlpha(hex: string, alpha: number): string {
+  const byte = Math.round(Math.min(1, Math.max(0, alpha)) * 255);
+  return `${hex.slice(0, 7)}${byte.toString(16).padStart(2, '0')}`;
+}
