@@ -24,6 +24,9 @@ export const ROUTES = {
   BUDGETS: 'Budgets',
   BUDGET_DETAIL: 'BudgetDetail',
   REPORTS: 'Reports',
+  REPORT_CATEGORY_DETAIL: 'ReportCategoryDetail',
+  /** Transaksi berfilter dari Laporan (stack, bukan tab). */
+  REPORT_TRANSACTIONS: 'ReportTransactions',
   PROFILE: 'Profile',
   SETTINGS: 'Settings',
   SETTINGS_CURRENCY: 'SettingsCurrency',
@@ -59,6 +62,8 @@ export const MORE_ROUTES: readonly RouteName[] = [
   ROUTES.BUDGETS,
   ROUTES.BUDGET_DETAIL,
   ROUTES.REPORTS,
+  ROUTES.REPORT_CATEGORY_DETAIL,
+  ROUTES.REPORT_TRANSACTIONS,
   ROUTES.SETTINGS,
   ROUTES.SETTINGS_CURRENCY,
   ROUTES.SETTINGS_WALLET_NOTIFICATION,

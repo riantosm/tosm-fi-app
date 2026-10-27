@@ -39,6 +39,11 @@ export interface CategoryBreakdownChartProps {
   onSelectSubCategory?: (sub: CategorySlice, category: CategorySlice) => void;
   /** Ada → tile kategori tanpa subkategori (atau "Lainnya") bisa ditekan. */
   onSelectCategory?: (category: CategorySlice) => void;
+  /**
+   * Ada → tile kategori bersubkategori membuka halaman sendiri (Laporan), bukan drill-down di
+   * dalam kartu.
+   */
+  onOpenCategory?: (category: CategorySlice) => void;
 }
 
 const useStyles = makeStyles(({ colors }) => ({
@@ -82,6 +87,7 @@ export default function CategoryBreakdownChart({
   emptyVariant = 'default',
   onSelectSubCategory,
   onSelectCategory,
+  onOpenCategory,
 }: CategoryBreakdownChartProps) {
   const styles = useStyles();
   const { colors } = useTheme();
@@ -100,7 +106,9 @@ export default function CategoryBreakdownChart({
   const pressFor = (slice: CategorySlice): (() => void) | undefined => {
     if (!expanded) {
       if ((slice.subSlices?.length ?? 0) > 0) {
-        return () => setExpandedId(slice.id);
+        return onOpenCategory
+          ? () => onOpenCategory(slice)
+          : () => setExpandedId(slice.id);
       }
       return onSelectCategory ? () => onSelectCategory(slice) : undefined;
     }
@@ -220,7 +228,8 @@ export default function CategoryBreakdownChart({
                       <Typography variant="tileLabel" tone="subtle" tabular>
                         {Math.round(slice.percentage)}%
                       </Typography>
-                      {!expanded && (slice.subSlices?.length ?? 0) > 0 && (
+                      {/* Setiap tile yang bisa ditekan (drill-down / buka Transaksi) diberi panah. */}
+                      {onPress && (
                         <ChevronRight size={14} color={colors.text3} />
                       )}
                     </PressableScale>

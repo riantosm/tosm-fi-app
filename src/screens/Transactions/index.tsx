@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { ActivityIndicator, View } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 import { AnimatePresence, MotiView } from 'moti';
 import { CalendarX, Search, SlidersHorizontal } from 'lucide-react-native';
 import { useTranslation } from 'react-i18next';
@@ -19,7 +20,11 @@ import { useTransactions } from '@/hooks/useTransactions';
 import { useWallets } from '@/hooks/useWallets';
 import { openTransaction } from '@/navigation/openTransaction';
 import { ROUTES } from '@/navigation/paths';
-import type { MainTabScreenProps } from '@/navigation/types';
+import type {
+  MainTabScreenProps,
+  RootStackScreenProps,
+  TransactionsParams,
+} from '@/navigation/types';
 import { makeStyles } from '@/theme/makeStyles';
 import { spacing } from '@/theme/metrics';
 import type {
@@ -29,11 +34,13 @@ import type {
   TransactionSortOption,
   TransactionSummary,
 } from '@/types';
+import { parseIsoDate } from '@/utils/calendar';
 import { toIntlLocale } from '@/utils/locale';
 import {
   formatMonthParam,
   generateMonthRange,
   startOfMonth,
+  toIsoDateString,
 } from '@/utils/month';
 import { transitions } from '@/utils/motion';
 import { filterOccurrencesForView } from '@/utils/scheduleOccurrenceFilter';
@@ -91,12 +98,53 @@ const useStyles = makeStyles(({ colors }) => ({
   },
 }));
 
-/** Halaman Transaksi HP (pen `PIoO4`, filter aktif `z5AbmD`) — port TransactionsPage web. */
+/** Filter dari params navigasi (Dashboard / Laporan); dompet & urutan kembali ke default. */
+function filtersFromParams(
+  current: TransactionFilters,
+  params: TransactionsParams,
+): TransactionFilters {
+  const excluded = params.excludeSubCategoryIds ?? [];
+  return {
+    ...current,
+    type: params.type ?? 'all',
+    categoryIds: params.idCategory ? [params.idCategory] : [],
+    categoryMode: 'include',
+    subCategoryIds: params.idSubCategory ? [params.idSubCategory] : excluded,
+    subCategoryMode:
+      !params.idSubCategory && excluded.length > 0 ? 'exclude' : 'include',
+    walletIds: [],
+    walletMode: 'include',
+    range: params.dateFrom
+      ? { from: params.dateFrom, to: params.dateTo ?? params.dateFrom }
+      : EMPTY_RANGE,
+  };
+}
+
+/** Bulan awal untuk rentang dari params: bulan ini kalau hari ini di dalam rentang, selain itu bulan akhir rentang. */
+function monthForRange(params: TransactionsParams | undefined): Date {
+  const today = new Date();
+  if (!params?.dateFrom) {
+    return startOfMonth(today);
+  }
+  const todayIso = toIsoDateString(today);
+  const dateTo = params.dateTo ?? params.dateFrom;
+  const inRange = params.dateFrom <= todayIso && todayIso <= dateTo;
+  return startOfMonth(inRange ? today : parseIsoDate(dateTo));
+}
+
+/**
+ * Halaman Transaksi HP (pen `PIoO4`, filter aktif `z5AbmD`) — port TransactionsPage web. Dipakai
+ * juga sebagai route stack `ReportTransactions` (dari Laporan) dengan tombol kembali, supaya back
+ * kembali ke halaman sebelumnya, bukan ke tab Beranda.
+ */
 export default function TransactionsScreen({
-  navigation,
   route,
-}: MainTabScreenProps<typeof ROUTES.TRANSACTIONS>) {
+}:
+  | MainTabScreenProps<typeof ROUTES.TRANSACTIONS>
+  | RootStackScreenProps<typeof ROUTES.REPORT_TRANSACTIONS>) {
   const styles = useStyles();
+  // Dari hook (tipe root global): union `navigation` tab | stack tidak bisa dipanggil.
+  const navigation = useNavigation();
   const { colors } = useTheme();
   const { t, i18n } = useTranslation();
   const showToast = useToast();
@@ -108,8 +156,13 @@ export default function TransactionsScreen({
   const { version, queryTransactions } = useTransactions();
 
   const months = useMemo(() => generateMonthRange(new Date(), 24, 12), []);
-  const [month, setMonth] = useState(() => startOfMonth(new Date()));
-  const [filters, setFilters] = useState<TransactionFilters>(DEFAULT_FILTERS);
+  const isStacked = route.name === ROUTES.REPORT_TRANSACTIONS;
+  const [month, setMonth] = useState(() => monthForRange(route.params));
+  const [filters, setFilters] = useState<TransactionFilters>(() =>
+    route.params
+      ? filtersFromParams(DEFAULT_FILTERS, route.params)
+      : DEFAULT_FILTERS,
+  );
   const { type, range, sort } = filters;
   const [search, setSearch] = useState('');
   const [debouncedSearch, setDebouncedSearch] = useState('');
@@ -117,24 +170,17 @@ export default function TransactionsScreen({
   const [filterOpen, setFilterOpen] = useState(false);
   const [refreshKey, setRefreshKey] = useState(0);
 
-  // Filter awal dari Dashboard (tap bar / kategori / tombol cari).
+  // Filter awal dari Dashboard (tap bar / kategori / tombol cari) atau Laporan (subkategori).
   const requestId = route.params?.requestId;
   useEffect(() => {
     const params = route.params;
     if (!params) {
       return;
     }
-    setFilters(current => ({
-      ...current,
-      type: params.type ?? 'all',
-      categoryIds: params.idCategory ? [params.idCategory] : [],
-      categoryMode: 'include',
-      subCategoryIds: params.idSubCategory ? [params.idSubCategory] : [],
-      subCategoryMode: 'include',
-      walletIds: [],
-      walletMode: 'include',
-      range: EMPTY_RANGE,
-    }));
+    setFilters(current => filtersFromParams(current, params));
+    if (params.dateFrom) {
+      setMonth(monthForRange(params));
+    }
     if (params.focusSearch) {
       setSearchOpen(true);
     }
@@ -149,8 +195,14 @@ export default function TransactionsScreen({
     return () => clearTimeout(timer);
   }, [search]);
 
+  // Rentang lintas bulan (periode Laporan Minggu/Tahun/custom): backend mengiris `month` dengan
+  // dateFrom/dateTo, jadi bulan tidak dikirim supaya seluruh rentang tampil.
+  const rangeSpansMonths =
+    !!range.from &&
+    !!range.to &&
+    range.from.slice(0, 7) !== range.to.slice(0, 7);
   const filterParams: Omit<TransactionListParams, 'page' | 'limit'> = {
-    month: formatMonthParam(month),
+    month: rangeSpansMonths ? undefined : formatMonthParam(month),
     type: type !== 'all' ? type : undefined,
     ...buildIdFilterParams(filters),
     dateFrom: range.from || undefined,
@@ -304,6 +356,8 @@ export default function TransactionsScreen({
   return (
     <MainLayout
       title={t('nav.transactions')}
+      onBack={isStacked ? navigation.goBack : undefined}
+      backLabel={t('common.back')}
       withTabBar
       onEndReached={loadMore}
       onRefresh={async () => {

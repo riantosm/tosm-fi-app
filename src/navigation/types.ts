@@ -15,13 +15,19 @@ import type {
   Transaction,
   WalletAccount,
 } from '@/types';
+import type { CategorySlice } from '@/utils/categoryBreakdown';
 
-/** Filter awal halaman Transaksi (dari Dashboard). `requestId` membuat navigasi berulang tetap terdeteksi. */
+/** Filter awal halaman Transaksi (dari Dashboard / Laporan). `requestId` membuat navigasi berulang tetap terdeteksi. */
 export interface TransactionsParams {
   requestId: number;
   type?: 'income' | 'expense';
   idCategory?: string;
   idSubCategory?: string;
+  /** Subkategori "Lainnya" (tanpa subkategori): sembunyikan semua subkategori ini. */
+  excludeSubCategoryIds?: string[];
+  /** Rentang tanggal "YYYY-MM-DD" (periode laporan); tab bulan = bulan ini bila masuk rentang, selain itu bulan `dateTo`. */
+  dateFrom?: string;
+  dateTo?: string;
   focusSearch?: boolean;
 }
 
@@ -57,6 +63,15 @@ export type RootStackParamList = {
   [ROUTES.BUDGET_DETAIL]: { idBudget: string };
   [ROUTES.INSTRUMENT_DETAIL]: { idInstrument: string };
   [ROUTES.REPORTS]: undefined;
+  /** Rincian satu kategori dari Laporan; `subtitle` = rentang periode laporan. */
+  [ROUTES.REPORT_CATEGORY_DETAIL]: {
+    category: CategorySlice;
+    subtitle: string;
+    dateFrom: string;
+    dateTo: string;
+  };
+  /** Layar Transaksi yang di-push di atas Laporan, jadi back kembali ke halaman sebelumnya. */
+  [ROUTES.REPORT_TRANSACTIONS]: TransactionsParams;
   [ROUTES.PROFILE]: undefined;
   [ROUTES.SETTINGS]: undefined;
   [ROUTES.SETTINGS_CURRENCY]: undefined;

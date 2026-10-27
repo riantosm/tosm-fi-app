@@ -998,6 +998,10 @@
     "expenseByCategory": {
       "title": "Pengeluaran berdasarkan kategori"
     },
+    "categoryDetail": {
+      "bySubCategory": "Pengeluaran per subkategori",
+      "seeDetail": "Lihat detail"
+    },
     "monthlyTrend": {
       "title": "Tren Bulanan",
       "metrics": {

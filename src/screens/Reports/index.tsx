@@ -11,7 +11,7 @@ import { useTheme } from '@/contexts/ThemeContext';
 import { useLanguage } from '@/hooks/useLanguage';
 import { useReportExport } from '@/hooks/useReportExport';
 import { MONTHLY_TREND_MONTHS, useReports } from '@/hooks/useReports';
-import type { ROUTES } from '@/navigation/paths';
+import { ROUTES } from '@/navigation/paths';
 import type { RootStackScreenProps } from '@/navigation/types';
 import CashFlowCard from '@/screens/Reports/CashFlowCard';
 import MonthlyTrendCard from '@/screens/Reports/MonthlyTrendCard';
@@ -50,9 +50,9 @@ const useStyles = makeStyles(({ colors, shadows }) => ({
  * dompet paling aktif, plus Export PDF/Excel/CSV (`ReportExportSheet`). Setiap kartu memuat
  * endpoint-nya sendiri.
  */
-export default function ReportsScreen(
-  _props: RootStackScreenProps<typeof ROUTES.REPORTS>,
-) {
+export default function ReportsScreen({
+  navigation,
+}: RootStackScreenProps<typeof ROUTES.REPORTS>) {
   const styles = useStyles();
   const { colors } = useTheme();
   const { t } = useTranslation();
@@ -111,6 +111,14 @@ export default function ReportsScreen(
       isLoading={report.isSummaryLoading}
       emptyTitle={t('reports.topSpending.empty')}
       emptyVariant="inset"
+      onOpenCategory={category =>
+        navigation.navigate(ROUTES.REPORT_CATEGORY_DETAIL, {
+          category,
+          subtitle,
+          dateFrom: resolvedPeriod.dateFrom,
+          dateTo: resolvedPeriod.dateTo,
+        })
+      }
     />,
     <MonthlyTrendCard
       key="trend"

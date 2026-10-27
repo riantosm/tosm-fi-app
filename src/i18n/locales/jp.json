@@ -998,6 +998,10 @@
     "expenseByCategory": {
       "title": "カテゴリ別の支出"
     },
+    "categoryDetail": {
+      "bySubCategory": "サブカテゴリ別の支出",
+      "seeDetail": "詳細を見る"
+    },
     "monthlyTrend": {
       "title": "月次推移",
       "metrics": {

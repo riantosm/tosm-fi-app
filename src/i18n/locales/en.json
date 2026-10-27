@@ -998,6 +998,10 @@
     "expenseByCategory": {
       "title": "Spending by category"
     },
+    "categoryDetail": {
+      "bySubCategory": "Spending by subcategory",
+      "seeDetail": "See details"
+    },
     "monthlyTrend": {
       "title": "Monthly Trend",
       "metrics": {

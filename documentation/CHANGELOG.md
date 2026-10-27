@@ -18,6 +18,13 @@ Kategori tanpa isi boleh dihilangkan.
   pilihan Termasuk (hanya tampilkan yang dipilih) atau Kecuali (sembunyikan yang dipilih).
 - Kalender Transaksi: minggu dimulai hari Minggu (M S S R K J S), label akhir pekan lebih redup,
   dan tiap hari kini menampilkan nominal bersih kecil di bawah titik warna (sama dengan web).
+- Laporan: ketuk kategori di "Pengeluaran per kategori" sekarang membuka halaman rincian
+  sendiri (total kategori + pengeluaran per subkategori), tidak lagi terbuka di dalam kartu.
+  Ketuk subkategori di halaman itu untuk membuka Transaksi yang sudah terfilter (kategori,
+  subkategori, dan periode laporan), atau "Lihat detail" untuk semua transaksi kategori itu;
+  tombol kembali membawa lagi ke halaman rincian.
+- Tile kategori/subkategori yang bisa diketuk (Laporan dan Beranda) kini selalu punya ikon panah
+  kanan.
 
 ## v1.3.0 (versionCode 4)
 

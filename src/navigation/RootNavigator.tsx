@@ -25,6 +25,7 @@ import ProfileScreen from '@/screens/Profile';
 import QuickAddScreen from '@/screens/QuickAdd';
 import RecentTransactionsScreen from '@/screens/RecentTransactions';
 import RegisterScreen from '@/screens/Register';
+import ReportCategoryDetailScreen from '@/screens/ReportCategoryDetail';
 import ReportsScreen from '@/screens/Reports';
 import ScanReceiptScreen from '@/screens/ScanReceipt';
 import ScheduleScreen from '@/screens/Schedule';
@@ -35,6 +36,7 @@ import SettingsWalletNotificationScreen from '@/screens/SettingsWalletNotificati
 import SettingsErrorLogScreen from '@/screens/SettingsErrorLog';
 import SettingsUserApprovalScreen from '@/screens/SettingsUserApproval';
 import TransactionFormScreen from '@/screens/TransactionForm';
+import TransactionsScreen from '@/screens/Transactions';
 import WalletScreen from '@/screens/Wallet';
 import WalletFormScreen from '@/screens/WalletForm';
 import { useAppSelector } from '@/store/hooks';
@@ -141,6 +143,14 @@ function RootNavigator() {
             component={InstrumentDetailScreen}
           />
           <Stack.Screen name={ROUTES.REPORTS} component={ReportsScreen} />
+          <Stack.Screen
+            name={ROUTES.REPORT_CATEGORY_DETAIL}
+            component={ReportCategoryDetailScreen}
+          />
+          <Stack.Screen
+            name={ROUTES.REPORT_TRANSACTIONS}
+            component={TransactionsScreen}
+          />
           <Stack.Screen name={ROUTES.PROFILE} component={ProfileScreen} />
           <Stack.Screen name={ROUTES.SETTINGS} component={SettingsScreen} />
           <Stack.Screen
