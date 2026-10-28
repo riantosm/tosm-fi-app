@@ -58,7 +58,7 @@
     "nameLabel": "氏名",
     "namePlaceholder": "氏名",
     "registerSubmit": "登録する",
-    "registerSuccess": "登録が完了しました。管理者の承認後にログインしてください。",
+    "registerSuccess": "アカウントを作成しました。TosmFi へようこそ！",
     "alreadyHaveAccount": "すでにアカウントをお持ちですか?",
     "loginLink": "ログイン",
     "heroBadge": "個人の家計管理",
@@ -76,8 +76,8 @@
     "pendingTitle": "アカウントはまだ有効ではありません",
     "pendingDescription": "ログインする前に、管理者によるアカウントの承認が必要です。",
     "sessionExpiredTitle": "セッションの有効期限が切れました",
-    "approvalInfoTitle": "管理者の承認が必要です",
-    "approvalInfoDescription": "登録後、管理者がアカウントを有効化するとログインできます。",
+    "approvalInfoTitle": "すぐに利用可能",
+    "approvalInfoDescription": "新しいアカウントは Free プランですぐに使えます。いつでも Pro にアップグレードできます。",
     "registerHeroTitle": "最初の取引から、きちんと管理。"
   },
   "nav": {
@@ -234,8 +234,8 @@
   },
   "settingsMenu": {
     "userApproval": {
-      "title": "ユーザー申請",
-      "description": "新規ユーザー登録を確認して有効化する"
+      "title": "ユーザー管理",
+      "description": "ユーザーの一覧と Free / Pro の切り替え"
     },
     "errorLog": {
       "title": "エラーログ",
@@ -262,15 +262,26 @@
     }
   },
   "userApproval": {
-    "title": "ユーザー申請",
-    "subtitle": "新規ユーザー登録を確認し、アカウントを有効化します。",
-    "empty": "まだユーザー登録がありません",
+    "title": "ユーザー管理",
+    "subtitle": "すべてのユーザーを確認し、Pro を無料で付与できます。",
+    "empty": "まだユーザーがいません",
     "registeredAt": "{{date}} に登録",
     "statusActive": "有効",
     "activateButton": "有効化",
     "activateSuccess": "ユーザーを有効化しました",
     "pendingLabel": "有効化待ち",
-    "genericError": "エラーが発生しました。もう一度お試しください。"
+    "genericError": "エラーが発生しました。もう一度お試しください。",
+    "freeLabel": "Free ユーザー",
+    "proLabel": "Pro ユーザー",
+    "adminPro": "管理者 · Pro",
+    "makePro": "Pro にする",
+    "makeFree": "Free に戻す",
+    "makeProConfirmTitle": "Pro を無料で付与しますか？",
+    "makeProConfirmDescription": "{{name}} さんは支払いなしで Pro のすべての機能をずっと使えるようになります。",
+    "makeFreeConfirmTitle": "Free に戻しますか？",
+    "makeFreeConfirmDescription": "{{name}} さんは Free プランの上限に戻ります。データはそのまま残りますが、上限を超えて追加できなくなります。",
+    "makeProSuccess": "{{name}} さんは Pro になりました",
+    "makeFreeSuccess": "{{name}} さんは Free になりました"
   },
   "errorLog": {
     "title": "エラーログ",
@@ -1123,7 +1134,10 @@
     "today": "今日",
     "yesterday": "昨日",
     "receiptMessage": "このレシートを記録して",
-    "scanReceipt": "レシートをスキャン"
+    "scanReceipt": "レシートをスキャン",
+    "planLimitTitle": "クイック記録の上限に達しました",
+    "planLimitBody": "Free プランは月 {{count}} メッセージまでです。Pro にアップグレードするか、今は手動で記録してください。",
+    "planLimitBodyPro": "今月の {{count}} メッセージを使い切りました。来月初めにリセットされます。"
   },
   "scan": {
     "title": "レシートをスキャン",
@@ -1254,5 +1268,52 @@
     "backgroundOn": "オン",
     "backgroundError": "バッテリー設定を開けませんでした。アプリ情報 → バッテリー → 制限なし から設定してください。",
     "permissionDenied": "通知が許可されていません。端末の設定でオンにしてください。"
+  },
+  "plan": {
+    "genericError": "プランを読み込めませんでした。もう一度お試しください。",
+    "checkoutError": "支払いを開始できませんでした。少し待ってからお試しください。",
+    "paymentSuccess": "支払いが完了しました。Pro になりました！",
+    "paymentPending": "支払いは保留中です。支払いが完了すると Pro が自動で有効になります。",
+    "paymentFailed": "支払いが失敗したか、キャンセルされました。",
+    "alreadyProTitle": "すでに Pro です",
+    "alreadyProBody": "Pro のすべての機能が使えます。ありがとうございます！",
+    "upgradeTitle": "Pro にアップグレード",
+    "upgradeSubtitle": "一度の支払いで、すべての機能をずっと使えます。",
+    "later": "あとで",
+    "payButton": "{{price}} を支払う",
+    "proLifetime": "Pro Lifetime",
+    "sandboxNotice": "デモモード（Midtrans サンドボックス）：実際には請求されません。Midtrans のテストカードかシミュレーターで支払いを完了してください。",
+    "bannerTitle": "Pro にアップグレード",
+    "bannerBody": "ウォレットと予算が無制限、レポート全機能、PDF/Excel エクスポート — 一度きり {{price}}。",
+    "upgradeCta": "Pro にアップグレード",
+    "lockedTrendTitle": "12か月の推移は Pro 限定",
+    "lockedTrendBody": "Pro なら一年を通した収入と支出の傾向が見られます。",
+    "reason": {
+      "wallets": "Free プランのウォレットは {{count}} 個までです。",
+      "categories": "Free プランのカテゴリは {{count}} 個までです。",
+      "subCategories": "サブカテゴリは Pro プランの機能です。",
+      "budgets": "Free プランの予算は {{count}} 件までです。",
+      "schedules": "Free プランのスケジュールは {{count}} 件までです。",
+      "instruments": "Free プランの投資銘柄は {{count}} 件までです。",
+      "reportRange": "Free プランのレポートは今月と先月のみです。",
+      "monthlyTrend": "12か月の推移は Pro プランの機能です。",
+      "aiMessages": "Free プランのクイック記録（月 {{count}} メッセージ）を使い切りました。",
+      "receiptScan": "レシートのスキャンは Pro プランの機能です。",
+      "export": "PDF と Excel のエクスポートは Pro プランの機能です。"
+    },
+    "perOnce": "/ 一括払い",
+    "lifetimeAccess": "永久アクセス",
+    "checkoutTitle": "Pro Lifetime の支払い",
+    "retry": "再試行",
+    "proBadge": "Pro",
+    "lockedFeature": "Pro 機能",
+    "benefit": {
+      "wallets": "ウォレット・カテゴリ・サブカテゴリ無制限",
+      "budgets": "カテゴリ別の予算を無制限に",
+      "investment": "投資銘柄を無制限に",
+      "reports": "カスタム期間、比較、12か月の推移",
+      "export": "PDF と Excel のエクスポート",
+      "ai": "クイック記録 AI · 月 {{count}} メッセージ + レシートスキャン"
+    }
   }
 }

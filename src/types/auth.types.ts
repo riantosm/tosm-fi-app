@@ -21,6 +21,7 @@ export interface ChangePasswordInput {
 
 export type UserRole = 'admin' | 'user';
 export type UserStatus = 'pending' | 'active';
+export type UserPlan = 'free' | 'pro';
 
 export interface AuthUser {
   idUser: string;
@@ -29,6 +30,9 @@ export interface AuthUser {
   role: UserRole;
   status: UserStatus;
   createdAt: string;
+  /** Paket efektif dari backend (admin selalu "pro"). */
+  plan?: UserPlan;
+  proSince?: string | null;
   /** Akun demo bersama: backend menolak reset data dan ganti username. */
   isDemo?: boolean;
 }

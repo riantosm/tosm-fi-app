@@ -30,6 +30,7 @@ import LockedBanner from '@/components/molecules/LockedBanner';
 import DateTimePickerSheet from '@/components/organisms/DateTimePickerSheet';
 import { useAssistantChatContext } from '@/contexts/AssistantChatContext';
 import { useTheme } from '@/contexts/ThemeContext';
+import { useUpgrade } from '@/contexts/UpgradeContext';
 import { useAppLock } from '@/hooks/useAppLock';
 import { useHistoryExamples } from '@/hooks/useHistoryExamples';
 import { useKeyboardHeight } from '@/hooks/useKeyboardHeight';
@@ -145,6 +146,7 @@ export default function QuickAddScreen({
   const styles = useStyles();
   const { colors } = useTheme();
   const { t } = useTranslation();
+  const { guardPro } = useUpgrade();
   const { language } = useLanguage();
   const insets = useSafeAreaInsets();
   const keyboardHeight = useKeyboardHeight();
@@ -485,7 +487,9 @@ export default function QuickAddScreen({
 
         <ChatComposer
           onSend={text => chat.send(text)}
-          onScan={() => navigation.navigate(ROUTES.SCAN_RECEIPT)}
+          onScan={() =>
+            guardPro('receiptScan') && navigation.navigate(ROUTES.SCAN_RECEIPT)
+          }
           disabled={chat.isThinking}
           bottomInset={composerPadding}
         />

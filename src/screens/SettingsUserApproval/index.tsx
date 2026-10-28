@@ -1,6 +1,12 @@
 import { useEffect, useMemo, useState, type ReactNode } from 'react';
 import { View } from 'react-native';
-import { CircleCheck, Hourglass, UserPlus, Users } from 'lucide-react-native';
+import {
+  Crown,
+  ShieldCheck,
+  Sparkles,
+  UserPlus,
+  Users,
+} from 'lucide-react-native';
 import { useTranslation } from 'react-i18next';
 import Button from '@/components/atoms/Button';
 import Monogram from '@/components/atoms/Monogram';
@@ -8,6 +14,7 @@ import Skeleton from '@/components/atoms/Skeleton';
 import Typography from '@/components/atoms/Typography';
 import Card from '@/components/molecules/Card';
 import EmptyState from '@/components/molecules/EmptyState';
+import ConfirmDialog from '@/components/organisms/ConfirmDialog';
 import MainLayout from '@/components/templates/MainLayout';
 import { WALLET_COLOR_PRESETS } from '@/constants/walletColors';
 import { useTheme } from '@/contexts/ThemeContext';
@@ -19,6 +26,7 @@ import type { RootStackScreenProps } from '@/navigation/types';
 import { makeStyles } from '@/theme/makeStyles';
 import { radius, spacing } from '@/theme/metrics';
 import type { Tone } from '@/theme/tones';
+import type { AuthUser, UserPlan } from '@/types';
 import { formatShortDate } from '@/utils/calendar';
 import { toIntlLocale } from '@/utils/locale';
 import Reveal from '@/components/atoms/Reveal';
@@ -59,14 +67,14 @@ const useStyles = makeStyles(({ colors }) => ({
   },
   divider: { borderTopWidth: 1, borderTopColor: colors.border },
   texts: { flex: 1, minWidth: 0, gap: 2 },
-  active: {
+  planBadge: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 4,
     paddingHorizontal: 10,
     paddingVertical: 4,
     borderRadius: radius.pill,
-    backgroundColor: colors.incomeSoft,
+    backgroundColor: colors.primarySoft,
   },
   skeletonRow: { flexDirection: 'row', alignItems: 'center', gap: spacing.md },
   skeletonTexts: { flex: 1, gap: 6 },
@@ -124,38 +132,53 @@ export default function SettingsUserApprovalScreen({
   const { t } = useTranslation();
   const { language } = useLanguage();
   const showToast = useToast();
-  const { users, status, pendingCount, loadUsers, acceptUser } =
-    useUserApproval();
-  const [activatingId, setActivatingId] = useState<string | null>(null);
+  const { users, status, loadUsers, setUserPlan } = useUserApproval();
+  const [updatingId, setUpdatingId] = useState<string | null>(null);
+  const [pending, setPending] = useState<{
+    user: AuthUser;
+    plan: UserPlan;
+  } | null>(null);
   const locale = toIntlLocale(language);
 
   useEffect(() => {
     loadUsers().catch(() => {});
   }, [loadUsers]);
 
-  // Pendaftaran yang menunggu di atas, lalu akun yang sudah aktif.
+  // Akun Free di atas (yang bisa dinaikkan admin), lalu Pro.
   const sortedUsers = useMemo(
-    () =>
-      [...users].sort(
-        (a, b) => Number(a.status === 'active') - Number(b.status === 'active'),
-      ),
+    () => [...users].sort((a, b) => Number(isPro(a)) - Number(isPro(b))),
     [users],
   );
-  const activeCount = users.length - pendingCount;
+  const proCount = users.filter(isPro).length;
+  const freeCount = users.length - proCount;
   const initialLoading = status !== 'loaded' && users.length === 0;
+  const toPro = pending?.plan === 'pro';
 
-  const handleActivate = async (idUser: string) => {
-    setActivatingId(idUser);
+  const handleChangePlan = async () => {
+    if (!pending) {
+      return;
+    }
+    const { user, plan } = pending;
+    setUpdatingId(user.idUser);
     try {
-      await acceptUser(idUser);
-      showToast(t('userApproval.activateSuccess'), 'success');
+      await setUserPlan(user.idUser, plan);
+      showToast(
+        t(
+          plan === 'pro'
+            ? 'userApproval.makeProSuccess'
+            : 'userApproval.makeFreeSuccess',
+          { name: user.nameUser },
+        ),
+        'success',
+      );
+      setPending(null);
     } catch (error) {
       showToast(
         error instanceof Error ? error.message : t('userApproval.genericError'),
         'error',
       );
     } finally {
-      setActivatingId(null);
+      setUpdatingId(null);
     }
   };
 
@@ -170,17 +193,17 @@ export default function SettingsUserApprovalScreen({
     >
       <Reveal style={styles.counts}>
         <CountCard
-          tone="investment"
-          renderIcon={color => <Hourglass size={18} color={color} />}
-          value={pendingCount}
-          label={t('userApproval.pendingLabel')}
+          tone="neutral"
+          renderIcon={color => <Users size={18} color={color} />}
+          value={freeCount}
+          label={t('userApproval.freeLabel')}
           loading={initialLoading}
         />
         <CountCard
-          tone="income"
-          renderIcon={color => <Users size={18} color={color} />}
-          value={activeCount}
-          label={t('userApproval.statusActive')}
+          tone="primary"
+          renderIcon={color => <Crown size={18} color={color} />}
+          value={proCount}
+          label={t('userApproval.proLabel')}
           loading={initialLoading}
         />
       </Reveal>
@@ -228,21 +251,35 @@ export default function SettingsUserApprovalScreen({
                     })}
                   </Typography>
                 </View>
-                {item.status === 'active' ? (
-                  <View style={styles.active}>
-                    <CircleCheck size={14} color={colors.incomeText} />
-                    <Typography variant="captionStrong" tone="income">
-                      {t('userApproval.statusActive')}
+                {item.role === 'admin' ? (
+                  <View style={styles.planBadge}>
+                    <ShieldCheck size={14} color={colors.primaryText} />
+                    <Typography variant="captionStrong" tone="primary">
+                      {t('userApproval.adminPro')}
                     </Typography>
                   </View>
                 ) : (
                   <Button
                     size="sm"
-                    label={t('userApproval.activateButton')}
-                    loading={activatingId === item.idUser}
-                    disabled={activatingId !== null}
-                    onPress={() => handleActivate(item.idUser)}
-                    renderIcon={color => <UserPlus size={16} color={color} />}
+                    variant={isPro(item) ? 'ghost' : 'soft'}
+                    label={t(
+                      isPro(item)
+                        ? 'userApproval.makeFree'
+                        : 'userApproval.makePro',
+                    )}
+                    loading={updatingId === item.idUser}
+                    disabled={updatingId !== null}
+                    onPress={() =>
+                      setPending({
+                        user: item,
+                        plan: isPro(item) ? 'free' : 'pro',
+                      })
+                    }
+                    renderIcon={
+                      isPro(item)
+                        ? undefined
+                        : color => <Sparkles size={16} color={color} />
+                    }
                   />
                 )}
               </Reveal>
@@ -250,6 +287,38 @@ export default function SettingsUserApprovalScreen({
           )}
         </Card>
       </Reveal>
+
+      <ConfirmDialog
+        visible={!!pending}
+        tone={toPro ? 'primary' : 'danger'}
+        renderIcon={color =>
+          toPro ? (
+            <Sparkles size={24} color={color} />
+          ) : (
+            <Users size={24} color={color} />
+          )
+        }
+        title={t(
+          toPro
+            ? 'userApproval.makeProConfirmTitle'
+            : 'userApproval.makeFreeConfirmTitle',
+        )}
+        message={t(
+          toPro
+            ? 'userApproval.makeProConfirmDescription'
+            : 'userApproval.makeFreeConfirmDescription',
+          { name: pending?.user.nameUser ?? '' },
+        )}
+        confirmLabel={t(
+          toPro ? 'userApproval.makePro' : 'userApproval.makeFree',
+        )}
+        cancelLabel={t('common.cancel')}
+        loading={updatingId !== null}
+        onConfirm={handleChangePlan}
+        onCancel={() => setPending(null)}
+      />
     </MainLayout>
   );
 }
+
+const isPro = (user: AuthUser) => user.plan === 'pro';

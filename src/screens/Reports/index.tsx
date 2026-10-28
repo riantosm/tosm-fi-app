@@ -8,6 +8,7 @@ import CategoryBreakdownChart from '@/components/organisms/CategoryBreakdownChar
 import DateRangeSheet from '@/components/organisms/DateRangeSheet';
 import MainLayout from '@/components/templates/MainLayout';
 import { useTheme } from '@/contexts/ThemeContext';
+import { useUpgrade } from '@/contexts/UpgradeContext';
 import { useLanguage } from '@/hooks/useLanguage';
 import { useReportExport } from '@/hooks/useReportExport';
 import { MONTHLY_TREND_MONTHS, useReports } from '@/hooks/useReports';
@@ -23,12 +24,14 @@ import { makeStyles } from '@/theme/makeStyles';
 import { parseIsoDate } from '@/utils/calendar';
 import { buildCategoryBreakdown } from '@/utils/categoryBreakdown';
 import { toIntlLocale } from '@/utils/locale';
+import type { ReportExportFormat } from '@/utils/reportExport';
 import {
   REPORT_PERIOD_PRESETS,
   formatReportRange,
   type ReportPeriodFilter,
   type ReportPeriodPreset,
 } from '@/utils/reportPeriod';
+import ProLockedCard from '@/components/molecules/ProLockedCard';
 import Reveal from '@/components/atoms/Reveal';
 
 const DEFAULT_PERIOD: ReportPeriodFilter = {
@@ -63,7 +66,11 @@ export default function ReportsScreen({
   const [exportOpen, setExportOpen] = useState(false);
   const [refreshKey, setRefreshKey] = useState(0);
 
-  const report = useReports(period, refreshKey);
+  const { limits, openUpgrade, guardPro } = useUpgrade();
+  const report = useReports(period, refreshKey, limits.monthlyTrend);
+  const lockedFormats: ReportExportFormat[] = limits.exportPdfExcel
+    ? []
+    : ['pdf', 'excel'];
   const { resolvedPeriod } = report;
   const isCustom = period.preset === 'custom';
 
@@ -120,14 +127,26 @@ export default function ReportsScreen({
         })
       }
     />,
-    <MonthlyTrendCard
-      key="trend"
-      data={report.monthlyTrend}
-      isLoading={report.isMonthlyTrendLoading}
-      eyebrow={t('reports.eyebrow.monthlyTrend', {
-        count: MONTHLY_TREND_MONTHS,
-      })}
-    />,
+    limits.monthlyTrend ? (
+      <MonthlyTrendCard
+        key="trend"
+        data={report.monthlyTrend}
+        isLoading={report.isMonthlyTrendLoading}
+        eyebrow={t('reports.eyebrow.monthlyTrend', {
+          count: MONTHLY_TREND_MONTHS,
+        })}
+      />
+    ) : (
+      <ProLockedCard
+        key="trend"
+        eyebrow={t('reports.eyebrow.monthlyTrend', {
+          count: MONTHLY_TREND_MONTHS,
+        })}
+        title={t('plan.lockedTrendTitle')}
+        description={t('plan.lockedTrendBody')}
+        onUpgrade={() => openUpgrade('monthlyTrend')}
+      />
+    ),
     <TopSpendingCard
       key="top"
       items={report.topSpending}
@@ -165,16 +184,20 @@ export default function ReportsScreen({
                 label: t(`reports.periodShort.${preset}`),
               }))}
               value={period.preset}
-              onChange={preset =>
-                setPeriod({ preset, dateFrom: '', dateTo: '' })
-              }
+              onChange={preset => {
+                // Free: laporan hanya bulan ini & bulan lalu, "Tahun ini" khusus Pro.
+                if (preset === 'year' && !guardPro('customReportRange')) {
+                  return;
+                }
+                setPeriod({ preset, dateFrom: '', dateTo: '' });
+              }}
             />
           </View>
           <IconButton
             label={t('reports.period.custom')}
             variant="surface"
             size={46}
-            onPress={() => setRangeOpen(true)}
+            onPress={() => guardPro('customReportRange') && setRangeOpen(true)}
             style={[styles.rangeButton, isCustom && styles.rangeActive]}
             renderIcon={(color, size) => (
               <CalendarRange
@@ -188,6 +211,7 @@ export default function ReportsScreen({
         <ReportSummaryCards
           summary={report.summary}
           isLoading={report.isSummaryLoading}
+          showComparison={limits.customReportRange}
         />
 
         {sections.map((section, index) => (
@@ -220,7 +244,14 @@ export default function ReportsScreen({
       <ReportExportSheet
         visible={exportOpen}
         exportingFormat={exportingFormat}
+        lockedFormats={lockedFormats}
         onExport={async format => {
+          if (lockedFormats.includes(format)) {
+            // Tutup sheet export dulu supaya sheet Upgrade tidak bertumpuk.
+            setExportOpen(false);
+            guardPro('exportPdfExcel');
+            return;
+          }
           await exportReport(format);
           setExportOpen(false);
         }}

@@ -62,7 +62,12 @@ function useReportResource<T>(
   return { data, isLoading: completedKey !== key };
 }
 
-export function useReports(period: ReportPeriodFilter, refreshKey = 0) {
+/** `includeMonthlyTrend` false (paket Free): endpoint tren khusus Pro, jadi tidak diminta. */
+export function useReports(
+  period: ReportPeriodFilter,
+  refreshKey = 0,
+  includeMonthlyTrend = true,
+) {
   const { language } = useLanguage();
   const locale = toIntlLocale(language);
   // Transaksi dibuat/diubah/dihapus di layar lain → muat ulang.
@@ -97,9 +102,12 @@ export function useReports(period: ReportPeriodFilter, refreshKey = 0) {
 
   // Selalu 12 bulan terakhir, tidak ikut periode terpilih.
   const monthlyTrend = useReportResource<MonthlyTrendRawPoint[]>(
-    `${locale}|${version}|${refreshKey}`,
+    `${locale}|${version}|${refreshKey}|${includeMonthlyTrend}`,
     [],
-    () => getMonthlyTrendApi(MONTHLY_TREND_MONTHS, locale),
+    () =>
+      includeMonthlyTrend
+        ? getMonthlyTrendApi(MONTHLY_TREND_MONTHS, locale)
+        : Promise.resolve([]),
   );
 
   const walletUsage = useReportResource<WalletUsageItem[]>(periodKey, [], () =>

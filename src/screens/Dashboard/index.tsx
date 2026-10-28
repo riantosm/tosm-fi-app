@@ -7,10 +7,12 @@ import SectionHead from '@/components/molecules/SectionHead';
 import CategoryBreakdownChart from '@/components/organisms/CategoryBreakdownChart';
 import ConfirmDialog from '@/components/organisms/ConfirmDialog';
 import TransactionList from '@/components/organisms/TransactionList';
+import UpgradeBanner from '@/components/organisms/UpgradeBanner';
 import MainLayout from '@/components/templates/MainLayout';
 import { useMoreSheetActions } from '@/contexts/MoreSheetContext';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useToast } from '@/contexts/ToastContext';
+import { useUpgrade } from '@/contexts/UpgradeContext';
 import { useAuth } from '@/hooks/useAuth';
 import { useBudgets } from '@/hooks/useBudgets';
 import { useBudgetSpending } from '@/hooks/useBudgetSpending';
@@ -209,8 +211,10 @@ export default function DashboardScreen({
     user?.username ||
     t('dashboard.greetingFallbackName');
   const locale = toIntlLocale(i18n.language);
+  const { isPro, guardLimit } = useUpgrade();
 
   const sections = [
+    ...(isPro ? [] : [<UpgradeBanner key="upgrade" />]),
     <BudgetsCard
       key="budgets"
       budgets={budgets}
@@ -265,7 +269,11 @@ export default function DashboardScreen({
         })
       }
       onManage={() => navigation.navigate(ROUTES.WALLET)}
-      onAddWallet={() => navigation.navigate(ROUTES.WALLET_FORM)}
+      onAddWallet={() => {
+        if (guardLimit('wallets', wallets.length)) {
+          navigation.navigate(ROUTES.WALLET_FORM);
+        }
+      }}
     />,
     <Card key="transactions">
       <SectionHead

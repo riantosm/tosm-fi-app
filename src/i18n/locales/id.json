@@ -58,7 +58,7 @@
     "nameLabel": "Nama Lengkap",
     "namePlaceholder": "nama lengkap",
     "registerSubmit": "Daftar",
-    "registerSuccess": "Registrasi berhasil. Tunggu persetujuan admin, lalu masuk.",
+    "registerSuccess": "Akun berhasil dibuat. Selamat datang di TosmFi!",
     "alreadyHaveAccount": "Sudah punya akun?",
     "loginLink": "Masuk",
     "heroBadge": "Pencatat keuangan pribadi",
@@ -76,8 +76,8 @@
     "pendingTitle": "Akun belum aktif",
     "pendingDescription": "Admin perlu menyetujui akunmu sebelum kamu bisa masuk.",
     "sessionExpiredTitle": "Sesi berakhir",
-    "approvalInfoTitle": "Perlu persetujuan admin",
-    "approvalInfoDescription": "Setelah daftar, kamu bisa masuk begitu admin mengaktifkan akunmu.",
+    "approvalInfoTitle": "Langsung aktif",
+    "approvalInfoDescription": "Akun baru langsung aktif dengan paket Free. Upgrade ke Pro kapan saja.",
     "registerHeroTitle": "Mulai rapi sejak transaksi pertama."
   },
   "nav": {
@@ -234,8 +234,8 @@
   },
   "settingsMenu": {
     "userApproval": {
-      "title": "Permintaan Pengguna",
-      "description": "Tinjau dan aktifkan pendaftaran pengguna baru"
+      "title": "Kelola Pengguna",
+      "description": "Lihat pengguna dan ubah paket Free / Pro"
     },
     "errorLog": {
       "title": "Log Error",
@@ -262,15 +262,26 @@
     }
   },
   "userApproval": {
-    "title": "Permintaan Pengguna",
-    "subtitle": "Tinjau pendaftaran pengguna baru dan aktifkan akun mereka.",
-    "empty": "Belum ada pendaftaran pengguna",
+    "title": "Kelola Pengguna",
+    "subtitle": "Lihat semua pengguna dan berikan paket Pro secara gratis.",
+    "empty": "Belum ada pengguna",
     "registeredAt": "Daftar pada {{date}}",
     "statusActive": "Aktif",
     "activateButton": "Aktifkan",
     "activateSuccess": "Pengguna berhasil diaktifkan",
     "pendingLabel": "Menunggu aktivasi",
-    "genericError": "Terjadi kesalahan, coba lagi."
+    "genericError": "Terjadi kesalahan, coba lagi.",
+    "freeLabel": "Pengguna Free",
+    "proLabel": "Pengguna Pro",
+    "adminPro": "Admin · Pro",
+    "makePro": "Jadikan Pro",
+    "makeFree": "Jadikan Free",
+    "makeProConfirmTitle": "Jadikan Pro gratis?",
+    "makeProConfirmDescription": "{{name}} akan mendapat semua fitur Pro selamanya tanpa membayar.",
+    "makeFreeConfirmTitle": "Kembalikan ke Free?",
+    "makeFreeConfirmDescription": "{{name}} kembali ke batas paket Free. Datanya tetap aman, hanya tidak bisa menambah melebihi batas.",
+    "makeProSuccess": "{{name}} sekarang Pro",
+    "makeFreeSuccess": "{{name}} sekarang Free"
   },
   "errorLog": {
     "title": "Log Error",
@@ -1123,7 +1134,10 @@
     "today": "Hari ini",
     "yesterday": "Kemarin",
     "receiptMessage": "Catat dari foto struk ini",
-    "scanReceipt": "Scan struk"
+    "scanReceipt": "Scan struk",
+    "planLimitTitle": "Kuota Catat Cepat habis",
+    "planLimitBody": "Paket Free dapat {{count}} pesan per bulan. Upgrade ke Pro untuk kuota lebih besar, atau catat manual dulu.",
+    "planLimitBodyPro": "Kuota {{count}} pesan bulan ini sudah terpakai. Kuota terisi lagi awal bulan depan."
   },
   "scan": {
     "title": "Scan struk",
@@ -1254,5 +1268,52 @@
     "backgroundOn": "Aktif",
     "backgroundError": "Pengaturan baterai tidak bisa dibuka. Atur lewat Info aplikasi → Baterai → Tidak dibatasi.",
     "permissionDenied": "Izin notifikasi belum diberikan. Aktifkan lewat pengaturan HP."
+  },
+  "plan": {
+    "genericError": "Gagal memuat paket, coba lagi.",
+    "checkoutError": "Gagal membuat pembayaran, coba lagi sebentar.",
+    "paymentSuccess": "Pembayaran berhasil — akunmu sekarang Pro!",
+    "paymentPending": "Pembayaran menunggu diselesaikan. Pro aktif otomatis setelah dibayar.",
+    "paymentFailed": "Pembayaran gagal atau dibatalkan.",
+    "alreadyProTitle": "Kamu sudah Pro",
+    "alreadyProBody": "Semua fitur Pro sudah terbuka untuk akunmu. Terima kasih!",
+    "upgradeTitle": "Upgrade ke Pro",
+    "upgradeSubtitle": "Sekali bayar, semua fitur terbuka selamanya.",
+    "later": "Nanti saja",
+    "payButton": "Bayar {{price}}",
+    "proLifetime": "Pro Lifetime",
+    "sandboxNotice": "Mode demo (Midtrans sandbox): tidak ada uang yang ditagih. Pakai kartu uji atau simulator Midtrans untuk menyelesaikan pembayaran.",
+    "bannerTitle": "Upgrade ke Pro",
+    "bannerBody": "Buka dompet & budget tanpa batas, laporan lengkap, dan export PDF/Excel — cukup {{price}} sekali bayar.",
+    "upgradeCta": "Upgrade ke Pro",
+    "lockedTrendTitle": "Tren 12 bulan khusus Pro",
+    "lockedTrendBody": "Lihat pola pemasukan dan pengeluaranmu sepanjang tahun dengan paket Pro.",
+    "reason": {
+      "wallets": "Paket Free maksimal {{count}} dompet.",
+      "categories": "Paket Free maksimal {{count}} kategori.",
+      "subCategories": "Subkategori hanya tersedia di paket Pro.",
+      "budgets": "Paket Free maksimal {{count}} budget.",
+      "schedules": "Paket Free maksimal {{count}} jadwal.",
+      "instruments": "Paket Free maksimal {{count}} instrumen investasi.",
+      "reportRange": "Paket Free hanya bisa melihat laporan bulan ini dan bulan lalu.",
+      "monthlyTrend": "Tren 12 bulan hanya tersedia di paket Pro.",
+      "aiMessages": "Kuota Catat Cepat paket Free ({{count}} pesan/bulan) sudah habis.",
+      "receiptScan": "Scan foto struk hanya tersedia di paket Pro.",
+      "export": "Export PDF & Excel hanya tersedia di paket Pro."
+    },
+    "perOnce": "/ sekali bayar",
+    "lifetimeAccess": "Akses selamanya",
+    "checkoutTitle": "Bayar Pro Lifetime",
+    "retry": "Coba lagi",
+    "proBadge": "Pro",
+    "lockedFeature": "Fitur Pro",
+    "benefit": {
+      "wallets": "Dompet, kategori & subkategori tanpa batas",
+      "budgets": "Budget tanpa batas per kategori",
+      "investment": "Instrumen investasi tanpa batas",
+      "reports": "Laporan custom, perbandingan & tren 12 bulan",
+      "export": "Export PDF & Excel",
+      "ai": "Catat Cepat AI · {{count}} pesan/bulan + scan struk"
+    }
   }
 }

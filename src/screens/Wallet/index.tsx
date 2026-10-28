@@ -25,6 +25,7 @@ import ReorderList from '@/components/organisms/ReorderList';
 import MainLayout from '@/components/templates/MainLayout';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useToast } from '@/contexts/ToastContext';
+import { useUpgrade } from '@/contexts/UpgradeContext';
 import { useAppLock } from '@/hooks/useAppLock';
 import { useMoneyFormat } from '@/hooks/useMoneyFormat';
 import { useWallets } from '@/hooks/useWallets';
@@ -94,6 +95,7 @@ export default function WalletScreen({
   const viewMode =
     useAppSelector(state => state.settings.walletViewMode) ?? 'grid';
   const { wallets, status, loadWallets, reorderWallets } = useWallets();
+  const { guardLimit } = useUpgrade();
   const isLocked = useAppSelector(selectIsAppLocked);
   const biometricEnabled = useAppSelector(
     state => state.appLock.biometricEnabled,
@@ -113,7 +115,11 @@ export default function WalletScreen({
   const initialLoading = status !== 'loaded' && wallets.length === 0;
   const empty = status === 'loaded' && wallets.length === 0;
 
-  const openCreate = () => navigation.navigate(ROUTES.WALLET_FORM);
+  const openCreate = () => {
+    if (guardLimit('wallets', wallets.length)) {
+      navigation.navigate(ROUTES.WALLET_FORM);
+    }
+  };
   const openEdit = (wallet: WalletAccount) =>
     navigation.navigate(ROUTES.WALLET_FORM, { wallet });
 

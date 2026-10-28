@@ -276,6 +276,32 @@ tulis ulang dengan komponen RN di sini. Desain: Mist, lihat `DESIGN_SYSTEM.md` (
     di-`memo` dengan prop stabil (`useMemo`/`useCallback`) di layar induk.
   - Build debug 2–4× lebih lambat (React DEV `createTask`, error stack); nilai performa di build release.
 
+## Paket Free / Pro & pembayaran
+
+Sama dengan web (`tosm-fi-fe/CLAUDE.md` "Plan (Free / Pro)"), backend `tosm-fi-be` yang menentukan.
+- `AuthUser.plan` dari `/user/me`; `UpgradeContext` (`src/contexts/UpgradeContext.tsx`, dipasang
+  di `App.tsx` di atas `AppShell`) memuat `GET /user/me/plan` saat login dan memegang satu
+  `organisms/UpgradeSheet`. Batas lokal di `constants/plans.ts` (salinan `PLAN_LIMITS` backend dan
+  web; jaga ketiganya sama).
+- Layar memanggil `guardLimit(fitur, jumlah)` / `guardPro(fitur)` sebelum membuka form (dompet,
+  kategori, subkategori, budget, jadwal, instrumen, scan struk, periode/ekspor laporan). Request
+  yang lolos tetap dijaga backend: `axiosInstance` memancarkan `PLAN_LIMIT_EVENT`
+  (`DeviceEventEmitter`) untuk 403 `PLAN_LIMIT`, dan `UpgradeContext` membuka sheet-nya.
+- Dashboard: `organisms/UpgradeBanner` paling atas untuk akun Free. Laporan Free: "Tahun" dan
+  periode custom membuka Upgrade, tanpa chip perbandingan, tren 12 bulan tidak diminta
+  (`useReports` argumen ketiga) dan diganti `molecules/ProLockedCard`, PDF/Excel bertag Pro.
+  Catat Cepat: 403 kuota → `AssistantErrorKind` `'plan'` di `AssistantErrorBanner`.
+- Bayar Pro Lifetime: route modal `ROUTES.PRO_CHECKOUT` (`screens/ProCheckout`) memanggil
+  `POST /payments/pro/checkout`, membuka `redirectUrl` Snap Midtrans di `react-native-webview`,
+  dan mengecek `GET /payments/orders/:orderId` tiap 3 detik sampai lunas (lalu `refreshPlan`).
+  Link aplikasi e-wallet (`gojek://`, `shopeeid://`, `intent://`) dibuka lewat `Linking`.
+  Catatan sandbox tampil kecuali `MIDTRANS_IS_PRODUCTION=true` di `.env`.
+- Untuk rilis Play Store / App Store: membuka fitur digital wajib lewat billing store; Midtrans di
+  dalam app hanya untuk demo / APK langsung.
+- Daftar akun langsung aktif: Register langsung login setelah daftar. Admin: Pengaturan → Kelola
+  Pengguna (`SettingsUserApproval`) mengubah Free/Pro lewat `PATCH /user/:idUser/plan` dengan
+  `ConfirmDialog`.
+
 ## Status layar
 
 | Layar | Status |

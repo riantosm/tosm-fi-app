@@ -6,6 +6,7 @@ export * from './category.types';
 export * from './clientError.types';
 export * from './instrument.types';
 export * from './investmentTransaction.types';
+export * from './plan.types';
 export * from './report.types';
 export * from './schedule.types';
 export * from './scheduleOccurrence.types';

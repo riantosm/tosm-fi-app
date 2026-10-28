@@ -18,6 +18,7 @@ import { AssistantChatProvider } from '@/contexts/AssistantChatContext';
 import { MoreSheetProvider } from '@/contexts/MoreSheetContext';
 import { ThemeProvider, useTheme } from '@/contexts/ThemeContext';
 import { ToastHost, ToastProvider } from '@/contexts/ToastContext';
+import { UpgradeProvider } from '@/contexts/UpgradeContext';
 import { useAppLockLifecycle } from '@/hooks/useAppLockLifecycle';
 import { useBackToExit } from '@/hooks/useBackToExit';
 import { useLanguageSync } from '@/hooks/useLanguageSync';
@@ -132,7 +133,9 @@ export default function App() {
               <MoreSheetProvider>
                 <AssistantChatProvider>
                   <ErrorBoundary>
-                    <AppShell />
+                    <UpgradeProvider>
+                      <AppShell />
+                    </UpgradeProvider>
                   </ErrorBoundary>
                 </AssistantChatProvider>
               </MoreSheetProvider>

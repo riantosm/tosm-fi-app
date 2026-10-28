@@ -60,7 +60,8 @@ export interface AssistantReply {
   quickReplies?: AssistantQuickReply[];
 }
 
-export type AssistantErrorKind = 'quota' | 'network';
+/** quota = AI sibuk (429); plan = kuota pesan Catat Cepat bulan ini habis (403 PLAN_LIMIT). */
+export type AssistantErrorKind = 'quota' | 'plan' | 'network';
 
 /** Foto (struk) untuk asisten: JPEG base64 tanpa awalan `data:`. */
 export interface AssistantImage {
