@@ -12,6 +12,7 @@ import ConfirmDialog from '@/components/organisms/ConfirmDialog';
 import MainLayout from '@/components/templates/MainLayout';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useToast } from '@/contexts/ToastContext';
+import { useUpgrade } from '@/contexts/UpgradeContext';
 import { useCategories } from '@/hooks/useCategories';
 import { useSchedules } from '@/hooks/useSchedules';
 import { ROUTES } from '@/navigation/paths';
@@ -125,7 +126,12 @@ export default function ScheduleScreen({
     },
   ].filter(section => section.rows.length > 0);
 
-  const openCreate = () => navigation.navigate(ROUTES.SCHEDULE_FORM);
+  const { guardLimit } = useUpgrade();
+  const openCreate = () => {
+    if (guardLimit('schedules', schedules.length)) {
+      navigation.navigate(ROUTES.SCHEDULE_FORM);
+    }
+  };
 
   const fail = (error: unknown) =>
     showToast(

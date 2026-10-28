@@ -1,5 +1,11 @@
 import axios from 'axios';
+import { DeviceEventEmitter } from 'react-native';
 import Config from 'react-native-config';
+import {
+  PLAN_LIMIT_CODE,
+  PLAN_LIMIT_EVENT,
+  type PlanLimitEventDetail,
+} from '@/constants/plans';
 import { store } from '@/store';
 import { onSessionExpired } from '@/store/slices/authSlice';
 
@@ -33,6 +39,19 @@ axiosInstance.interceptors.response.use(
       axios.isAxiosError(error) && error.response?.status === 401;
     if (isUnauthorized && store.getState().auth.isLogin) {
       store.dispatch(onSessionExpired());
+    }
+    // 403 PLAN_LIMIT = batas paket Free menahan request; UpgradeContext membuka sheet
+    // Upgrade. Pemanggil tetap menerima error (toast biasanya).
+    const body = axios.isAxiosError(error) ? error.response?.data : undefined;
+    if (
+      error.response?.status === 403 &&
+      body?.data?.code === PLAN_LIMIT_CODE
+    ) {
+      const detail: PlanLimitEventDetail = {
+        feature: body.data.feature,
+        message: body.message,
+      };
+      DeviceEventEmitter.emit(PLAN_LIMIT_EVENT, detail);
     }
     return Promise.reject(error);
   },

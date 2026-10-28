@@ -2,8 +2,9 @@ import { useCallback, useState } from 'react';
 import {
   acceptUserApi,
   getUserListApi,
+  setUserPlanApi,
 } from '@/services/api/userApproval.service';
-import type { AuthUser } from '@/types';
+import type { AuthUser, UserPlan } from '@/types';
 
 type Status = 'idle' | 'loading' | 'loaded' | 'error';
 
@@ -33,7 +34,14 @@ export function useUserApproval() {
     );
   }, []);
 
+  const setUserPlan = useCallback(async (idUser: string, plan: UserPlan) => {
+    const updated = await setUserPlanApi(idUser, plan);
+    setUsers(list =>
+      list.map(item => (item.idUser === updated.idUser ? updated : item)),
+    );
+  }, []);
+
   const pendingCount = users.filter(item => item.status !== 'active').length;
 
-  return { users, status, pendingCount, loadUsers, acceptUser };
+  return { users, status, pendingCount, loadUsers, acceptUser, setUserPlan };
 }

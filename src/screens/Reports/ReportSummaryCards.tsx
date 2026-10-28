@@ -149,12 +149,15 @@ function DeltaChip({
 export interface ReportSummaryCardsProps {
   summary: ReportSummary | null;
   isLoading: boolean;
+  /** Chip perbandingan vs periode lalu khusus Pro. */
+  showComparison?: boolean;
 }
 
 /** Grid 2 × 2: pemasukan, pengeluaran, saldo bersih, jumlah transaksi + perubahan vs periode lalu. */
 export default function ReportSummaryCards({
   summary,
   isLoading,
+  showComparison = true,
 }: ReportSummaryCardsProps) {
   const styles = useStyles();
   const { colors } = useTheme();
@@ -204,7 +207,9 @@ export default function ReportSummaryCards({
                       ? formatCompact(delta.value)
                       : Math.round(delta.value)}
                   </Typography>
-                  <DeltaChip delta={delta} polarity={config.polarity} />
+                  {showComparison && (
+                    <DeltaChip delta={delta} polarity={config.polarity} />
+                  )}
                 </Reveal>
               )}
             </Card>

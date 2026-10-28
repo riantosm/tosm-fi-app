@@ -58,7 +58,7 @@
     "nameLabel": "Full Name",
     "namePlaceholder": "full name",
     "registerSubmit": "Sign up",
-    "registerSuccess": "Registration successful. Wait for admin approval, then sign in.",
+    "registerSuccess": "Account created. Welcome to TosmFi!",
     "alreadyHaveAccount": "Already have an account?",
     "loginLink": "Sign in",
     "heroBadge": "Personal finance tracker",
@@ -76,8 +76,8 @@
     "pendingTitle": "Account not active yet",
     "pendingDescription": "An admin needs to approve your account before you can sign in.",
     "sessionExpiredTitle": "Session expired",
-    "approvalInfoTitle": "Admin approval required",
-    "approvalInfoDescription": "After signing up, you can sign in as soon as an admin activates your account.",
+    "approvalInfoTitle": "Active right away",
+    "approvalInfoDescription": "New accounts are active immediately on the Free plan. Upgrade to Pro anytime.",
     "registerHeroTitle": "Stay organized from your very first transaction."
   },
   "nav": {
@@ -234,8 +234,8 @@
   },
   "settingsMenu": {
     "userApproval": {
-      "title": "User Requests",
-      "description": "Review and activate new user registrations"
+      "title": "Manage Users",
+      "description": "See users and switch them between Free and Pro"
     },
     "errorLog": {
       "title": "Error Log",
@@ -262,15 +262,26 @@
     }
   },
   "userApproval": {
-    "title": "User Requests",
-    "subtitle": "Review new user registrations and activate their accounts.",
-    "empty": "No user registrations yet",
+    "title": "Manage Users",
+    "subtitle": "See every user and give them Pro for free.",
+    "empty": "No users yet",
     "registeredAt": "Registered on {{date}}",
     "statusActive": "Active",
     "activateButton": "Activate",
     "activateSuccess": "User activated successfully",
     "pendingLabel": "Awaiting activation",
-    "genericError": "Something went wrong, please try again."
+    "genericError": "Something went wrong, please try again.",
+    "freeLabel": "Free users",
+    "proLabel": "Pro users",
+    "adminPro": "Admin · Pro",
+    "makePro": "Make Pro",
+    "makeFree": "Make Free",
+    "makeProConfirmTitle": "Give Pro for free?",
+    "makeProConfirmDescription": "{{name}} gets every Pro feature for life without paying.",
+    "makeFreeConfirmTitle": "Move back to Free?",
+    "makeFreeConfirmDescription": "{{name}} goes back to the Free plan limits. Their data stays safe; they just can't add beyond the limits.",
+    "makeProSuccess": "{{name}} is now Pro",
+    "makeFreeSuccess": "{{name}} is now Free"
   },
   "errorLog": {
     "title": "Error Log",
@@ -1123,7 +1134,10 @@
     "today": "Today",
     "yesterday": "Yesterday",
     "receiptMessage": "Record this receipt",
-    "scanReceipt": "Scan receipt"
+    "scanReceipt": "Scan receipt",
+    "planLimitTitle": "Quick Entry quota used up",
+    "planLimitBody": "The Free plan includes {{count}} messages a month. Upgrade to Pro for a bigger quota, or add it manually for now.",
+    "planLimitBodyPro": "This month's {{count}} messages are used up. The quota refills at the start of next month."
   },
   "scan": {
     "title": "Scan receipt",
@@ -1254,5 +1268,52 @@
     "backgroundOn": "On",
     "backgroundError": "Couldn't open battery settings. Use App info → Battery → Unrestricted.",
     "permissionDenied": "Notification permission not granted. Turn it on in your phone settings."
+  },
+  "plan": {
+    "genericError": "Couldn't load your plan, please try again.",
+    "checkoutError": "Couldn't start the payment, please try again shortly.",
+    "paymentSuccess": "Payment complete — your account is now Pro!",
+    "paymentPending": "The payment is still pending. Pro activates automatically once it's paid.",
+    "paymentFailed": "The payment failed or was cancelled.",
+    "alreadyProTitle": "You're already Pro",
+    "alreadyProBody": "Every Pro feature is unlocked on your account. Thank you!",
+    "upgradeTitle": "Upgrade to Pro",
+    "upgradeSubtitle": "Pay once, unlock everything for life.",
+    "later": "Not now",
+    "payButton": "Pay {{price}}",
+    "proLifetime": "Pro Lifetime",
+    "sandboxNotice": "Demo mode (Midtrans sandbox): nothing is charged. Use a Midtrans test card or the simulator to finish the payment.",
+    "bannerTitle": "Upgrade to Pro",
+    "bannerBody": "Unlimited wallets & budgets, full reports and PDF/Excel export — just {{price}}, paid once.",
+    "upgradeCta": "Upgrade to Pro",
+    "lockedTrendTitle": "The 12-month trend is Pro-only",
+    "lockedTrendBody": "See your income and spending patterns across the year with Pro.",
+    "reason": {
+      "wallets": "The Free plan allows up to {{count}} wallets.",
+      "categories": "The Free plan allows up to {{count}} categories.",
+      "subCategories": "Subcategories are a Pro feature.",
+      "budgets": "The Free plan allows up to {{count}} budget.",
+      "schedules": "The Free plan allows up to {{count}} schedules.",
+      "instruments": "The Free plan allows up to {{count}} investment instrument.",
+      "reportRange": "The Free plan shows reports for this month and last month only.",
+      "monthlyTrend": "The 12-month trend is a Pro feature.",
+      "aiMessages": "The Free plan's Quick Entry quota ({{count}} messages/month) is used up.",
+      "receiptScan": "Receipt scanning is a Pro feature.",
+      "export": "PDF & Excel export are Pro features."
+    },
+    "perOnce": "/ one-time",
+    "lifetimeAccess": "Lifetime access",
+    "checkoutTitle": "Pay for Pro Lifetime",
+    "retry": "Try again",
+    "proBadge": "Pro",
+    "lockedFeature": "Pro feature",
+    "benefit": {
+      "wallets": "Unlimited wallets, categories & subcategories",
+      "budgets": "Unlimited budgets per category",
+      "investment": "Unlimited investment instruments",
+      "reports": "Custom reports, comparisons & 12-month trend",
+      "export": "PDF & Excel export",
+      "ai": "Quick Entry AI · {{count}} messages/month + receipt scan"
+    }
   }
 }

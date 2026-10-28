@@ -12,6 +12,18 @@ Kategori tanpa isi boleh dihilangkan.
 
 ## Belum dirilis
 
+### Baru
+
+- Paket Free dan Pro. Akun Free melihat banner "Upgrade ke Pro" di Dashboard; fitur di luar
+  paket (dompet ke-4, subkategori, tren 12 bulan, export PDF/Excel, scan struk, dll.) membuka
+  penawaran Pro.
+- Bayar Pro Lifetime sekali saja lewat Midtrans langsung dari aplikasi.
+- Admin bisa mengubah paket pengguna (Free ↔ Pro) dari Kelola Pengguna.
+
+### Ditingkatkan
+
+- Daftar akun baru langsung aktif dan langsung masuk, tanpa menunggu persetujuan admin.
+
 ## v1.4.0 (versionCode 5)
 
 _2026-10-27_

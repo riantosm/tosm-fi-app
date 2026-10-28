@@ -10,6 +10,7 @@ import TextField from '@/components/molecules/TextField';
 import ThemeToggleButton from '@/components/molecules/ThemeToggleButton';
 import StatusModal from '@/components/organisms/StatusModal';
 import AuthLayout from '@/components/templates/AuthLayout';
+import { useToast } from '@/contexts/ToastContext';
 import { useAuth } from '@/hooks/useAuth';
 import { useLanguagePicker } from '@/hooks/useLanguagePicker';
 import { useThemePreference } from '@/hooks/useThemePreference';
@@ -20,7 +21,8 @@ export default function RegisterScreen({
   navigation,
 }: RootStackScreenProps<typeof ROUTES.REGISTER>) {
   const { t } = useTranslation();
-  const { register } = useAuth();
+  const { register, login } = useAuth();
+  const showToast = useToast();
   const usernameRef = useRef<ComponentRef<typeof TextInput>>(null);
   const passwordRef = useRef<ComponentRef<typeof TextInput>>(null);
   const language = useLanguagePicker();
@@ -48,7 +50,13 @@ export default function RegisterScreen({
         username: username.trim(),
         password,
       });
-      setSuccess(true);
+      // Akun langsung aktif, jadi langsung masuk; navigator pindah ke grup login sendiri.
+      try {
+        await login({ username: username.trim(), password });
+        showToast(t('auth.registerSuccess'), 'success', 3000);
+      } catch {
+        setSuccess(true);
+      }
     } catch (error) {
       setErrorMessage(
         error instanceof Error ? error.message : t('auth.genericError'),

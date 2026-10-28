@@ -26,6 +26,7 @@ import OptionSheet from '@/components/organisms/OptionSheet';
 import MainLayout from '@/components/templates/MainLayout';
 import { WALLET_COLOR_PRESETS } from '@/constants/walletColors';
 import { useTheme } from '@/contexts/ThemeContext';
+import { useUpgrade } from '@/contexts/UpgradeContext';
 import {
   useFirstInvestmentDate,
   useInvestmentTimelines,
@@ -169,6 +170,7 @@ export default function InvestmentScreen({
   const { colors } = useTheme();
   const { t } = useTranslation();
   const { instruments, status, loadInstruments } = useInstruments();
+  const { guardLimit } = useUpgrade();
   const { version, queryInvestmentTransactions } = useInvestmentTransactions();
   const [refreshKey, setRefreshKey] = useState(0);
   const { timelines } = useInvestmentTimelines(refreshKey);
@@ -311,7 +313,11 @@ export default function InvestmentScreen({
     }
   }, [hasMore, ledgerLoading]);
 
-  const openCreate = () => navigation.navigate(ROUTES.INSTRUMENT_FORM);
+  const openCreate = () => {
+    if (guardLimit('instruments', instruments.length)) {
+      navigation.navigate(ROUTES.INSTRUMENT_FORM);
+    }
+  };
   const openDetail = (idInstrument: string) =>
     navigation.navigate(ROUTES.INSTRUMENT_DETAIL, { idInstrument });
   const hasFilter =

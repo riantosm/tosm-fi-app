@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { PLAN_LIMIT_CODE } from '@/constants/plans';
 import i18n from '@/i18n';
 import {
   axiosInstance,
@@ -52,10 +53,15 @@ export async function sendAssistantChatApi(
     return data.data;
   } catch (error) {
     // 429 = kuota AI gratis habis / model sedang penuh ("AI lagi sibuk").
-    const status = axios.isAxiosError(error)
-      ? error.response?.status
-      : undefined;
-    const kind: AssistantErrorKind = status === 429 ? 'quota' : 'network';
+    // 403 PLAN_LIMIT = kuota pesan Catat Cepat user bulan ini habis.
+    const response = axios.isAxiosError(error) ? error.response : undefined;
+    const kind: AssistantErrorKind =
+      response?.status === 429
+        ? 'quota'
+        : response?.status === 403 &&
+          response.data?.data?.code === PLAN_LIMIT_CODE
+        ? 'plan'
+        : 'network';
     throw new AssistantError(
       kind,
       getApiErrorMessage(error, i18n.t('assistant.networkBody')),

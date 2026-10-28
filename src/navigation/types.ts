@@ -81,6 +81,7 @@ export type RootStackParamList = {
 
   [ROUTES.QUICK_ADD]: undefined;
   [ROUTES.SCAN_RECEIPT]: undefined;
+  [ROUTES.PRO_CHECKOUT]: undefined;
   /** Tanpa transaksi = catat baru. */
   [ROUTES.TRANSACTION_FORM]: { transaction?: Transaction } | undefined;
   [ROUTES.PAY_OCCURRENCE]: { occurrence: ScheduleOccurrence };

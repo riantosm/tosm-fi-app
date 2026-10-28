@@ -27,6 +27,7 @@ import SubCategoryFormSheet from '@/components/organisms/SubCategoryFormSheet';
 import MainLayout from '@/components/templates/MainLayout';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useToast } from '@/contexts/ToastContext';
+import { useUpgrade } from '@/contexts/UpgradeContext';
 import { useCategories } from '@/hooks/useCategories';
 import type { ROUTES } from '@/navigation/paths';
 import type { RootStackScreenProps } from '@/navigation/types';
@@ -138,11 +139,16 @@ export default function CategoriesScreen(
       'error',
     );
 
-  const openCreate = () =>
+  const { guardLimit, guardPro } = useUpgrade();
+  const openCreate = () => {
+    if (!guardLimit('categories', categories.length)) {
+      return;
+    }
     setCategorySheet({
       idCategory: null,
       defaultType: typeFilter === 'income' ? 'income' : 'expense',
     });
+  };
 
   const submitCategory = async (input: CategoryInput) => {
     try {
@@ -384,6 +390,7 @@ export default function CategoriesScreen(
                           })
                         }
                         onAddSubCategory={() =>
+                          guardPro('subCategories') &&
                           setSubSheet({
                             idCategory: category.idCategory,
                             idSubCategory: null,
@@ -448,6 +455,7 @@ export default function CategoriesScreen(
         }
         onAddSubCategory={() =>
           editingCategory &&
+          guardPro('subCategories') &&
           setSubSheet({
             idCategory: editingCategory.idCategory,
             idSubCategory: null,

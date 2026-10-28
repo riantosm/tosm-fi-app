@@ -22,6 +22,7 @@ import ReorderList from '@/components/organisms/ReorderList';
 import MainLayout from '@/components/templates/MainLayout';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useToast } from '@/contexts/ToastContext';
+import { useUpgrade } from '@/contexts/UpgradeContext';
 import { useBudgetPeriod } from '@/hooks/useBudgetPeriod';
 import { useBudgets } from '@/hooks/useBudgets';
 import { useBudgetSpending } from '@/hooks/useBudgetSpending';
@@ -72,6 +73,7 @@ export default function BudgetsScreen({
   const period = useBudgetPeriod();
   const { categories, loadCategories } = useCategories();
   const { budgets, status, loadBudgets, reorderBudgets } = useBudgets();
+  const { guardLimit } = useUpgrade();
   const [refreshKey, setRefreshKey] = useState(0);
   const { categoryBreakdown } = useBudgetSpending(refreshKey);
   const [reordering, setReordering] = useState(false);
@@ -81,7 +83,11 @@ export default function BudgetsScreen({
   const initialLoading = status !== 'loaded' && budgets.length === 0;
   const empty = status === 'loaded' && budgets.length === 0;
   const daysLeft = Math.max(0, period.daysInMonth - period.dayOfMonth);
-  const openCreate = () => navigation.navigate(ROUTES.BUDGET_FORM);
+  const openCreate = () => {
+    if (guardLimit('budgets', budgets.length)) {
+      navigation.navigate(ROUTES.BUDGET_FORM);
+    }
+  };
 
   const saveOrder = async () => {
     setSavingOrder(true);

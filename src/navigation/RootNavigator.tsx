@@ -27,6 +27,7 @@ import RecentTransactionsScreen from '@/screens/RecentTransactions';
 import RegisterScreen from '@/screens/Register';
 import ReportCategoryDetailScreen from '@/screens/ReportCategoryDetail';
 import ReportsScreen from '@/screens/Reports';
+import ProCheckoutScreen from '@/screens/ProCheckout';
 import ScanReceiptScreen from '@/screens/ScanReceipt';
 import ScheduleScreen from '@/screens/Schedule';
 import ScheduleFormScreen from '@/screens/ScheduleForm';
@@ -187,6 +188,10 @@ function RootNavigator() {
             <Stack.Screen
               name={ROUTES.SCAN_RECEIPT}
               component={ScanReceiptScreen}
+            />
+            <Stack.Screen
+              name={ROUTES.PRO_CHECKOUT}
+              component={ProCheckoutScreen}
             />
           </Stack.Group>
           {/* Sheet form: modal transparan, layar di belakang tetap terlihat di balik scrim. */}

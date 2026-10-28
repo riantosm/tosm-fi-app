@@ -4,6 +4,7 @@ import {
   FileCode2,
   FileSpreadsheet,
   FileText,
+  Lock,
 } from 'lucide-react-native';
 import { useTranslation } from 'react-i18next';
 import PressableScale from '@/components/atoms/PressableScale';
@@ -57,6 +58,15 @@ const useStyles = makeStyles(({ colors }) => ({
   },
   text: { flex: 1, gap: 1 },
   disabled: { opacity: 0.6 },
+  proTag: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.xs,
+    paddingHorizontal: spacing.sm,
+    paddingVertical: spacing.xs,
+    borderRadius: radius.pill,
+    backgroundColor: colors.primarySoft,
+  },
 }));
 
 export interface ReportExportSheetProps {
@@ -65,6 +75,8 @@ export interface ReportExportSheetProps {
   exportingFormat: ReportExportFormat | null;
   onExport: (format: ReportExportFormat) => void;
   onClose: () => void;
+  /** Format di luar paket: diberi tag Pro, tetap bisa ditekan (layar membuka Upgrade). */
+  lockedFormats?: ReportExportFormat[];
 }
 
 /** Export laporan (pen `MVyzc`, sama dengan menu Export web): PDF / Excel / CSV periode aktif. */
@@ -73,6 +85,7 @@ export default function ReportExportSheet({
   exportingFormat,
   onExport,
   onClose,
+  lockedFormats = [],
 }: ReportExportSheetProps) {
   const styles = useStyles();
   const { colors } = useTheme();
@@ -117,7 +130,14 @@ export default function ReportExportSheet({
                   {t(`reports.export.${format}Description`)}
                 </Typography>
               </View>
-              {exportingFormat === format ? (
+              {lockedFormats.includes(format) ? (
+                <View style={styles.proTag}>
+                  <Lock size={12} color={colors.primaryText} />
+                  <Typography variant="badge" tone="primary">
+                    {t('plan.proBadge')}
+                  </Typography>
+                </View>
+              ) : exportingFormat === format ? (
                 <ActivityIndicator size="small" color={colors.primaryText} />
               ) : (
                 <Download size={18} color={colors.text3} />

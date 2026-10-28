@@ -38,6 +38,7 @@ export const ROUTES = {
   // Modal
   QUICK_ADD: 'QuickAdd',
   SCAN_RECEIPT: 'ScanReceipt',
+  PRO_CHECKOUT: 'ProCheckout',
   TRANSACTION_FORM: 'TransactionForm',
   PAY_OCCURRENCE: 'PayOccurrence',
   WALLET_FORM: 'WalletForm',
@@ -82,6 +83,7 @@ export const ROUTES_WITHOUT_NAV: readonly RouteName[] = [
   ROUTES.RECENT_TRANSACTIONS,
   ROUTES.QUICK_ADD,
   ROUTES.SCAN_RECEIPT,
+  ROUTES.PRO_CHECKOUT,
   ROUTES.TRANSACTION_FORM,
   ROUTES.PAY_OCCURRENCE,
   ROUTES.WALLET_FORM,
