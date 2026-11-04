@@ -3,9 +3,11 @@ import {
   createWalletApi,
   deleteWalletApi,
   getWalletsApi,
+  removeWalletLogoApi,
   reorderWalletsApi,
   setPrimaryWalletApi,
   updateWalletApi,
+  uploadWalletLogoApi,
 } from '@/services/api/wallet.service';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import {
@@ -16,7 +18,7 @@ import {
   setWalletsLoading,
   updateWallet,
 } from '@/store/slices/walletSlice';
-import type { WalletInput } from '@/types';
+import type { WalletAccount, WalletInput, WalletLogoChange } from '@/types';
 
 /** Dompet user dari store. Memuat otomatis sekali saat status masih `idle`. */
 export function useWallets({ autoLoad = true }: { autoLoad?: boolean } = {}) {
@@ -40,8 +42,10 @@ export function useWallets({ autoLoad = true }: { autoLoad?: boolean } = {}) {
   }, [autoLoad, status, loadWallets]);
 
   const createWallet = useCallback(
-    async (input: WalletInput) => {
-      dispatch(addWallet(await createWalletApi(input)));
+    async (input: WalletInput): Promise<WalletAccount> => {
+      const created = await createWalletApi(input);
+      dispatch(addWallet(created));
+      return created;
     },
     [dispatch],
   );
@@ -70,6 +74,18 @@ export function useWallets({ autoLoad = true }: { autoLoad?: boolean } = {}) {
     [dispatch],
   );
 
+  /** Unggah logo baru atau hapus logo (setelah dompetnya tersimpan). */
+  const changeWalletLogo = useCallback(
+    async (idWallet: string, change: WalletLogoChange) => {
+      const updated =
+        change.type === 'upload'
+          ? await uploadWalletLogoApi(idWallet, change.image)
+          : await removeWalletLogoApi(idWallet);
+      dispatch(updateWallet(updated));
+    },
+    [dispatch],
+  );
+
   /** Simpan urutan baru (dipakai di semua pilihan dompet). */
   const reorderWallets = useCallback(
     async (orderedIds: string[]) => {
@@ -87,5 +103,6 @@ export function useWallets({ autoLoad = true }: { autoLoad?: boolean } = {}) {
     deleteWallet,
     setPrimaryWallet,
     reorderWallets,
+    changeWalletLogo,
   };
 }

@@ -1,11 +1,12 @@
 import { useState } from 'react';
-import { View } from 'react-native';
+import { ActivityIndicator, StyleSheet, View } from 'react-native';
 import { StackActions } from '@react-navigation/native';
 import {
   Banknote,
   Check,
   ChevronRight,
   Info,
+  Pencil,
   Star,
   Trash2,
   Wallet,
@@ -30,9 +31,11 @@ import type { RootStackScreenProps } from '@/navigation/types';
 import { makeStyles } from '@/theme/makeStyles';
 import { radius, spacing } from '@/theme/metrics';
 import { formatNumberInput, parseFormattedNumber } from '@/utils/numberInput';
+import { pickWalletLogo } from '@/utils/walletLogo';
+import type { WalletLogoChange } from '@/types';
 import { fonts } from '@/theme/typography';
 
-const useStyles = makeStyles(({ colors }) => ({
+const useStyles = makeStyles(({ colors, shadows }) => ({
   // Angka saldo = web `font-num`.
   numText: { fontFamily: fonts.numRegular },
   preview: {
@@ -43,6 +46,32 @@ const useStyles = makeStyles(({ colors }) => ({
     borderRadius: 18,
   },
   previewTexts: { flex: 1, gap: 1 },
+  // Pensil kecil di pojok tile = tile ini tombol ganti logo.
+  logoBadge: {
+    position: 'absolute',
+    right: -4,
+    bottom: -4,
+    width: 18,
+    height: 18,
+    borderRadius: radius.pill,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: colors.surface,
+    ...shadows.card,
+  },
+  logoBusy: {
+    ...StyleSheet.absoluteFill,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  logoRow: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    justifyContent: 'space-between',
+    gap: spacing.md,
+    marginTop: -spacing.sm,
+  },
+  logoError: { flex: 1, color: colors.expenseText },
   hint: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -66,8 +95,13 @@ export default function WalletFormScreen({
   const { t } = useTranslation();
   const showToast = useToast();
   const { format } = useMoneyFormat();
-  const { createWallet, editWallet, deleteWallet, setPrimaryWallet } =
-    useWallets({ autoLoad: false });
+  const {
+    createWallet,
+    editWallet,
+    deleteWallet,
+    setPrimaryWallet,
+    changeWalletLogo,
+  } = useWallets({ autoLoad: false });
   const wallet = route.params?.wallet ?? null;
   const close = navigation.goBack;
 
@@ -76,6 +110,13 @@ export default function WalletFormScreen({
   const [balanceInput, setBalanceInput] = useState('');
   const [busy, setBusy] = useState<'save' | 'delete' | 'primary' | null>(null);
   const [confirmingDelete, setConfirmingDelete] = useState(false);
+  // Logo yang tampil + perubahan yang diterapkan saat simpan (kosong = tetap).
+  const [logo, setLogo] = useState<{
+    previewUri: string | null;
+    change?: WalletLogoChange;
+  }>({ previewUri: wallet?.logoUrl ?? null });
+  const [logoError, setLogoError] = useState<string | null>(null);
+  const [pickingLogo, setPickingLogo] = useState(false);
 
   const previewBalance = wallet
     ? wallet.balance
@@ -102,19 +143,82 @@ export default function WalletFormScreen({
     }
   };
 
-  const save = () => {
+  const save = async () => {
     const trimmed = name.trim();
-    if (!trimmed) {
+    if (!trimmed || pickingLogo) {
       return;
     }
-    run('save', () =>
-      wallet
-        ? editWallet(wallet.idWallet, { nameWallet: trimmed, color })
-        : createWallet({
+    setBusy('save');
+    let idWallet: string;
+    try {
+      if (wallet) {
+        idWallet = wallet.idWallet;
+        await editWallet(idWallet, { nameWallet: trimmed, color });
+      } else {
+        idWallet = (
+          await createWallet({
             nameWallet: trimmed,
             color,
             balance: parseFormattedNumber(balanceInput),
-          }),
+          })
+        ).idWallet;
+      }
+    } catch (error) {
+      showToast(
+        error instanceof Error ? error.message : t('wallet.genericError'),
+        'error',
+      );
+      setBusy(null);
+      return;
+    }
+    // Dompet sudah tersimpan: logo yang gagal cukup toast, form tetap ditutup
+    // (simpan ulang dari form tambah akan menggandakan dompet).
+    let logoFailure: string | null = null;
+    if (logo.change) {
+      try {
+        await changeWalletLogo(idWallet, logo.change);
+      } catch (error) {
+        logoFailure =
+          error instanceof Error ? error.message : t('wallet.logoUploadError');
+      }
+    }
+    close();
+    if (logoFailure) {
+      showToast(logoFailure, 'error');
+    }
+  };
+
+  const chooseLogo = async () => {
+    setLogoError(null);
+    setPickingLogo(true);
+    try {
+      const picked = await pickWalletLogo();
+      if (picked) {
+        setLogo({
+          previewUri: picked.previewUri,
+          change: { type: 'upload', image: picked.image },
+        });
+      }
+    } catch (error) {
+      setLogoError(
+        t(
+          error instanceof Error && error.message === 'tooLarge'
+            ? 'wallet.logoTooLarge'
+            : 'wallet.logoInvalid',
+        ),
+      );
+    } finally {
+      setPickingLogo(false);
+    }
+  };
+
+  const removeLogo = () => {
+    setLogoError(null);
+    // Logo yang baru dipilih di form ini (belum tersimpan) cukup kembali ke "tidak berubah".
+    setLogo(
+      wallet?.logoUrl
+        ? { previewUri: null, change: { type: 'remove' } }
+        : { previewUri: null },
     );
   };
 
@@ -176,7 +280,7 @@ export default function WalletFormScreen({
               )}
               renderIcon={iconColor => <Check size={18} color={iconColor} />}
               loading={busy === 'save'}
-              disabled={!!busy || !name.trim()}
+              disabled={!!busy || pickingLogo || !name.trim()}
               onPress={save}
               style={styles.footerButton}
             />
@@ -186,7 +290,32 @@ export default function WalletFormScreen({
         <View
           style={[styles.preview, { backgroundColor: `${previewColor}1F` }]}
         >
-          <WalletTile color={previewColor} size={44} radius={14} onTint />
+          <PressableScale
+            accessibilityRole="button"
+            accessibilityLabel={t(
+              logo.previewUri ? 'wallet.logoChange' : 'wallet.logoUpload',
+            )}
+            accessibilityHint={t('wallet.logoHelper')}
+            disabled={!!busy || pickingLogo}
+            scaleTo={0.94}
+            onPress={chooseLogo}
+          >
+            <WalletTile
+              color={previewColor}
+              logoUrl={logo.previewUri}
+              size={44}
+              radius={14}
+              onTint
+            />
+            {pickingLogo && (
+              <View style={styles.logoBusy}>
+                <ActivityIndicator size="small" color={previewColor} />
+              </View>
+            )}
+            <View style={styles.logoBadge}>
+              <Pencil size={10} color={colors.text2} />
+            </View>
+          </PressableScale>
           <View style={styles.previewTexts}>
             <Typography variant="label" numberOfLines={1}>
               {name.trim() || t('wallet.namePreview')}
@@ -204,6 +333,25 @@ export default function WalletFormScreen({
             {t('wallet.preview')}
           </Typography>
         </View>
+
+        {(!!logoError || !!logo.previewUri) && (
+          <View style={styles.logoRow}>
+            <Typography variant="meta" style={styles.logoError}>
+              {logoError ?? ''}
+            </Typography>
+            {!!logo.previewUri && (
+              <PressableScale
+                accessibilityRole="button"
+                disabled={!!busy || pickingLogo}
+                onPress={removeLogo}
+              >
+                <Typography variant="meta" tone="subtle">
+                  {t('wallet.logoRemove')}
+                </Typography>
+              </PressableScale>
+            )}
+          </View>
+        )}
 
         <TextField
           variant="filled"

@@ -84,7 +84,7 @@ export default function WalletCard({
         onPress={onPress}
         style={[styles.row, divider && styles.divider]}
       >
-        <WalletTile color={wallet.color} size={38} />
+        <WalletTile color={wallet.color} logoUrl={wallet.logoUrl} size={38} />
         <View style={styles.texts}>
           {name}
           <Typography variant="caption" tone="subtle" numberOfLines={1}>
@@ -110,7 +110,7 @@ export default function WalletCard({
       style={[styles.card, wallet.isPrimary && styles.cardPrimary]}
     >
       <View style={styles.top}>
-        <WalletTile color={wallet.color} />
+        <WalletTile color={wallet.color} logoUrl={wallet.logoUrl} />
         <View style={styles.texts}>
           {name}
           <Typography variant="caption" tone="subtle" numberOfLines={1}>

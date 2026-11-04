@@ -37,6 +37,7 @@ export interface WalletUsageItem {
   idWallet: string;
   nameWallet: string;
   color: string;
+  logoUrl?: string | null;
   transactionCount: number;
   percentage: number;
 }

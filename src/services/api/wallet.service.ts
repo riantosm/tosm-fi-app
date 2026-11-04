@@ -3,7 +3,12 @@ import {
   axiosInstance,
   getApiErrorMessage,
 } from '@/services/api/axiosInstance';
-import type { ApiResponse, WalletAccount, WalletInput } from '@/types';
+import type {
+  ApiResponse,
+  WalletAccount,
+  WalletInput,
+  WalletLogoImage,
+} from '@/types';
 
 export async function getWalletsApi(): Promise<WalletAccount[]> {
   try {
@@ -84,6 +89,38 @@ export async function reorderWalletsApi(
     const { data } = await axiosInstance.patch<ApiResponse<WalletAccount[]>>(
       '/wallets/reorder',
       { orderedIds },
+    );
+    return data.data;
+  } catch (error) {
+    throw new Error(getApiErrorMessage(error, i18n.t('wallet.genericError')), {
+      cause: error,
+    });
+  }
+}
+
+/** Logo disimpan backend di Cloudinary `tosm-fi/wallet/<idWallet>`. */
+export async function uploadWalletLogoApi(
+  id: string,
+  image: WalletLogoImage,
+): Promise<WalletAccount> {
+  try {
+    const { data } = await axiosInstance.put<ApiResponse<WalletAccount>>(
+      `/wallets/${id}/logo`,
+      { image },
+    );
+    return data.data;
+  } catch (error) {
+    throw new Error(
+      getApiErrorMessage(error, i18n.t('wallet.logoUploadError')),
+      { cause: error },
+    );
+  }
+}
+
+export async function removeWalletLogoApi(id: string): Promise<WalletAccount> {
+  try {
+    const { data } = await axiosInstance.delete<ApiResponse<WalletAccount>>(
+      `/wallets/${id}/logo`,
     );
     return data.data;
   } catch (error) {

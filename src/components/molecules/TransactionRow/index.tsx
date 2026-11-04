@@ -1,5 +1,6 @@
 import { Scale, Tag } from 'lucide-react-native';
 import TxRow from '@/components/molecules/TxRow';
+import TxWalletBadge from '@/components/molecules/TxWalletBadge';
 import { resolveCategoryIcon } from '@/constants/categoryIcons';
 import { useTheme } from '@/contexts/ThemeContext';
 import type {
@@ -47,10 +48,10 @@ export default function TransactionRow({
     category?.nameCategory ||
     '-';
   const meta = [
+    wallet?.nameWallet,
     subCategory
       ? `${category?.nameCategory ?? ''} › ${subCategory.nameSubCategory}`
       : category?.nameCategory,
-    wallet?.nameWallet,
   ]
     .filter(Boolean)
     .join(' · ');
@@ -59,6 +60,7 @@ export default function TransactionRow({
     <TxRow
       onPress={onPress}
       renderIcon={color => <Icon size={18} color={color} />}
+      badge={wallet && <TxWalletBadge wallet={wallet} />}
       color={category?.color ?? (isCorrection ? colors.txNeutral : undefined)}
       title={title}
       meta={meta}

@@ -1,6 +1,7 @@
 import { ScrollView, View } from 'react-native';
 import Chip from '@/components/atoms/Chip';
 import Typography from '@/components/atoms/Typography';
+import WalletChipIcon from '@/components/molecules/WalletChipIcon';
 import { makeStyles } from '@/theme/makeStyles';
 import { spacing } from '@/theme/metrics';
 import type { WalletAccount } from '@/types';
@@ -19,7 +20,7 @@ const useStyles = makeStyles(() => ({
   row: { gap: spacing.sm },
 }));
 
-/** Label + deret chip outline dompet (pilih satu), scroll horizontal. */
+/** Label + deret chip outline dompet (logo/ikon + nama, pilih satu), scroll horizontal. */
 export default function WalletChipGroup({
   label,
   wallets,
@@ -44,7 +45,7 @@ export default function WalletChipGroup({
             key={wallet.idWallet}
             variant="outline"
             label={wallet.nameWallet}
-            dot={wallet.color}
+            leading={<WalletChipIcon wallet={wallet} />}
             active={wallet.idWallet === selectedId}
             disabled={wallet.idWallet === disabledId}
             onPress={() => onSelect(wallet.idWallet)}

@@ -19,6 +19,7 @@ import { useTranslation } from 'react-i18next';
 import Button from '@/components/atoms/Button';
 import Typography from '@/components/atoms/Typography';
 import TxRow, { type TxAmountTone } from '@/components/molecules/TxRow';
+import TxWalletBadge from '@/components/molecules/TxWalletBadge';
 import { useInvestmentLabels } from '@/components/organisms/InvestmentTransactionList';
 import { resolveCategoryIcon } from '@/constants/categoryIcons';
 import { useTheme } from '@/contexts/ThemeContext';
@@ -341,6 +342,7 @@ export default function AssistantPreviewCard({
     const shown = rowAmount(draft);
     let title = draft.title;
     let renderIcon: (color: string) => ReactNode;
+    let badge: ReactNode;
     let color: string | undefined;
     let tone: Tone = 'neutral';
     let meta = '';
@@ -356,9 +358,10 @@ export default function AssistantPreviewCard({
         renderIcon = iconColor => <Icon size={18} color={iconColor} />;
         color = category?.color;
         tone = draft.kind;
-        meta = [categoryLabel(draft), wallet?.nameWallet]
+        meta = [wallet?.nameWallet, categoryLabel(draft)]
           .filter(Boolean)
           .join(' · ');
+        badge = wallet && <TxWalletBadge wallet={wallet} />;
         break;
       }
       case 'transfer':
@@ -376,6 +379,7 @@ export default function AssistantPreviewCard({
         meta = `${wallet?.nameWallet ?? '-'} · ${format(
           draft.balanceBefore ?? 0,
         )} → ${format(draft.balanceAfter ?? 0)}`;
+        badge = wallet && <TxWalletBadge wallet={wallet} />;
         break;
       case 'investmentIn':
         renderIcon = iconColor => <ArrowDownLeft size={18} color={iconColor} />;
@@ -444,6 +448,7 @@ export default function AssistantPreviewCard({
       >
         <TxRow
           renderIcon={renderIcon}
+          badge={badge}
           color={color}
           tone={tone}
           title={title}

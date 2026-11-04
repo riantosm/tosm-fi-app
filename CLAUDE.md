@@ -239,6 +239,15 @@ tulis ulang dengan komponen RN di sini. Desain: Mist, lihat `DESIGN_SYSTEM.md` (
   `<Camera device="back" outputs={[photoOutput]} isActive />`. Dipakai di `ScanReceipt`. Izin:
   `CAMERA` di AndroidManifest, `NSCameraUsageDescription` di Info.plist.
 - **Ikon**: `lucide-react-native` (set ikon sama dengan web `react-icons/lu`).
+- **Logo dompet** (sama dengan web, backend `PUT`/`DELETE /wallets/:idWallet/logo`, Cloudinary):
+  `WalletAccount.logoUrl` opsional. `atoms/WalletTile` (`logoUrl`, `iconSize`, `style`) menampilkan
+  logo dan jatuh ke ikon dompet kalau kosong/gagal dimuat. Dipakai juga oleh
+  `molecules/TxWalletBadge` (badge dompet di pojok tile `TxRow` lewat prop `badge`; meta baris =
+  "Dompet · Kategori › Sub") dan `molecules/WalletChipIcon` (slot `leading` di `Chip`).
+  WalletForm: tile pratinjau = tombol pilih logo (badge pensil) → `utils/walletLogo.ts`
+  (`react-native-image-picker` `launchImageLibrary` → nitro-image diperkecil ke maks 256px PNG →
+  base64), "Hapus logo" di bawahnya; logo diterapkan setelah dompet tersimpan
+  (`useWallets().changeWalletLogo`), gagal → toast tanpa menahan form.
 - **Log crash** (`utils/crashLogger.ts`, port web): `logCrash()` → console + `POST /errors` (hanya
   saat login). `setupGlobalErrorLogging()` di `App.tsx` memasang `ErrorUtils` global handler dan,
   di produksi saja, tracker promise rejection Hermes (di dev RN sudah memakainya untuk LogBox).
