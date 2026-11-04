@@ -21,6 +21,8 @@ export interface ChipProps {
   variant?: ChipVariant;
   /** Titik warna data user (dompet) sebelum label. */
   dot?: string;
+  /** Elemen di depan label yang tidak ikut warna state (mis. `WalletChipIcon`). */
+  leading?: ReactNode;
   /** Ikon kecil (ukuran 14) dengan warna state. */
   renderIcon?: (color: string) => ReactNode;
   /** Teks redup sesudah label ("· Makan & Minum"). */
@@ -45,6 +47,7 @@ const useStyles = makeStyles(({ colors }) => ({
   surface: { backgroundColor: colors.surface },
   outline: { backgroundColor: colors.surface, borderColor: colors.border },
   active: { backgroundColor: colors.primarySoft, borderColor: colors.primary },
+  withLeading: { paddingLeft: 6 },
   disabled: { opacity: 0.4 },
   dot: { width: 7, height: 7, borderRadius: radius.pill },
   label: { fontSize: 12.5, flexShrink: 1 },
@@ -57,6 +60,7 @@ export default function Chip({
   active = false,
   variant = 'soft',
   dot,
+  leading,
   renderIcon,
   suffix,
   disabled,
@@ -74,11 +78,13 @@ export default function Chip({
       style={[
         styles.chip,
         styles[variant],
+        !!leading && styles.withLeading,
         active && styles.active,
         disabled && styles.disabled,
       ]}
     >
       {!!dot && <View style={[styles.dot, { backgroundColor: dot }]} />}
+      {leading}
       {renderIcon?.(color)}
       <Typography
         variant={active ? 'label' : 'body'}

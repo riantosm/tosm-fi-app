@@ -211,7 +211,12 @@ function CorrectionSheet({
         }
       >
         <View style={[styles.wallet, { backgroundColor: `${wallet.color}1F` }]}>
-          <WalletTile color={wallet.color} radius={radius.pill} onTint />
+          <WalletTile
+            color={wallet.color}
+            logoUrl={wallet.logoUrl}
+            radius={radius.pill}
+            onTint
+          />
           <View style={styles.walletTexts}>
             <View style={styles.walletName}>
               <Typography

@@ -8,6 +8,7 @@ import Button from '@/components/atoms/Button';
 import PressableScale from '@/components/atoms/PressableScale';
 import Skeleton from '@/components/atoms/Skeleton';
 import Typography from '@/components/atoms/Typography';
+import WalletTile from '@/components/atoms/WalletTile';
 import Card from '@/components/molecules/Card';
 import EmptyState from '@/components/molecules/EmptyState';
 import SectionHead from '@/components/molecules/SectionHead';
@@ -38,7 +39,13 @@ const useStyles = makeStyles(({ colors }) => ({
     backgroundColor: colors.surface2,
   },
   top: { flexDirection: 'row', alignItems: 'center', gap: 10 },
-  dot: { width: 10, height: 10, borderRadius: radius.pill },
+  // Slot ikon 24: spinner saat menyimpan tetap di tempat yang sama dengan logo.
+  icon: {
+    width: 24,
+    height: 24,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   name: { flexShrink: 1 },
   balance: { marginLeft: 'auto', paddingLeft: spacing.sm },
   bottom: { flexDirection: 'row', alignItems: 'center', gap: 10 },
@@ -141,10 +148,17 @@ export default function WalletsCard({
               >
                 <View style={styles.top}>
                   {pending ? (
-                    <ActivityIndicator size="small" color={wallet.color} />
+                    <View style={styles.icon}>
+                      <ActivityIndicator size="small" color={wallet.color} />
+                    </View>
                   ) : (
-                    <View
-                      style={[styles.dot, { backgroundColor: wallet.color }]}
+                    <WalletTile
+                      color={wallet.color}
+                      logoUrl={wallet.logoUrl}
+                      size={24}
+                      radius={radius.pill}
+                      iconSize={12}
+                      onTint
                     />
                   )}
                   <Typography

@@ -224,7 +224,7 @@ export default function WalletScreen({
               onReorder={setLocalOrder}
               renderContent={wallet => (
                 <>
-                  <WalletTile color={wallet.color} />
+                  <WalletTile color={wallet.color} logoUrl={wallet.logoUrl} />
                   {/* Sama dengan web: nama + badge Utama, jumlah transaksi, saldo di kanan. */}
                   <View style={styles.reorderTexts}>
                     <View style={styles.reorderTitle}>

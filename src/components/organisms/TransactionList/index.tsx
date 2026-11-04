@@ -184,8 +184,8 @@ function TransactionList({
                       'schedule.scheduledBadge',
                     ).toLowerCase()}`}
                     meta={[
-                      category?.nameCategory,
                       walletOf(occurrence.idWallet)?.nameWallet,
+                      category?.nameCategory,
                       dueLabel,
                     ]
                       .filter(Boolean)

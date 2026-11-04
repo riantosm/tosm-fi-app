@@ -17,6 +17,7 @@ import {
 import { useTranslation } from 'react-i18next';
 import Button from '@/components/atoms/Button';
 import Chip from '@/components/atoms/Chip';
+import WalletChipIcon from '@/components/molecules/WalletChipIcon';
 import Typography from '@/components/atoms/Typography';
 import PickerField from '@/components/molecules/PickerField';
 import SegmentedControl from '@/components/molecules/SegmentedControl';
@@ -334,7 +335,7 @@ export default function FilterSheet({
               <Chip
                 key={item.idWallet}
                 label={item.nameWallet}
-                dot={item.color}
+                leading={<WalletChipIcon wallet={item} />}
                 active={draft.walletIds.includes(item.idWallet)}
                 onPress={() =>
                   set({ walletIds: toggleId(draft.walletIds, item.idWallet) })

@@ -5,6 +5,7 @@ import { Wallet } from 'lucide-react-native';
 import { useTranslation } from 'react-i18next';
 import Skeleton from '@/components/atoms/Skeleton';
 import Typography from '@/components/atoms/Typography';
+import WalletTile from '@/components/atoms/WalletTile';
 import Card from '@/components/molecules/Card';
 import EmptyState from '@/components/molecules/EmptyState';
 import SectionHead from '@/components/molecules/SectionHead';
@@ -25,7 +26,6 @@ const useStyles = makeStyles(({ colors }) => ({
     backgroundColor: colors.surface2,
   },
   head: { flexDirection: 'row', alignItems: 'center', gap: 10 },
-  dot: { width: 10, height: 10, borderRadius: radius.pill },
   name: { flex: 1 },
   foot: { flexDirection: 'row', alignItems: 'center', gap: spacing.md },
   count: { width: 92 },
@@ -103,7 +103,14 @@ export default function WalletUsageCard({
           {items.map((item, index) => (
             <Reveal delay={index * 40} key={item.idWallet} style={styles.item}>
               <View style={styles.head}>
-                <View style={[styles.dot, { backgroundColor: item.color }]} />
+                <WalletTile
+                  color={item.color}
+                  logoUrl={item.logoUrl}
+                  size={24}
+                  radius={radius.pill}
+                  iconSize={12}
+                  onTint
+                />
                 <Typography
                   variant="label"
                   numberOfLines={1}

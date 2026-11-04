@@ -12,6 +12,8 @@ export type TxAmountTone = 'income' | 'expense' | 'neutral' | 'muted';
 export interface TxRowProps {
   /** Render ikon (ukuran 18) dengan warna tile. */
   renderIcon: (color: string) => ReactNode;
+  /** Tanda kecil di pojok kanan bawah tile (mis. dompet transaksi, `TxWalletBadge`). */
+  badge?: ReactNode;
   /** Warna data user (kategori/dompet): tile `${color}26` + ikon berwarna. */
   color?: string;
   /** Nada tile kalau tidak ada warna data user. */
@@ -48,6 +50,7 @@ const useStyles = makeStyles(() => ({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  badge: { position: 'absolute', right: -3, bottom: -3 },
   texts: { flex: 1, gap: spacing.xxs },
   right: { alignItems: 'flex-end', gap: spacing.xxs },
 }));
@@ -55,6 +58,7 @@ const useStyles = makeStyles(() => ({
 /** Satu-satunya bentuk baris transaksi (pen V2/TxRow): tile 42, judul + meta, nominal + waktu. */
 export default function TxRow({
   renderIcon,
+  badge,
   color,
   tone = 'neutral',
   title,
@@ -79,8 +83,11 @@ export default function TxRow({
       onPress={onPress}
       style={styles.row}
     >
-      <View style={[styles.tile, { backgroundColor: tile.backgroundColor }]}>
-        {renderIcon(tile.iconColor)}
+      <View>
+        <View style={[styles.tile, { backgroundColor: tile.backgroundColor }]}>
+          {renderIcon(tile.iconColor)}
+        </View>
+        {!!badge && <View style={styles.badge}>{badge}</View>}
       </View>
       <View style={styles.texts}>
         <Typography variant="label" numberOfLines={1}>

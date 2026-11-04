@@ -1,6 +1,7 @@
 import { ScrollView, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 import Chip from '@/components/atoms/Chip';
+import WalletChipIcon from '@/components/molecules/WalletChipIcon';
 import Typography from '@/components/atoms/Typography';
 import Keypad from '@/components/molecules/Keypad';
 import BottomSheet from '@/components/organisms/BottomSheet';
@@ -117,7 +118,7 @@ function CalculatorBody({
               key={wallet.idWallet}
               variant="outline"
               label={wallet.nameWallet}
-              dot={wallet.color}
+              leading={<WalletChipIcon wallet={wallet} />}
               active={wallet.idWallet === selectedWalletId}
               onPress={() => onSelectWallet?.(wallet.idWallet)}
             />
