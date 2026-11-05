@@ -12,32 +12,27 @@ Kategori tanpa isi boleh dihilangkan.
 
 ## Belum dirilis
 
+## v1.5.0 (versionCode 6)
+
+_2026-11-05_
+
 ### Baru
 
-- Paket Free dan Pro. Akun Free melihat banner "Upgrade ke Pro" di Dashboard; fitur di luar
-  paket (dompet ke-4, subkategori, tren 12 bulan, export PDF/Excel, scan struk, dll.) membuka
-  penawaran Pro.
-- Bayar Pro Lifetime sekali saja lewat Midtrans langsung dari aplikasi.
+- Paket Free dan Pro: fitur di luar paket Free (dompet ke-4, subkategori, tren 12 bulan,
+  export PDF/Excel, scan struk, dll.) membuka penawaran Pro. Pro Lifetime cukup dibayar sekali
+  lewat Midtrans langsung dari aplikasi.
 - Admin bisa mengubah paket pengguna (Free ↔ Pro) dari Kelola Pengguna.
-- Logo dompet: ketuk ikon dompet (bertanda pensil) di form Tambah/Edit dompet untuk memilih
-  gambar dari galeri; "Hapus logo" mengembalikan ikon bawaan.
-- "Jadikan transaksi terjadwal" di form Catat/Edit transaksi (pemasukan & pengeluaran): membuka
-  form jadwal yang sudah berisi jenis, kategori, nominal, judul, dompet, catatan, dan tanggal
-  mulai = tanggal transaksi; tinggal pilih aturan ulang lalu simpan. Transaksi itu langsung
-  dihitung sebagai pembayaran jadwal pertama, jadi tidak muncul lagi sebagai tagihan.
+- Logo dompet: pilih gambar dari galeri di form Tambah/Edit dompet. Logo tampil di daftar
+  transaksi, pilihan dompet, Dashboard, Laporan, dan Koreksi saldo.
+- "Jadikan transaksi terjadwal" di form Catat/Edit transaksi: membuka form jadwal yang sudah
+  terisi, dan transaksi itu langsung dihitung sebagai pembayaran pertama.
 
 ### Ditingkatkan
 
-- Judul di form Catat/Edit transaksi tidak lagi bertanda "(opsional)" karena memang wajib;
-  judul kosong langsung ditolak dengan pesan "Judul wajib diisi".
-- Daftar akun baru langsung aktif dan langsung masuk, tanpa menunggu persetujuan admin.
-- Logo atau ikon dompet tampil di pojok ikon kategori pada daftar transaksi, dan nama dompet
-  sekarang di depan kategori ("GoPay · Transportasi › KRL & MRT").
-- Pilihan dompet (form transaksi, filter, kalkulator), kartu Dompet di Dashboard, Dompet Paling
-  Aktif di Laporan, dan Koreksi saldo menampilkan logo/ikon dompet, bukan titik warna.
-- Tombol kalkulator nominal sekarang berurutan seperti keypad HP: 1 2 3 di baris paling atas.
-- Koreksi saldo mulai dari 0, jadi saldo sebenarnya bisa langsung diketik tanpa menghapus angka
-  lama dulu. Tombol Simpan koreksi baru aktif setelah saldo diketik.
+- Akun baru langsung aktif dan langsung masuk, tanpa menunggu persetujuan admin.
+- Daftar transaksi menampilkan nama dompet di depan kategori ("GoPay · Transportasi").
+- Kalkulator nominal berurutan seperti keypad HP (1 2 3 di atas), dan Koreksi saldo mulai dari 0.
+- Judul transaksi kini wajib diisi.
 
 ## v1.4.0 (versionCode 5)
 
