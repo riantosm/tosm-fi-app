@@ -27,3 +27,11 @@ export type ScheduleInput = Omit<
   Schedule,
   'idSchedule' | 'dayOfMonth' | 'month' | 'isActive'
 >;
+
+/**
+ * Isian awal form jadwal baru (mis. dari "Jadikan transaksi terjadwal" di form transaksi).
+ * Aturan ulang sengaja tidak ikut: user memilihnya sendiri di form jadwal.
+ */
+export type ScheduleDraft = Partial<
+  Omit<ScheduleInput, 'frequency' | 'weekdays'>
+>;

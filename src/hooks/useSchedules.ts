@@ -4,6 +4,7 @@ import {
   createScheduleApi,
   deleteScheduleApi,
   getSchedulesApi,
+  linkScheduleTransactionApi,
   setScheduleActiveApi,
   updateScheduleApi,
 } from '@/services/api/schedule.service';
@@ -46,8 +47,8 @@ export function useSchedules({ autoLoad = true }: { autoLoad?: boolean } = {}) {
   }, [autoLoad, status, loadSchedules]);
 
   const createSchedule = useCallback(
-    async (input: ScheduleInput) => {
-      const created = await createScheduleApi(input);
+    async (input: ScheduleInput, idTransaction?: string) => {
+      const created = await createScheduleApi(input, idTransaction);
       dispatch(addSchedule(created));
       loadPendingOccurrences();
       return created;
@@ -84,11 +85,20 @@ export function useSchedules({ autoLoad = true }: { autoLoad?: boolean } = {}) {
     [dispatch, loadPendingOccurrences],
   );
 
+  const linkTransaction = useCallback(
+    async (idSchedule: string, idTransaction: string) => {
+      await linkScheduleTransactionApi(idSchedule, idTransaction);
+      loadPendingOccurrences();
+    },
+    [loadPendingOccurrences],
+  );
+
   return {
     schedules,
     status,
     loadSchedules,
     createSchedule,
+    linkTransaction,
     editSchedule,
     setScheduleActive,
     deleteSchedule,

@@ -43,6 +43,18 @@ export function parseScheduleDate(value: string): Date {
   return new Date(Number(match[1]), Number(match[2]) - 1, Number(match[3]));
 }
 
+/**
+ * True kalau tanggal mulai sendiri sudah jatuh tempo pertama (mingguan: harinya terpilih). Syarat
+ * backend untuk menautkan transaksi asal sebagai pembayaran jadwal pertama.
+ */
+export function isDueOnStartDate(
+  frequency: ScheduleFrequency,
+  weekdays: number[],
+  startDate: Date,
+): boolean {
+  return frequency !== 'weekly' || weekdays.includes(startDate.getDay());
+}
+
 export function ruleFromSchedule(schedule: Schedule): RecurrenceRule {
   return {
     frequency: schedule.frequency,

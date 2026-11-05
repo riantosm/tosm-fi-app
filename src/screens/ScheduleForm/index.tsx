@@ -22,7 +22,7 @@ import { useToast } from '@/contexts/ToastContext';
 import { useCategories } from '@/hooks/useCategories';
 import { useSchedules } from '@/hooks/useSchedules';
 import { useWallets } from '@/hooks/useWallets';
-import type { ROUTES } from '@/navigation/paths';
+import { ROUTES } from '@/navigation/paths';
 import type { RootStackScreenProps } from '@/navigation/types';
 import { requestNotificationPermission } from '@/services/notification/scheduleReminder';
 import { makeStyles } from '@/theme/makeStyles';
@@ -41,6 +41,7 @@ import {
   WEEKDAY_ORDER,
   describeRecurrencePreview,
   formatLongDate,
+  isDueOnStartDate,
   parseScheduleDate,
   weekdayLabel,
 } from '@/utils/schedule';
@@ -98,27 +99,33 @@ export default function ScheduleFormScreen({
   const { wallets } = useWallets();
   const { createSchedule, editSchedule } = useSchedules({ autoLoad: false });
   const schedule = route.params?.schedule ?? null;
+  // Isian awal dari form transaksi ("Jadikan transaksi terjadwal"); hanya untuk jadwal baru.
+  const draft = schedule ? null : route.params?.draft ?? null;
+  const initial = schedule ?? draft;
   const close = navigation.goBack;
 
-  const [type, setType] = useState<CategoryType>(schedule?.type ?? 'expense');
+  const [type, setType] = useState<CategoryType>(initial?.type ?? 'expense');
   const [categoryId, setCategoryId] = useState<string | null>(
-    schedule?.idCategory ?? null,
+    initial?.idCategory ?? null,
   );
   const [subCategoryId, setSubCategoryId] = useState<string | null>(
-    schedule?.idSubCategory ?? null,
+    initial?.idSubCategory ?? null,
   );
-  const [amount, setAmount] = useState(schedule?.amount ?? 0);
+  const [amount, setAmount] = useState(initial?.amount ?? 0);
   const [walletId, setWalletId] = useState<string | null>(
-    schedule?.idWallet ?? null,
+    initial?.idWallet ?? null,
   );
-  const [title, setTitle] = useState(schedule?.title ?? '');
-  const [notes, setNotes] = useState(schedule?.notes ?? '');
+  const [title, setTitle] = useState(initial?.title ?? '');
+  const [notes, setNotes] = useState(initial?.notes ?? '');
   const [frequency, setFrequency] = useState<ScheduleFrequency>(
     schedule?.frequency ?? 'monthly',
   );
-  const [weekdays, setWeekdays] = useState<number[]>(schedule?.weekdays ?? []);
   const [startDate, setStartDate] = useState(() =>
-    schedule ? parseScheduleDate(schedule.startDate) : new Date(),
+    initial?.startDate ? parseScheduleDate(initial.startDate) : new Date(),
+  );
+  // Dari transaksi: hari transaksi sudah terpilih kalau user memilih Mingguan.
+  const [weekdays, setWeekdays] = useState<number[]>(
+    () => schedule?.weekdays ?? (draft ? [startDate.getDay()] : []),
   );
   const [saving, setSaving] = useState(false);
   const [sheet, setSheet] = useState<
@@ -198,10 +205,30 @@ export default function ScheduleFormScreen({
         await editSchedule(schedule.idSchedule, input);
         showToast(t('schedule.updateSuccess'), 'success');
       } else {
-        await createSchedule(input);
+        // Dari transaksi: transaksi itu sendiri sudah membayar jatuh tempo pertama, supaya tidak
+        // muncul lagi sebagai tagihan. Hanya kalau jenis & tanggal mulai masih sama dengannya.
+        const fromTransaction =
+          !!draft &&
+          input.type === draft.type &&
+          input.startDate === draft.startDate &&
+          isDueOnStartDate(frequency, weekdays, startDate);
+        const idTransaction = route.params?.idTransaction;
+        const created = await createSchedule(
+          input,
+          fromTransaction ? idTransaction : undefined,
+        );
         showToast(t('schedule.createSuccess'), 'success');
         // Pengingat butuh izin notifikasi (Android 13+); diminta saat jadwal pertama dibuat.
         requestNotificationPermission().catch(() => {});
+        if (fromTransaction && !idTransaction) {
+          // Transaksinya belum disimpan: tautkan saat form transaksi disimpan.
+          navigation.popTo(
+            ROUTES.TRANSACTION_FORM,
+            { linkScheduleId: created.idSchedule },
+            { merge: true },
+          );
+          return;
+        }
       }
       close();
     } catch (error) {

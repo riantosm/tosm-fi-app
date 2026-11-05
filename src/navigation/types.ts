@@ -11,6 +11,7 @@ import type {
   InvestmentAccount,
   InvestmentTransaction,
   Schedule,
+  ScheduleDraft,
   ScheduleOccurrence,
   Transaction,
   WalletAccount,
@@ -83,14 +84,34 @@ export type RootStackParamList = {
   [ROUTES.SCAN_RECEIPT]: undefined;
   [ROUTES.PRO_CHECKOUT]: undefined;
   /** Tanpa transaksi = catat baru. */
-  [ROUTES.TRANSACTION_FORM]: { transaction?: Transaction } | undefined;
+  [ROUTES.TRANSACTION_FORM]:
+    | {
+        transaction?: Transaction;
+        /**
+         * Jadwal yang dibuat dari form ini sebelum transaksinya disimpan (diisi ScheduleForm);
+         * transaksi baru lalu ditautkan sebagai pembayaran jatuh tempo pertamanya.
+         */
+        linkScheduleId?: string;
+      }
+    | undefined;
   [ROUTES.PAY_OCCURRENCE]: { occurrence: ScheduleOccurrence };
   /** Tanpa dompet = tambah dompet baru. */
   [ROUTES.WALLET_FORM]: { wallet?: WalletAccount } | undefined;
   /** Dengan transaksi = edit koreksi yang sudah ada. */
   [ROUTES.BALANCE_CORRECTION]: { idWallet: string; transaction?: Transaction };
   /** Tanpa jadwal = tambah jadwal baru. */
-  [ROUTES.SCHEDULE_FORM]: { schedule?: Schedule } | undefined;
+  [ROUTES.SCHEDULE_FORM]:
+    | {
+        schedule?: Schedule;
+        /** Isian awal jadwal baru (diabaikan saat edit). */
+        draft?: ScheduleDraft;
+        /**
+         * Transaksi asal yang sudah tersimpan: jadi pembayaran jatuh tempo pertama. Tanpa ini,
+         * draft dari transaksi baru mengembalikan id jadwal ke TransactionForm.
+         */
+        idTransaction?: string;
+      }
+    | undefined;
   /** Tanpa budget = tambah budget baru. */
   [ROUTES.BUDGET_FORM]: { budget?: Budget } | undefined;
   /** Tanpa instrumen = tambah instrumen baru. */

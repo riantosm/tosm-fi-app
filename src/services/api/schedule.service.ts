@@ -3,7 +3,12 @@ import {
   axiosInstance,
   getApiErrorMessage,
 } from '@/services/api/axiosInstance';
-import type { ApiResponse, Schedule, ScheduleInput } from '@/types';
+import type {
+  ApiResponse,
+  Schedule,
+  ScheduleInput,
+  ScheduleOccurrence,
+} from '@/types';
 
 export async function getSchedulesApi(): Promise<Schedule[]> {
   try {
@@ -19,13 +24,34 @@ export async function getSchedulesApi(): Promise<Schedule[]> {
   }
 }
 
+/** `idTransaction` = transaksi asal yang jadi pembayaran jatuh tempo pertama. */
 export async function createScheduleApi(
   input: ScheduleInput,
+  idTransaction?: string,
 ): Promise<Schedule> {
   try {
     const { data } = await axiosInstance.post<ApiResponse<Schedule>>(
       '/schedules',
-      input,
+      idTransaction ? { ...input, idTransaction } : input,
+    );
+    return data.data;
+  } catch (error) {
+    throw new Error(
+      getApiErrorMessage(error, i18n.t('schedule.genericError')),
+      { cause: error },
+    );
+  }
+}
+
+/** Tandai jatuh tempo pertama jadwal sebagai dibayar oleh transaksi yang sudah dicatat. */
+export async function linkScheduleTransactionApi(
+  idSchedule: string,
+  idTransaction: string,
+): Promise<ScheduleOccurrence> {
+  try {
+    const { data } = await axiosInstance.post<ApiResponse<ScheduleOccurrence>>(
+      `/schedules/${idSchedule}/link-transaction`,
+      { idTransaction },
     );
     return data.data;
   } catch (error) {

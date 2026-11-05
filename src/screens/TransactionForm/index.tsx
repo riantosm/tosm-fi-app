@@ -21,6 +21,7 @@ import PressableScale from '@/components/atoms/PressableScale';
 import Typography from '@/components/atoms/Typography';
 import AmountCard from '@/components/molecules/AmountCard';
 import CategoryPickerRow from '@/components/molecules/CategoryPickerRow';
+import MenuRow from '@/components/molecules/MenuRow';
 import PickerField from '@/components/molecules/PickerField';
 import SegmentedControl from '@/components/molecules/SegmentedControl';
 import TextField from '@/components/molecules/TextField';
@@ -34,13 +35,17 @@ import SelectSubCategorySheet from '@/components/organisms/SelectSubCategoryShee
 import SheetLayout from '@/components/templates/SheetLayout';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useToast } from '@/contexts/ToastContext';
+import { useUpgrade } from '@/contexts/UpgradeContext';
 import { useCategories } from '@/hooks/useCategories';
 import { useInstruments } from '@/hooks/useInstruments';
 import { useInvestmentTransactions } from '@/hooks/useInvestmentTransactions';
+import { useSchedules } from '@/hooks/useSchedules';
 import { useTransactions } from '@/hooks/useTransactions';
 import { useWallets } from '@/hooks/useWallets';
-import type { ROUTES } from '@/navigation/paths';
+import { ROUTES } from '@/navigation/paths';
 import type { RootStackScreenProps } from '@/navigation/types';
+import { useAppSelector } from '@/store/hooks';
+import { selectIsAppLocked } from '@/store/slices/appLockSlice';
 import { makeStyles } from '@/theme/makeStyles';
 import { radius, spacing } from '@/theme/metrics';
 import type {
@@ -49,6 +54,8 @@ import type {
   Transaction,
   TransactionInput,
 } from '@/types';
+import { toIsoDateString } from '@/utils/month';
+import { isDueOnStartDate, parseScheduleDate } from '@/utils/schedule';
 import { transitions } from '@/utils/motion';
 import { formatDateTimeLabel } from '@/utils/txTime';
 
@@ -110,6 +117,12 @@ const useStyles = makeStyles(({ colors }) => ({
     backgroundColor: colors.investmentSoft,
   },
   targetLabel: { flex: 1 },
+  scheduleRow: {
+    paddingHorizontal: 14,
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: colors.border,
+  },
   footerButton: { flex: 1 },
 }));
 
@@ -131,8 +144,16 @@ export default function TransactionFormScreen({
   const { createMoneyIn } = useInvestmentTransactions();
   const { createTransaction, editTransaction, deleteTransaction } =
     useTransactions();
+  const { schedules, linkTransaction } = useSchedules();
+  const { guardLimit } = useUpgrade();
+  // Form jadwal tidak terdaftar di grup Locked (pintasan tanpa kunci).
+  const isLocked = useAppSelector(selectIsAppLocked);
   const transaction = route.params?.transaction ?? null;
   const close = navigation.goBack;
+  // Jadwal yang dibuat dari form ini sebelum transaksinya disimpan (dikembalikan ScheduleForm).
+  const linkScheduleId = transaction
+    ? null
+    : route.params?.linkScheduleId ?? null;
 
   const [type, setType] = useState<FormType>(toFormType(transaction?.type));
   const [categoryId, setCategoryId] = useState(transaction?.idCategory ?? null);
@@ -247,6 +268,9 @@ export default function TransactionFormScreen({
     if (!category) {
       return fail('transaction.categoryRequiredError');
     }
+    if (!title.trim()) {
+      return fail('transaction.titleRequiredError');
+    }
     if (!selectedWalletId) {
       return fail('transaction.walletRequiredError');
     }
@@ -302,6 +326,27 @@ export default function TransactionFormScreen({
             );
           }
         }
+        // Transaksi ini membayar jatuh tempo pertama jadwal yang dibuat darinya, selama jenis &
+        // tanggalnya masih cocok (bisa diubah setelah jadwal dibuat).
+        const linked = schedules.find(
+          item => item.idSchedule === linkScheduleId,
+        );
+        if (
+          linked &&
+          linked.type === input.type &&
+          linked.startDate.slice(0, 10) === toIsoDateString(date) &&
+          isDueOnStartDate(
+            linked.frequency,
+            linked.weekdays,
+            parseScheduleDate(linked.startDate),
+          )
+        ) {
+          try {
+            await linkTransaction(linked.idSchedule, created.idTransaction);
+          } catch (error) {
+            showToast(errorMessage(error, 'schedule.genericError'), 'error');
+          }
+        }
       }
       close();
     } catch (error) {
@@ -341,6 +386,32 @@ export default function TransactionFormScreen({
       setBusy(null);
       setSheet(null);
     }
+  };
+
+  // Jadwal hanya mengenal pemasukan/pengeluaran: barisnya disembunyikan untuk transfer.
+  const openScheduleForm = () => {
+    if (type === 'transfer' || !guardLimit('schedules', schedules.length)) {
+      return;
+    }
+    // Edit: transaksi tersimpan jadi pembayaran jatuh tempo pertama, selama jenis & tanggal di form
+    // belum diubah (backend mencocokkan dengan transaksi yang tersimpan).
+    const savedMatches =
+      !!transaction &&
+      transaction.type === type &&
+      toIsoDateString(new Date(transaction.date)) === toIsoDateString(date);
+    navigation.navigate(ROUTES.SCHEDULE_FORM, {
+      idTransaction: savedMatches ? transaction.idTransaction : undefined,
+      draft: {
+        type,
+        idCategory: category?.idCategory,
+        idSubCategory: subCategory?.idSubCategory ?? null,
+        amount,
+        title: title.trim(),
+        idWallet: selectedWalletId ?? undefined,
+        notes: notes.trim(),
+        startDate: toIsoDateString(date),
+      },
+    });
   };
 
   const typeColor = {
@@ -517,11 +588,7 @@ export default function TransactionFormScreen({
 
         <TextField
           variant="filled"
-          label={t(
-            isTransfer
-              ? 'transaction.titleLabel'
-              : 'transaction.titleLabelOptional',
-          )}
+          label={t('transaction.titleLabel')}
           value={title}
           onChangeText={setTitle}
           autoCapitalize="sentences"
@@ -613,6 +680,26 @@ export default function TransactionFormScreen({
               </PressableScale>
             )}
           </View>
+        )}
+
+        {!isTransfer && !isLocked && (
+          <MenuRow
+            tone="investment"
+            renderIcon={color => <CalendarClock size={18} color={color} />}
+            title={t('transaction.makeScheduled')}
+            description={t(
+              linkScheduleId
+                ? 'transaction.makeScheduledDone'
+                : 'transaction.makeScheduledHint',
+            )}
+            disabled={!!busy || !!linkScheduleId}
+            showChevron={!linkScheduleId}
+            trailing={
+              !!linkScheduleId && <Check size={18} color={colors.incomeText} />
+            }
+            onPress={openScheduleForm}
+            style={styles.scheduleRow}
+          />
         )}
       </SheetLayout>
 

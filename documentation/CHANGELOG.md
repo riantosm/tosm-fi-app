@@ -21,9 +21,15 @@ Kategori tanpa isi boleh dihilangkan.
 - Admin bisa mengubah paket pengguna (Free ↔ Pro) dari Kelola Pengguna.
 - Logo dompet: ketuk ikon dompet (bertanda pensil) di form Tambah/Edit dompet untuk memilih
   gambar dari galeri; "Hapus logo" mengembalikan ikon bawaan.
+- "Jadikan transaksi terjadwal" di form Catat/Edit transaksi (pemasukan & pengeluaran): membuka
+  form jadwal yang sudah berisi jenis, kategori, nominal, judul, dompet, catatan, dan tanggal
+  mulai = tanggal transaksi; tinggal pilih aturan ulang lalu simpan. Transaksi itu langsung
+  dihitung sebagai pembayaran jadwal pertama, jadi tidak muncul lagi sebagai tagihan.
 
 ### Ditingkatkan
 
+- Judul di form Catat/Edit transaksi tidak lagi bertanda "(opsional)" karena memang wajib;
+  judul kosong langsung ditolak dengan pesan "Judul wajib diisi".
 - Daftar akun baru langsung aktif dan langsung masuk, tanpa menunggu persetujuan admin.
 - Logo atau ikon dompet tampil di pojok ikon kategori pada daftar transaksi, dan nama dompet
   sekarang di depan kategori ("GoPay · Transportasi › KRL & MRT").
