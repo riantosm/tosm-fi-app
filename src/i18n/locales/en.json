@@ -364,6 +364,7 @@
     "actualBalance": "Actual balance",
     "differenceNote": "Difference {{amount}} is recorded as a correction",
     "noDifference": "Balance already matches",
+    "enterActualBalance": "Enter the actual balance",
     "saveCorrection": "Save correction",
     "deleteWalletAction": "Delete wallet",
     "shareOfTotal": "{{pct}}% of total",

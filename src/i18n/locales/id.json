@@ -364,6 +364,7 @@
     "actualBalance": "Saldo sebenarnya",
     "differenceNote": "Selisih {{amount}} dicatat sebagai koreksi",
     "noDifference": "Saldo sudah sesuai",
+    "enterActualBalance": "Ketik saldo sebenarnya",
     "saveCorrection": "Simpan koreksi",
     "deleteWalletAction": "Hapus dompet",
     "shareOfTotal": "{{pct}}% dari total",

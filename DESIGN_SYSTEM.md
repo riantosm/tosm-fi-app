@@ -432,7 +432,8 @@ pertama kali dibutuhkan, mengikuti spesifikasinya di sini.
   21/500.
   - Operator `÷ × − +` memakai latar `primarySoft` dengan teks `primaryText`.
   - Baris terakhir berisi ⌫ (ikon 22 `text2`) dan "Selesai" (latar `primary`, radius 16, Inter 15/600).
-  - Urutan baris: `7 8 9 ÷ / 4 5 6 × / 1 2 3 − / 000 0 , +`.
+  - Urutan baris: `1 2 3 ÷ / 4 5 6 × / 7 8 9 − / 000 0 , +` (selisih dengan pen yang masih
+    `7 8 9` di atas; urutan 1-2-3 di atas permintaan user).
 
 ### 6.14 Sheet "Lainnya" (dibuka dari slot Lainnya)
 

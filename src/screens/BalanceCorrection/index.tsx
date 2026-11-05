@@ -71,8 +71,8 @@ const useStyles = makeStyles(({ colors }) => ({
 }));
 
 /**
- * Koreksi saldo (pen `kdRVQ`) — port BalanceCorrectionModal web. Kalkulator mulai dari saldo
- * dompet; selisih terhadap saldo tercatat disimpan sebagai transaksi `correction`.
+ * Koreksi saldo (pen `kdRVQ`) — port BalanceCorrectionModal web. Kalkulator mulai dari 0 (edit:
+ * saldo hasil koreksi); selisih terhadap saldo tercatat disimpan sebagai transaksi `correction`.
  */
 export default function BalanceCorrectionScreen({
   navigation,
@@ -125,7 +125,16 @@ function CorrectionSheet({
   const baseBalance = transaction
     ? wallet.balance - transaction.amount
     : wallet.balance;
-  const calc = useAmountCalculator(wallet.balance);
+  // Koreksi baru mulai dari 0 supaya saldo sebenarnya langsung diketik; edit memakai saldo hasil koreksi lama.
+  const calc = useAmountCalculator(transaction ? wallet.balance : 0);
+  // Koreksi baru: simpan ditahan sampai saldo diketik, supaya 0 awal tidak tersimpan tanpa sengaja.
+  const [touched, setTouched] = useState(!!transaction);
+  const touch =
+    <A extends unknown[]>(handler: (...args: A) => void) =>
+    (...args: A) => {
+      setTouched(true);
+      handler(...args);
+    };
   const delta = calc.value - baseBalance;
   const DeltaIcon = delta < 0 ? TrendingDown : TrendingUp;
   const fontSize =
@@ -136,6 +145,9 @@ function CorrectionSheet({
       : 40;
 
   const save = async () => {
+    if (!touched) {
+      return;
+    }
     if (delta === 0 && !transaction) {
       onClose();
       return;
@@ -256,17 +268,19 @@ function CorrectionSheet({
           </View>
           <Reveal
             variant="fade"
-            key={delta === 0 ? 'same' : delta < 0 ? 'down' : 'up'}
+            key={
+              !touched ? 'idle' : delta === 0 ? 'same' : delta < 0 ? 'down' : 'up'
+            }
             style={[
               styles.pill,
-              delta === 0
+              !touched || delta === 0
                 ? styles.pillSame
                 : delta < 0
                 ? styles.pillDown
                 : styles.pillUp,
             ]}
           >
-            {delta !== 0 && (
+            {touched && delta !== 0 && (
               <DeltaIcon
                 size={14}
                 color={delta < 0 ? colors.expenseText : colors.incomeText}
@@ -274,11 +288,19 @@ function CorrectionSheet({
             )}
             <Typography
               variant="captionStrong"
-              tone={delta === 0 ? 'subtle' : delta < 0 ? 'expense' : 'income'}
+              tone={
+                !touched || delta === 0
+                  ? 'subtle'
+                  : delta < 0
+                  ? 'expense'
+                  : 'income'
+              }
               numberOfLines={1}
               style={styles.pillText}
             >
-              {delta === 0
+              {!touched
+                ? t('wallet.enterActualBalance')
+                : delta === 0
                 ? t('wallet.noDifference')
                 : t('wallet.differenceNote', { amount: formatSigned(delta) })}
             </Typography>
@@ -307,15 +329,16 @@ function CorrectionSheet({
         />
 
         <Keypad
-          onDigit={calc.handleDigit}
-          onDecimal={calc.handleDecimal}
-          onTripleZero={calc.handleTripleZero}
-          onOperator={calc.handleOperator}
-          onBackspace={calc.handleBackspace}
+          onDigit={touch(calc.handleDigit)}
+          onDecimal={touch(calc.handleDecimal)}
+          onTripleZero={touch(calc.handleTripleZero)}
+          onOperator={touch(calc.handleOperator)}
+          onBackspace={touch(calc.handleBackspace)}
           decimalLabel={calc.decimalSeparator}
           confirmLabel={t('wallet.saveCorrection')}
           backspaceLabel={t('common.backspace')}
           confirming={busy === 'save'}
+          confirmDisabled={!touched}
           onConfirm={() => {
             if (!busy) {
               save();

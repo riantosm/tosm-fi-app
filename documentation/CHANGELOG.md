@@ -29,6 +29,9 @@ Kategori tanpa isi boleh dihilangkan.
   sekarang di depan kategori ("GoPay · Transportasi › KRL & MRT").
 - Pilihan dompet (form transaksi, filter, kalkulator), kartu Dompet di Dashboard, Dompet Paling
   Aktif di Laporan, dan Koreksi saldo menampilkan logo/ikon dompet, bukan titik warna.
+- Tombol kalkulator nominal sekarang berurutan seperti keypad HP: 1 2 3 di baris paling atas.
+- Koreksi saldo mulai dari 0, jadi saldo sebenarnya bisa langsung diketik tanpa menghapus angka
+  lama dulu. Tombol Simpan koreksi baru aktif setelah saldo diketik.
 
 ## v1.4.0 (versionCode 5)
 

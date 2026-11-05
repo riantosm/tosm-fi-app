@@ -20,6 +20,8 @@ export interface KeypadProps {
   onConfirm: () => void;
   /** Sedang menyimpan: tombol konfirmasi menampilkan spinner & tidak bisa ditekan. */
   confirming?: boolean;
+  /** Tombol konfirmasi redup (opacity 0.55) & tidak bisa ditekan, mis. belum ada input. */
+  confirmDisabled?: boolean;
 }
 
 type Key =
@@ -30,9 +32,9 @@ type Key =
 
 const ROWS: Key[][] = [
   [
-    { kind: 'digit', value: '7' },
-    { kind: 'digit', value: '8' },
-    { kind: 'digit', value: '9' },
+    { kind: 'digit', value: '1' },
+    { kind: 'digit', value: '2' },
+    { kind: 'digit', value: '3' },
     { kind: 'op', value: '÷', label: '÷' },
   ],
   [
@@ -42,9 +44,9 @@ const ROWS: Key[][] = [
     { kind: 'op', value: '×', label: '×' },
   ],
   [
-    { kind: 'digit', value: '1' },
-    { kind: 'digit', value: '2' },
-    { kind: 'digit', value: '3' },
+    { kind: 'digit', value: '7' },
+    { kind: 'digit', value: '8' },
+    { kind: 'digit', value: '9' },
     { kind: 'op', value: '-', label: '−' },
   ],
   [
@@ -68,13 +70,14 @@ const useStyles = makeStyles(({ colors }) => ({
   },
   op: { backgroundColor: colors.primarySoft },
   confirm: { borderRadius: 16, backgroundColor: colors.primary },
+  confirmDisabled: { opacity: 0.55 },
   label: { fontSize: 20, lineHeight: 26, letterSpacing: 0 },
   // Web: angka Outfit 500, operator Outfit 600.
   labelDigit: { fontFamily: fonts.displayMedium },
   confirmLabel: { fontSize: 15 },
 }));
 
-/** Keypad kalkulator nominal (pen V2/Keypad): 7-8-9-÷ … 000-0-,-+, lalu ⌫ + Selesai. */
+/** Keypad kalkulator nominal (pen V2/Keypad, baris angka dibalik): 1-2-3-÷ … 000-0-,-+, lalu ⌫ + Selesai. */
 export default function Keypad({
   onDigit,
   onDecimal,
@@ -86,6 +89,7 @@ export default function Keypad({
   backspaceLabel,
   onConfirm,
   confirming = false,
+  confirmDisabled = false,
 }: KeypadProps) {
   const styles = useStyles();
   const { colors } = useTheme();
@@ -148,11 +152,18 @@ export default function Keypad({
         <PressableScale
           accessibilityRole="button"
           accessibilityLabel={confirmLabel}
-          accessibilityState={{ busy: confirming, disabled: confirming }}
-          disabled={confirming}
+          accessibilityState={{
+            busy: confirming,
+            disabled: confirming || confirmDisabled,
+          }}
+          disabled={confirming || confirmDisabled}
           scaleTo={0.96}
           onPress={onConfirm}
-          style={[styles.key, styles.confirm]}
+          style={[
+            styles.key,
+            styles.confirm,
+            confirmDisabled && !confirming && styles.confirmDisabled,
+          ]}
         >
           {confirming ? (
             <ActivityIndicator color={colors.primaryFg} />

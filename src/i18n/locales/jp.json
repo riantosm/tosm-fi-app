@@ -364,6 +364,7 @@
     "actualBalance": "実際の残高",
     "differenceNote": "差額 {{amount}} を修正として記録",
     "noDifference": "残高は一致しています",
+    "enterActualBalance": "実際の残高を入力してください",
     "saveCorrection": "修正を保存",
     "deleteWalletAction": "ウォレットを削除",
     "shareOfTotal": "全体の{{pct}}%",
