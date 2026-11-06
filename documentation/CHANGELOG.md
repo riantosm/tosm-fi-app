@@ -26,6 +26,9 @@ _2026-11-05_
   transaksi, pilihan dompet, Dashboard, Laporan, dan Koreksi saldo.
 - "Jadikan transaksi terjadwal" di form Catat/Edit transaksi: membuka form jadwal yang sudah
   terisi, dan transaksi itu langsung dihitung sebagai pembayaran pertama.
+- Catat cepat: baris di Preview bisa di-tap untuk diubah manual (nominal, dompet, kategori,
+  tanggal, judul, catatan, akun investasi, jenis transaksi). Berlaku untuk semua jenis
+  transaksi; perubahan masuk ke Preview dan baru tersimpan setelah Simpan.
 
 ### Ditingkatkan
 
@@ -33,6 +36,11 @@ _2026-11-05_
 - Daftar transaksi menampilkan nama dompet di depan kategori ("GoPay · Transportasi").
 - Kalkulator nominal berurutan seperti keypad HP (1 2 3 di atas), dan Koreksi saldo mulai dari 0.
 - Judul transaksi kini wajib diisi.
+
+### Perbaikan
+
+- Catat cepat: transaksi yang sudah disimpan atau dibatalkan tidak muncul lagi di Preview
+  saat mengirim pesan berikutnya.
 
 ## v1.4.0 (versionCode 5)
 

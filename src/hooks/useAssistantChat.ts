@@ -38,9 +38,22 @@ function toLocalDateTime(date: Date): string {
   )} ${pad(date.getHours())}:${pad(date.getMinutes())}`;
 }
 
+/**
+ * Percakapan yang dibaca asisten. Dimulai setelah batch terakhir yang ditutup (tersimpan atau
+ * dibatalkan); tanpa ini model membaca ulang pesan lama dan memunculkan lagi transaksinya.
+ */
 function toHistory(messages: AssistantMessage[]): AssistantRequest['history'] {
   const history: AssistantRequest['history'] = [];
-  for (const message of messages) {
+  let start = 0;
+  messages.forEach((m, index) => {
+    if (
+      m.role === 'assistant' &&
+      (m.kind === 'success' || (m.kind === 'text' && m.endsBatch))
+    ) {
+      start = index + 1;
+    }
+  });
+  for (const message of messages.slice(start)) {
     if (message.role === 'user') {
       if (!message.failed) {
         history.push({ role: 'user', text: message.payload ?? message.text });
@@ -224,6 +237,7 @@ export function useAssistantChat() {
         role: 'assistant',
         kind: 'text',
         text: t('assistant.cancelledReply'),
+        endsBatch: true,
       },
     ]);
   }, [setPreviewStatus, t]);
@@ -407,6 +421,27 @@ export function useAssistantChat() {
     [send],
   );
 
+  /** Ubah manual satu baris pratinjau yang menunggu (tap barisnya). Belum disimpan. */
+  const updateDraft = useCallback(
+    (previewId: string, draft: AssistantDraft) => {
+      const preview = messagesRef.current.find(m => m.id === previewId);
+      if (
+        preview?.role !== 'assistant' ||
+        preview.kind !== 'preview' ||
+        preview.status !== 'pending'
+      ) {
+        return;
+      }
+      const next = preview.drafts.map(d =>
+        d.idDraft === draft.idDraft ? draft : d,
+      );
+      setPreviewStatus(previewId, 'pending', { drafts: next });
+      draftsRef.current = next;
+      setDrafts(next);
+    },
+    [setPreviewStatus],
+  );
+
   const reset = useCallback(() => {
     sessionRef.current += 1;
     messagesRef.current = [];
@@ -437,6 +472,7 @@ export function useAssistantChat() {
     pickDate,
     save,
     cancel,
+    updateDraft,
     reset,
   };
 }

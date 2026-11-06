@@ -40,6 +40,8 @@ export const ROUTES = {
   SCAN_RECEIPT: 'ScanReceipt',
   PRO_CHECKOUT: 'ProCheckout',
   TRANSACTION_FORM: 'TransactionForm',
+  /** Ubah manual satu baris pratinjau Catat cepat (sheet di atas QuickAdd). */
+  ASSISTANT_DRAFT_EDIT: 'AssistantDraftEdit',
   PAY_OCCURRENCE: 'PayOccurrence',
   WALLET_FORM: 'WalletForm',
   BALANCE_CORRECTION: 'BalanceCorrection',
@@ -85,6 +87,7 @@ export const ROUTES_WITHOUT_NAV: readonly RouteName[] = [
   ROUTES.SCAN_RECEIPT,
   ROUTES.PRO_CHECKOUT,
   ROUTES.TRANSACTION_FORM,
+  ROUTES.ASSISTANT_DRAFT_EDIT,
   ROUTES.PAY_OCCURRENCE,
   ROUTES.WALLET_FORM,
   ROUTES.BALANCE_CORRECTION,

@@ -23,6 +23,7 @@ import LoginScreen from '@/screens/Login';
 import PayOccurrenceScreen from '@/screens/PayOccurrence';
 import ProfileScreen from '@/screens/Profile';
 import QuickAddScreen from '@/screens/QuickAdd';
+import AssistantDraftEditScreen from '@/screens/AssistantDraftEdit';
 import RecentTransactionsScreen from '@/screens/RecentTransactions';
 import RegisterScreen from '@/screens/Register';
 import ReportCategoryDetailScreen from '@/screens/ReportCategoryDetail';
@@ -125,6 +126,10 @@ function RootNavigator() {
               name={ROUTES.TRANSACTION_FORM}
               component={TransactionFormScreen}
             />
+            <Stack.Screen
+              name={ROUTES.ASSISTANT_DRAFT_EDIT}
+              component={AssistantDraftEditScreen}
+            />
           </Stack.Group>
         </Stack.Group>
       ) : isLogin ? (
@@ -199,6 +204,10 @@ function RootNavigator() {
             <Stack.Screen
               name={ROUTES.TRANSACTION_FORM}
               component={TransactionFormScreen}
+            />
+            <Stack.Screen
+              name={ROUTES.ASSISTANT_DRAFT_EDIT}
+              component={AssistantDraftEditScreen}
             />
             <Stack.Screen
               name={ROUTES.PAY_OCCURRENCE}

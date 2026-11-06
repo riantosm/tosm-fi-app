@@ -278,6 +278,15 @@ export default function QuickAddScreen({
                 instruments={chat.instruments}
                 onSave={() => chat.save()}
                 onCancel={chat.cancel}
+                onEditDraft={
+                  chat.isThinking
+                    ? undefined
+                    : draft =>
+                        navigation.navigate(ROUTES.ASSISTANT_DRAFT_EDIT, {
+                          previewId: message.id,
+                          draft,
+                        })
+                }
               />
             </View>
           </ChatEntry>

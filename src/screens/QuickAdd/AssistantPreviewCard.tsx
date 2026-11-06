@@ -17,6 +17,7 @@ import {
 } from 'lucide-react-native';
 import { useTranslation } from 'react-i18next';
 import Button from '@/components/atoms/Button';
+import PressableScale from '@/components/atoms/PressableScale';
 import Typography from '@/components/atoms/Typography';
 import TxRow, { type TxAmountTone } from '@/components/molecules/TxRow';
 import TxWalletBadge from '@/components/molecules/TxWalletBadge';
@@ -59,6 +60,12 @@ const useStyles = makeStyles(({ colors, shadows }) => ({
   cardError: { borderColor: colors.expense },
   replaced: { opacity: 0.7 },
   head: { gap: 2 },
+  editHint: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    marginTop: 2,
+  },
   alert: {
     flexDirection: 'row',
     alignItems: 'flex-start',
@@ -207,6 +214,8 @@ export interface AssistantPreviewCardProps {
   instruments: Instrument[];
   onSave: () => void;
   onCancel: () => void;
+  /** Membuka editor manual baris; baris hanya bisa di-tap selama pratinjau menunggu. */
+  onEditDraft?: (draft: AssistantDraft) => void;
 }
 
 /** Pratinjau Catat cepat (pen V2/PreviewCard): draft per hari, total, Simpan/Batal + status akhirnya. */
@@ -218,6 +227,7 @@ export default function AssistantPreviewCard({
   instruments,
   onSave,
   onCancel,
+  onEditDraft,
 }: AssistantPreviewCardProps) {
   const styles = useStyles();
   const { colors } = useTheme();
@@ -254,6 +264,7 @@ export default function AssistantPreviewCard({
   const { drafts, status } = message;
   const errorCount = drafts.filter(draft => draft.error).length;
   const isPending = status === 'pending' || status === 'saving';
+  const isEditable = status === 'pending' && !!onEditDraft;
 
   const now = new Date();
   const today = dayKey(now.toISOString());
@@ -434,9 +445,17 @@ export default function AssistantPreviewCard({
     }
 
     const chips = changeChips(draft);
+    const edit = isEditable ? () => onEditDraft?.(draft) : undefined;
     return (
-      <View
+      <PressableScale
         key={draft.idDraft}
+        disabled={!edit}
+        accessibilityRole={edit ? 'button' : undefined}
+        accessibilityLabel={
+          edit ? t('assistant.editRow', { title }) : undefined
+        }
+        scaleTo={0.985}
+        onPress={edit}
         style={[
           styles.row,
           draft.error
@@ -456,6 +475,7 @@ export default function AssistantPreviewCard({
           amount={amountText}
           amountTone={amountTone}
           caption={formatTxTime(draft.date, language)}
+          onPress={edit}
         />
         {!!draft.notes && (
           <Typography
@@ -491,7 +511,7 @@ export default function AssistantPreviewCard({
             </Typography>
           </View>
         )}
-      </View>
+      </PressableScale>
     );
   }
 
@@ -512,6 +532,14 @@ export default function AssistantPreviewCard({
         <Typography variant="cardTitle" style={styles.previewTitle}>
           {t('assistant.previewTitle')}
         </Typography>
+        {isEditable && (
+          <View style={styles.editHint}>
+            <Pencil size={12} color={colors.text3} />
+            <Typography variant="caption" tone="subtle">
+              {t('assistant.editHint')}
+            </Typography>
+          </View>
+        )}
       </View>
 
       {showErrors && (

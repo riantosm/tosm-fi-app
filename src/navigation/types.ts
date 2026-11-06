@@ -6,6 +6,7 @@ import type {
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import type { ROUTES } from '@/navigation/paths';
 import type {
+  AssistantDraft,
   Budget,
   Instrument,
   InvestmentAccount,
@@ -131,6 +132,8 @@ export type RootStackParamList = {
   };
   [ROUTES.INVESTMENT_TRANSFER]: { idInvestmentAccount?: string } | undefined;
   [ROUTES.INVESTMENT_TX_EDIT]: { transaction: InvestmentTransaction };
+  /** Baris pratinjau Catat cepat yang diubah; hasilnya kembali lewat `updateDraft(previewId, …)`. */
+  [ROUTES.ASSISTANT_DRAFT_EDIT]: { previewId: string; draft: AssistantDraft };
 };
 
 export type RootStackScreenProps<T extends keyof RootStackParamList> =

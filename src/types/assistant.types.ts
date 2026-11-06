@@ -108,6 +108,8 @@ export type AssistantMessage =
       kind: 'text';
       text: string;
       quickReplies?: AssistantQuickReply[];
+      /** Batch dibatalkan di sini: pesan sebelumnya tidak dikirim lagi ke asisten. */
+      endsBatch?: boolean;
     }
   | {
       id: string;
